@@ -1,0 +1,39 @@
+from abc import ABC, abstractmethod
+from channel.usecase.models import (
+    UserSessionDsDto,
+    {model}ListInDsDto,
+    {model}ListOutDsDto,
+    {model}CreateInDsDto,
+    {model}CreateOutDsDto,
+    {model}UpdateInDsDto,
+    {model}UpdateOutDsDto,
+)
+from typing import Optional, List
+
+
+class {model}UploadRepository(ABC):
+
+    @abstractmethod
+    def load_session_user(self) -> Optional[UserSessionDsDto]:
+        pass
+
+    @ abstractmethod
+    def {model_lower}_list(
+        self,
+        {model_lower}_list_dto: {model}ListInDsDto
+    ) -> List[{model}ListOutDsDto]:
+        pass
+
+    @ abstractmethod
+    def update(
+        self,
+        {model_lower}_in_dto: {model}UpdateInDsDto
+    ) -> {model}UpdateOutDsDto:
+        pass
+
+    @ abstractmethod
+    def create(
+        self,
+        {model_lower}_in_dto: {model}CreateInDsDto
+    ) -> {model}CreateOutDsDto:
+        pass

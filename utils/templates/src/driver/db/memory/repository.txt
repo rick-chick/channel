@@ -1,0 +1,23 @@
+from channel.usecase.models import (
+    {model}SessionDsDto
+)
+from channel.adapter.gateway.{model_lower}.{model_lower}_session import (
+    {model}Session
+)
+
+from typing import Dict, Any, Optional
+
+
+class Memory{model}Repository({model}Session):
+
+    def __init__(self, memory: Dict[str, Any]):
+        self.memory = memory
+
+    def load(self) -> Optional[{model}SessionDsDto]:
+        if not '{model_lower}' in self.memory:
+            return None
+        return self.memory['{model_lower}']
+
+    def save(self, {model_lower}_session_ds_dto: {model}SessionDsDto):
+        if self.memory:
+            self.memory['{model_lower}'] = {model_lower}_session_ds_dto

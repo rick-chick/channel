@@ -1,0 +1,26 @@
+from channel.usecase.output_port.{model_lower} import (
+    {model}DeleteOututPort)
+
+from typing import List
+
+
+class {model}DeletePresenter({model}DeleteOututPort):
+
+    def __init__(self):
+        self.exceptions = []
+
+    def prepare_success_view(self, {model_lower}s: List[int]) -> List[int]:
+        self.{model_lower}s = {model_lower}s
+        return {model_lower}s
+
+    def prepare_fail_view(self, exception: Exception):
+        self.exceptions.append(exception)
+
+    def errors(self) -> []:
+        return self.exceptions
+
+    def has_errors(self) -> bool:
+        return len(self.exceptions) > 0
+
+    def get_{model_lower}_ids(self) -> List[int]:
+        return self.{model_lower}s

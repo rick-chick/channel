@@ -1,0 +1,63 @@
+from channel.usecase.input_port.{model_lower} import {model}ListInputPort
+from channel.usecase.repository.{model_lower} import {model}ListRepository
+from channel.usecase.models import (
+    {model}{action}OutDsDto,
+    {model}{action}InDsDto,
+    UserSessionDsDto
+)
+from channel.usecase.output_port.{model_lower} import {model}ListOututPort
+
+from channel.usecase.models import (
+    {model}ListInDto, {model}{action}OutDto)
+from channel.usecase.exception import (
+    BusinessException, ValidationException,
+    UnauthorizedException)
+
+from pydantic import ValidationError
+from typing import List, Optional
+
+
+class {model}ListInteractor({model}ListInputPort):
+
+    def __init__(
+            self,
+            gateway: {model}ListRepository,
+            presenter: {model}ListOututPort):
+        self.gateway = gateway
+        self.presenter = presenter
+
+    def list(
+        self, {model_lower}_dto: {model}ListInDto) ->\
+            List[{model}{action}OutDto]:
+
+        try:
+            {model_lower}_ds_dto = {model}{action}InDsDto(
+                **{model_lower}_dto.model_dump())
+
+            session_user_ds_dto = self.gateway.load_session_user()
+
+            {model_lower}_res_ds_dtos: List[{model}{action}OutDsDto]\
+                = self.gateway.list(
+                    {model_lower}_ds_dto,
+                )
+
+            if not {model_lower}_res_ds_dtos:
+                {model_lower}_res_ds_dtos = []
+
+            {model_lower}_out_dtos = [
+                {model}{action}OutDto(**ds_dto.model_dump())
+                for ds_dto in {model_lower}_res_ds_dtos]
+
+            self.presenter.prepare_success_view(
+                {model_lower}_out_dtos)
+
+            return {model_lower}_out_dtos
+
+        except ValidationError as e:
+            ex = ValidationException(e)
+            self.presenter.prepare_fail_view(ex)
+            raise ex
+
+        except BusinessException as e:
+            self.presenter.prepare_fail_view(e)
+            raise e

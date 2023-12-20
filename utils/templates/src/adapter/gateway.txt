@@ -1,0 +1,21 @@
+from .{model_lower}_repository import {model}Repository
+
+from channel.usecase.models import (
+    {model}{action}InDsDto,
+    {model}{action}OutDsDto,
+)
+from channel.usecase.repository.{model_lower} import {model}{action}Repository
+
+
+class {model}{action}Gateway({model}{action}Repository):
+
+    def __init__(
+            self,
+            {model_lower}_repository: {model}Repository):
+        self.{model_lower}_repository = {model_lower}_repository
+
+    def {action_lower}(
+        self,
+        {model_lower}_dto: {model}{action}InDsDto
+    ) -> {model}{action}OutDsDto:
+        return self.{model_lower}_repository.{action_lower}({model_lower}_dto)

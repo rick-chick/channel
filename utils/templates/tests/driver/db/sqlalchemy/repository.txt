@@ -1,0 +1,74 @@
+from sqlalchemy import create_engine
+
+from channel.driver.db.sqlalchemy.models import (
+    Base, {model}DataSource)
+from channel.driver.db.sqlalchemy import {device}{model}Repository
+
+from channel.usecase.models import {model}CreateInDsDto
+
+from sqlalchemy.orm import sessionmaker
+import pytest
+from uuid import uuid4
+
+from tests.conftest import DATABASE_URL
+from tests.channel.factories import (
+    {model}CreateInDsDtoFactory
+)
+
+engine = create_engine(url=DATABASE_URL, echo=True)
+
+{model_lower}ds_dto = {model}CreateInDsDtoFactory.build()
+{model_lower}_ds = {model}DataSource(
+    **{model_lower}ds_dto.model_dump()
+)
+
+
+@pytest.fixture(scope="module", autouse=True)
+def scope_module():
+    try:
+      Base.metadata.create_all(bind=engine)
+
+      session = sessionmaker(engine)()
+
+      datas = []
+      datas.append({model_lower}_ds)
+      session.add_all(datas)
+      session.commit()
+      session.refresh({model_lower}_ds)
+      session.close()
+
+      try:
+          yield
+      except Exception:
+          pass
+
+    finally:
+      Base.metadata.drop_all(bind=engine)
+
+
+def test_find_by_id_success():
+    target = {device}{model}Repository(engine=engine)
+
+    res = target.find_by_id({model_lower}_ds.id)
+    assert res is not None
+
+
+def test_find_by_id_when_id_is_missing():
+    target = {device}{model}Repository(engine=engine)
+    res = target.find_by_id(-1)
+    assert res is None
+
+
+def test_find_by_id_when_id_is_none():
+    target = {device}{model}Repository(engine=engine)
+    res = target.find_by_id(None)
+    assert res is None
+
+
+def test_create_success():
+    target = {device}{model}Repository(engine=engine)
+    {model_lower}_ds_dto = {model}CreateInDsDtoFactory.build()
+    {model_lower}_output_ds_dto = target.create({model_lower}_ds_dto)
+
+    assert {model_lower}_output_ds_dto is not None
+    assert {model_lower}_output_ds_dto.id is not None

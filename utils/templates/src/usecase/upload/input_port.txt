@@ -1,0 +1,14 @@
+from abc import ABC, abstractmethod
+from channel.usecase.models import (
+    {model}UploadInDto,
+    {model}UploadOutDto)
+
+
+class {model}UploadInputPort(ABC):
+
+    @abstractmethod
+    def upload(
+        self,
+        user_dto: {model}UploadInDto
+    ) -> {model}UploadOutDto:
+        pass

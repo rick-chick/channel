@@ -1,0 +1,98 @@
+from channel.usecase.input_port.{model_lower} import {model}UploadInputPort
+from channel.usecase.repository.{model_lower} import {model}UploadRepository
+from channel.usecase.output_port.{model_lower} import {model}UploadOututPort
+from channel.usecase.interactor.{model_lower}.{model_lower}_translator import {model}Translator
+from channel.usecase.models import (
+    {model}UpdateInDto,
+    {model}CreateInDto,
+    {model}UploadInDto,
+    {model}UploadOutDto,
+    {model}ListInDsDto,
+    {model}UploadItemInDto,
+    UserSessionDsDto
+)
+from channel.usecase.exception import (
+    BusinessException, ValidationException, EmptyContentException,
+    {model}NotFoundException, UnauthorizedException,
+    ContainsInvalidItemsException)
+
+from typing import List, Dict
+
+from pydantic import ValidationError
+
+
+class {model}UploadInteractor({model}UploadInputPort):
+
+    def __init__(
+            self,
+            gateway: {model}UploadRepository,
+            presenter: {model}UploadOututPort):
+        self.gateway = gateway
+        self.presenter = presenter
+
+    def upload(
+            self,
+            {model_lower}_upload_dto: {model}UploadInDto
+    ) -> {model}UploadOutDto:
+        try:
+
+            # ログインユーザの取得
+            session_user_ds_dto = self.gateway.load_session_user()
+
+            {model_lower}_dto_list = {model_lower}_upload_dto.items
+
+            if not {model_lower}_dto_list or len({model_lower}_dto_list) == 0:
+                raise EmptyContentException
+
+            # レスポンス
+            upload_output = {model}UploadOutDto()
+
+            # error
+            errors: Dict[int, str] = {{}}
+
+            #
+            for i, {model_lower}_dto in enumerate({model_lower}_dto_list):
+                row_number = i + 1
+
+                try:
+                    {model_lower}_id = None
+                    if {model_lower}_id is not None:
+                        {model_lower}_reponse_dto = self.gateway.update(
+                            {model}UpdateInDto(
+                                **{model_lower}_dto.model_dump(),
+                                id={model_lower}_id,
+                            )
+                        )
+                        if {model_lower}_reponse_dto.code:
+                            upload_output.updated_codes.append(
+                                {model_lower}_reponse_dto.code
+                            )
+
+                    else:
+                        {model_lower}_reponse_dto = self.gateway.create(
+                            {model}CreateInDto(
+                                **{model_lower}_dto.model_dump(),
+                            )
+                        )
+                        if {model_lower}_reponse_dto.code:
+                            upload_output.created_codes.append(
+                                {model_lower}_reponse_dto.code
+                            )
+
+                except ValidationError as e:
+                    ex = ValidationException(e)
+                    errors[row_number] = str(ex)
+
+                except BusinessException as e:
+                    errors[row_number] = str(e)
+
+            if len(errors) > 0:
+                raise ContainsInvalidItemsException(errors)
+
+        except Exception as e:
+            self.presenter.prepare_fail_view(e)
+            raise e
+
+        self.presenter.prepare_success_view(upload_output)
+
+        return upload_output

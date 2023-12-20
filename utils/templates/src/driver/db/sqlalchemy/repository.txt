@@ -1,0 +1,102 @@
+from .models import {model}DataSource
+from .{device_lower}_translator import {device}{model}Translator
+
+from channel.adapter.gateway.{model_lower} import {model}Repository
+
+from channel.usecase.models import (
+    {model}CreateInDsDto,
+    {model}CreateOutDsDto,
+    {model}UpdateInDsDto,
+    {model}UpdateOutDsDto,
+    {model}GetOutDsDto,
+    {model}ListInDsDto,
+    {model}ListOutDsDto,
+    {model}DeleteInDsDto,
+    {model}DeleteOutDsDto
+)
+
+from typing import Optional, List
+from sqlalchemy.orm import Session
+from datetime import datetime
+
+
+class {device}{model}Repository({model}Repository):
+
+    def __init__(self, session: Session):
+        self.session = self.session
+
+    def find_by_id(self, id: int) -> Optional[{model}GetOutDsDto]:
+        if id is None:
+            return None
+
+        {model_lower}_ds = self.session.query({model}DataSource)\
+            .filter_by(id=id)\
+            .first()
+
+        if {model_lower}_ds:
+            return {model}GetOutDsDto.model_validate({model_lower}_ds)
+        return None
+
+    def exists_by_id(self, id: int) -> bool:
+        if id is None:
+            return None
+
+        return self.session.query(self.session.query({model}DataSource)\
+            .filter_by(id=id).exists()).scalar()
+
+    def list(
+        self,
+        {model_lower}_ds_dto: {model}ListInDsDto
+    ) -> List[{model}ListOutDsDto]:
+
+        {model_lower}_ds = self.session.query({model}DataSource).all()
+
+        if not {model_lower}_ds:
+            return []
+
+        return [
+            {model}ListOutDsDto.model_validate(ds)
+            for ds in {model_lower}_ds
+        ]
+
+    def create(
+        self,
+        ds_dto: {model}CreateInDsDto
+    ) -> {model}CreateOutDsDto:
+
+        {model_lower}_ds = {device}{model}Translator.create({model_lower}_ds_dto)
+        self.session.add({model_lower}_ds)
+        self.session.commit()
+        return {model}CreateOutDsDto.model_validate({model_lower}_ds)
+
+    def update(
+        self,
+        ds_dto: {model}UpdateInDsDto
+    ) -> Optional[{model}UpdateOutDsDto]:
+
+        {model_lower}_ds = self.session.query({model}DataSource).filter_by(id={model_lower}_ds_dto.id).first()
+        if {model_lower}_ds is None:
+            return None
+        {model_lower}_ds = {device}{model}Translator.update({model_lower}_ds, {model_lower}_ds_dto)
+        self.session.commit()
+        return {model}UpdateOutDsDto.model_validate({model_lower}_ds)
+
+    def delete(
+        self,
+        {model_lower}_ds_dto: {model}DeleteInDsDto
+    ) -> List[{model}DeleteOutDsDto]:
+        if {model_lower}_ds_dto.ids is None:
+            return []
+
+        {model_lower}_ds = self.session.query({model}DataSource).filter(
+            {model}DataSource.id.in_({model_lower}_ds_dto.ids)).all()
+        if not {model_lower}_ds:
+            return []
+
+        ret = []
+        for ds in {model_lower}_ds:
+            ret.append({model}DeleteOutDsDto.model_validate(ds))
+            self.session.delete(ds)
+
+        self.session.commit()
+        return ret

@@ -1,0 +1,50 @@
+from channel.adapter.gateway.{model_lower}.{model_lower}_repository import {model}Repository
+from channel.usecase.models import (
+    {model}CreateOutDsDto,
+    {model}CreateInDsDto,
+    {model}UpdateInDsDto,
+    {model}UpdateOutDsDto,
+    {model}DeleteOutDsDto,
+    {model}DeleteInDsDto,
+    {model}ListInDsDto,
+    {model}ListOutDsDto,
+    {model}OutDsDto,
+)
+
+from typing import Optional, List
+from tests.channel.factories import {model}CreateOutDsDtoFactory
+
+
+class {model}RepositoryImpl({model}Repository):
+
+    {action_lower}_in: Optional[{model}CreateInDsDto] = None
+    exists_by_email_in: Optional[str] = None
+    find_by_email_in: Optional[str] = None
+    find_by_email_out: Optional[{model}OutDsDto] = None
+
+    def exists_by_id(self, id: Optional[int]) -> bool:
+        return False
+
+    def exists_by_email(self, email: str) -> bool:
+        self.exists_by_email_in = email
+        return False
+
+    def find_by_id(self, id: Optional[int]) -> Optional[{model}OutDsDto]:
+        pass
+
+    def find_by_email(self, email: str) -> Optional[{model}OutDsDto]:
+        self.find_by_email_in = email
+        return self.find_by_email_out
+
+    def list(self, ds_dto: {model}ListInDsDto) -> List[{model}ListOutDsDto]:
+        pass
+
+    def {action_lower}(self, ds_dto: {model}CreateInDsDto) -> {model}CreateOutDsDto:
+        self.{action_lower}_in = ds_dto
+        return {model}CreateOutDsDtoFactory.build()
+
+    def update(self, ds_dto: {model}UpdateInDsDto) -> {model}UpdateOutDsDto:
+        pass
+
+    def delete(self, ds_dto: {model}DeleteInDsDto) -> List[{model}DeleteOutDsDto]:
+        pass

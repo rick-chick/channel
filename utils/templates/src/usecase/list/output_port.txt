@@ -1,0 +1,17 @@
+from abc import ABC, abstractmethod
+from channel.usecase.models import {model}{action}OutDto
+
+
+from typing import List
+
+
+class {model}ListOututPort(ABC):
+
+    @abstractmethod
+    def prepare_success_view(self, {model_lower}: List[{model}{action}OutDto])\
+            -> List[{model}{action}OutDto]:
+        pass
+
+    @abstractmethod
+    def prepare_fail_view(self, exception: Exception):
+        pass

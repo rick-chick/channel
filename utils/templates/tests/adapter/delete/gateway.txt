@@ -1,0 +1,11 @@
+from channel.adapter.gateway.{model_lower} import {device}{model}{action}Gateway
+
+from tests.channel.adapter.gateway.{model_lower}.{model_lower}_repository_impl\
+    import {model}RepositoryImpl
+from tests.channel.adapter.gateway.user.user_session_impl\
+    import UserSessionImpl
+
+{device}{model}{action}Gateway(
+    {model_lower}_repository={model}RepositoryImpl(),
+    user_session=UserSessionImpl(),
+)

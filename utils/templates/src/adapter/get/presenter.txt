@@ -1,0 +1,23 @@
+from channel.usecase.output_port.{model_lower} import {model}{action}OututPort
+from channel.usecase.models import {model}{action}OutDto
+
+
+class {model}{action}Presenter({model}{action}OututPort):
+
+    def __init__(self):
+        self.exceptions = []
+
+    def prepare_success_view(self, {model_lower}: {model}{action}OutDto):
+        self.{model_lower} = {model_lower}
+
+    def prepare_fail_view(self, exception: Exception):
+        self.exceptions.append(exception)
+
+    def errors(self) -> []:
+        return self.exceptions
+
+    def has_errors(self) -> bool:
+        return len(self.exceptions) > 0
+
+    def get_{model_lower}(self) -> {model}{action}OutDto:
+        return self.{model_lower}

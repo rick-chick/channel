@@ -1,0 +1,58 @@
+from channel.usecase.input_port.{model_lower} import {model}DeleteInputPort
+from channel.usecase.repository.{model_lower} import {model}DeleteRepository
+from channel.usecase.models import (
+    {model}{action}OutDsDto,
+    {model}{action}InDsDto,
+    UserSessionDsDto
+)
+from channel.usecase.output_port.{model_lower} import {model}DeleteOututPort
+
+from channel.usecase.models import {model}DeleteInDto
+from channel.usecase.exception import (
+    BusinessException, ValidationException, UnauthorizedException)
+
+from pydantic import ValidationError
+from typing import List, Optional
+
+
+class {model}DeleteInteractor({model}DeleteInputPort):
+
+    def __init__(
+            self,
+            gateway: {model}DeleteRepository,
+            presenter: {model}DeleteOututPort):
+        self.gateway = gateway
+        self.presenter = presenter
+
+    def delete(
+            self, {model_lower}_dto: {model}DeleteInDto) -> List[int]:
+
+        try:
+            if not {model_lower}_dto:
+                return []
+
+            session_user_ds_dto = self.gateway.load_session_user()
+
+            {model_lower}_ds_in_dto = {model}{action}InDsDto(
+                **{model_lower}_dto.model_dump())
+
+            {model_lower}_ds_dtos: List[{model}{action}OutDsDto] = self.gateway.delete(
+                {model_lower}_ds_in_dto)
+
+            deleted_{model_lower}_ids = [
+                {model_lower}.id for {model_lower} in {model_lower}_ds_dtos\
+                if {model_lower}.id is not None]
+
+            self.presenter.prepare_success_view(
+                deleted_{model_lower}_ids)
+
+            return deleted_{model_lower}_ids
+
+        except ValidationError as e:
+            ex = ValidationException(e)
+            self.presenter.prepare_fail_view(ex)
+            raise ex
+
+        except BusinessException as e:
+            self.presenter.prepare_fail_view(e)
+            raise e

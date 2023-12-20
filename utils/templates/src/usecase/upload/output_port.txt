@@ -1,0 +1,28 @@
+from abc import ABC, abstractmethod
+from channel.usecase.models import {model}UploadOutDto
+
+
+class {model}UploadOututPort(ABC):
+
+    @abstractmethod
+    def prepare_success_view(
+        self,
+        {model_lower}: {model}UploadOutDto
+    ) -> {model}UploadOutDto:
+        pass
+
+    @abstractmethod
+    def prepare_fail_view(self, error: Exception):
+        pass
+
+    @abstractmethod
+    def has_errors(self) -> bool:
+        pass
+
+    @abstractmethod
+    def errors(self) -> []:
+        pass
+
+    @abstractmethod
+    def get_{model_lower}(self) -> {model}UploadOutDto:
+        pass

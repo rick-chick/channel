@@ -1,0 +1,45 @@
+from channel.adapter.gateway.{model_lower}.{model_lower}_upload_gateway import {model}UploadGateway
+from channel.usecase.models import (
+    {model}ListInDsDto, 
+    {model}{action}InDto
+)
+
+from tests.channel.adapter.gateway.{model_lower}.{model_lower}_repository_impl import (
+    {model}RepositoryImpl
+)
+from tests.channel.adapter.gateway.user.user_session_impl import (
+    UserSessionImpl
+)
+
+from tests.channel.adapter.controller.{model_lower}.{model_lower}_create_controller_impl\
+    import {model}CreateControllerImpl
+from tests.channel.adapter.controller.{model_lower}.{model_lower}_update_controller_impl\
+    import {model}UpdateControllerImpl
+
+{model_lower}_repository = {model}RepositoryImpl()
+user_session = UserSessionImpl()
+{model_lower}_create_controller = {model}CreateControllerImpl()
+{model_lower}_update_controller = {model}UpdateControllerImpl()
+
+gateway = {model}UploadGateway(
+    {model_lower}_repository={model_lower}_repository,
+    user_session=user_session,
+    {model_lower}_create_controller={model_lower}_create_controller,
+    {model_lower}_update_controller={model_lower}_update_controller
+)
+
+
+def test_load_session_user():
+    gateway.load_session_user()
+
+
+def test_{model_lower}_list():
+    gateway.{model_lower}_list({model}ListInDsDto())
+
+
+def test_update():
+    gateway.update({model}{action}InDto())
+
+
+def test_create():
+    gateway.create({model}{action}InDto())

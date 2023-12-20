@@ -1,0 +1,30 @@
+from .{model_lower}_repository import {model}Repository
+from channel.adapter.gateway.user import UserSession
+
+from channel.usecase.models import(
+    {model}{action}OutDsDto,
+    {model}{action}InDsDto,
+    UserSessionDsDto
+)
+from channel.usecase.repository.{model_lower} import {model}{action}Repository
+
+from typing import List, Optional
+
+
+class {model}{action}Gateway({model}{action}Repository):
+
+    def __init__(
+            self,
+            {model_lower}_repository: {model}Repository,
+            user_session: UserSession):
+        self.{model_lower}_repository = {model_lower}_repository
+        self.user_session = user_session
+
+    def {action_lower}(
+        self,
+        {model_lower}_dto: {model}{action}InDsDto
+    ) -> List[{model}{action}OutDsDto]:
+        return self.{model_lower}_repository.{action_lower}({model_lower}_dto)
+
+    def load_session_user(self) -> Optional[UserSessionDsDto]:
+        return self.user_session.load()

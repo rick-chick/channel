@@ -1,0 +1,98 @@
+from channel.usecase.interactor.{model_lower} import {model}DeleteInteractor
+from channel.usecase.models import (
+    {model}DeleteInDto,
+    {model}DeleteInDsDto,
+    {model}DeleteOutDsDto,
+    UserSessionDsDto
+)
+from channel.usecase.output_port.{model_lower} import {model}DeleteOututPort
+from channel.usecase.exception import BusinessException
+from channel.usecase.repository.{model_lower} import {model}DeleteRepository
+
+from tests.channel.factories import (
+  {model}DeleteOutDsDtoFactory,
+  {model}DeleteInDtoFactory,
+  UserSessionDsDtoFactory
+)
+
+from typing import Optional, List
+
+valid_{model_lower}_ds_dto = {model}DeleteOutDsDtoFactory.build()
+
+valid_{model_lower}_in_dto = {model}DeleteInDto(
+    ids=[{model_lower}.id for {model_lower} in valid_{model_lower}_ds_dto]
+)
+valid_session_user_ds_dto = UserSessionDsDtoFactory.build()
+
+
+class {model}DeleteOututPortImpl({model}DeleteOututPort):
+
+    def __init__(self):
+        self.exceptions = []
+        self.{model_lower}_ids: Optional[List[int]] = None
+
+    def prepare_fail_view(self, error: Exception):
+        self.exceptions.append(error)
+
+    def prepare_success_view(self, {model_lower}_ids: List[int]):
+        self.{model_lower}_ids = {model_lower}_ids
+
+    def errors(self) -> List[Exception]:
+        return self.exceptions
+
+    def has_errors(self):
+        return len(self.exceptions) > 0
+
+    def get_{model_lower}_ids(self) -> List[int]:
+        if self.{model_lower}_ids:
+            return self.{model_lower}_ids
+        raise Exception("invalid_access")
+
+
+class {model}DeleteRepositoryImpl({model}DeleteRepository):
+
+    delete_input: Optional[{model}DeleteInDsDto] = None
+    delete_output: {model}DeleteOutDsDtoFactory = valid_{model_lower}_ds_dto
+    load_session_user_output: Optional[UserSessionDsDto] = valid_session_user_ds_dto
+
+    def delete(
+        self,
+        {model_lower}: {model}DeleteInDsDto
+    ) -> List[{model}DeleteOutDsDto]:
+        self.delete_input = {model_lower}
+        return self.delete_output
+
+    def load_session_user(self) -> Optional[UserSessionDsDto]:
+        return self.load_session_user_output
+
+
+def create_interactor(
+        gateway={model}DeleteRepositoryImpl(),
+        presenter={model}DeleteOututPortImpl()) -> {model}DeleteInteractor:
+    return {model}DeleteInteractor(gateway, presenter)
+
+
+def test_delete_success():
+
+    presenter = {model}DeleteOututPortImpl()
+    gateway = {model}DeleteRepositoryImpl()
+
+    gateway.delete_output = valid_{model_lower}_ds_dto
+
+    target = create_interactor(gateway, presenter)
+
+    target.delete(valid_{model_lower}_in_dto)
+
+    assert presenter.get_{model_lower}_ids() is not None
+    assert len(presenter.get_{model_lower}_ids()) == 3
+
+
+def test_delete_fail():
+
+    presenter = {model}DeleteOututPortImpl()
+    gateway = {model}DeleteRepositoryImpl()
+
+    target = create_interactor(gateway, presenter)
+
+    {model_lower}_in_dto = None
+    assert len(target.delete({model_lower}_in_dto)) == 0

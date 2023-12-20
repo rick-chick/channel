@@ -1,0 +1,31 @@
+from channel.driver.db.sqlalchemy.conf import Session
+from channel.driver.handler.cli.parser import parse
+from channel.driver.handler.cli.{model_lower}.cli_{model_lower}_{action_lower}_input_parser import {device}{model}{action}InputParser
+from channel.driver.view.cli.{model_lower}.cli_{model_lower}_{action_lower}_view import {device}{model}{action}View
+from channel.driver.db.sqlalchemy.sqlalchemy_{model_lower}_repository import (
+    Sqlalchemy{model}Repository
+)
+from channel.driver.db.memory.memory_user_repository import (
+    MemoryUserRepository
+)
+from channel.adapter.controller.{model_lower}.{model_lower}_{action_lower}_controller import (
+    {model}{action}Controller
+)
+from channel.driver.handler.cli.handler_buss import (
+    {model}TokenAuthenticateHandlerBuss
+)
+
+session = Session()
+memory = {{}}
+
+buss = {model}TokenAuthenticateHandlerBuss(memory, session)
+
+controller = {model}{action}Controller(
+    {model_lower}_{action_lower}_input_parser={device}{model}{action}InputParser(memory),
+    user_session=MemoryUserRepository(memory),
+    {model_lower}_repository=Sqlalchemy{model}Repository(session),
+    {model_lower}_{action_lower}_view={device}{model}{action}View(),
+)
+buss.add(controller)
+
+buss.handle(parse())

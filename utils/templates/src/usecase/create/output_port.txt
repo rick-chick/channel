@@ -1,0 +1,13 @@
+from abc import ABC, abstractmethod
+from channel.usecase.models import {model}{action}OutDto
+
+
+class {model}{action}OututPort(ABC):
+
+    @abstractmethod
+    def prepare_success_view(self, {model_lower}: {model}{action}OutDto) -> {model}{action}OutDto:
+        pass
+
+    @abstractmethod
+    def prepare_fail_view(self, exception: Exception):
+        pass

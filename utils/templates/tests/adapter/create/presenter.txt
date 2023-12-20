@@ -1,0 +1,24 @@
+from channel.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_presenter import (
+    {model}{action}Presenter
+)
+from tests.channel.factories import {model}{action}OutDtoFactory
+from tests.channel.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_view_impl import (
+    {model}{action}ViewImpl
+)
+
+
+def test_prepare_success_view():
+    view = {model}{action}ViewImpl()
+    target = {model}{action}Presenter(view)
+    {model_lower} = {model}{action}OutDtoFactory.build()
+    target.prepare_success_view({model_lower})
+
+    view.{model_lower}_{action_lower}_out_dto == {model_lower}
+
+
+def test_prepare_fail_view():
+    view = {model}{action}ViewImpl()
+    target = {model}{action}Presenter(view)
+    target.prepare_fail_view(Exception())
+
+    assert len(view.exceptions) > 0

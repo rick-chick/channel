@@ -1,0 +1,41 @@
+from channel.usecase.models import (
+    {model}GetOutDsDto,
+    {model}CreateInDsDto,
+    {model}CreateOutDsDto,
+    {model}UpdateInDsDto,
+    {model}UpdateOutDsDto,
+    {model}DeleteInDsDto,
+    {model}DeleteOutDsDto,
+    {model}ListInDsDto,
+    {model}ListOutDsDto,
+)
+
+from abc import ABC, abstractmethod
+from typing import Optional, List
+
+
+class {model}Repository(ABC):
+
+    @abstractmethod
+    def exists_by_id(self, id: Optional[int]) -> bool:
+        pass
+
+    @abstractmethod
+    def find_by_id(self, id: Optional[int]) -> Optional[{model}GetOutDsDto]:
+        pass
+
+    @abstractmethod
+    def list(self, ds_dto: {model}ListInDsDto) -> List[{model}ListOutDsDto]:
+        pass
+
+    @abstractmethod
+    def create(self, ds_dto: {model}CreateInDsDto) -> {model}CreateOutDsDto:
+        pass
+
+    @abstractmethod
+    def update(self, ds_dto: {model}UpdateInDsDto) -> {model}UpdateOutDsDto:
+        pass
+
+    @abstractmethod
+    def delete(self, ds_dto: {model}DeleteInDsDto) -> List[{model}DeleteOutDsDto]:
+        pass

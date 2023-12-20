@@ -1,0 +1,78 @@
+from channel.usecase.interactor.{model_lower} import {model}{action}Interactor
+from channel.usecase.models import (
+    {model}{action}OutDsDto,
+    {model}{action}InDsDto,
+    {model}{action}InDto,
+    {model}{action}OutDto
+)
+from channel.usecase.output_port.{model_lower} import {model}{action}OututPort
+from channel.usecase.exception import BusinessException
+from channel.usecase.repository.{model_lower} import {model}{action}Repository
+
+from tests.channel.factories import (
+    {model}{action}OutDsDtoFactory,
+    {model}{action}InDtoFactory,
+)
+
+import pytest
+from typing import Optional, List
+
+valid_{model_lower}_in_dto = {model}{action}InDtoFactory.build()
+valid_{model_lower}_ds_dto = {model}{action}OutDsDtoFactory.build()
+
+
+class {model}{action}OututPortImpl({model}{action}OututPort):
+
+    def __init__(self):
+        self.exceptions = []
+        self.{model_lower}: Optional[{model}{action}OutDto] = None
+
+    def prepare_fail_view(self, exception: Exception):
+        self.exceptions.append(exception)
+
+    def prepare_success_view(self, {model_lower}: {model}{action}OutDto):
+        self.{model_lower} = {model_lower}
+        return {model_lower}
+
+
+class {model}{action}RepositoryImpl({model}{action}Repository):
+
+    {action_lower}_input: Optional[{model}{action}InDsDto] = None
+    {action_lower}_output: Optional[{model}{action}OutDsDto] = None
+
+    def {action_lower}(self, {model_lower}: {model}{action}OutDsDto):
+        self.{action_lower}_input = {model_lower}
+        return self.{action_lower}_output
+
+
+def create_interactor(
+        gateway={model}{action}RepositoryImpl(),
+        presenter={model}{action}OututPortImpl()) -> {model}{action}Interactor:
+    return {model}{action}Interactor(gateway, presenter)
+
+
+def test_{action_lower}_success():
+
+    presenter = {model}{action}OututPortImpl()
+    gateway = {model}{action}RepositoryImpl()
+
+    gateway.{action_lower}_output = valid_{model_lower}_ds_dto
+
+    target = create_interactor(gateway, presenter)
+
+    target.{action_lower}(valid_{model_lower}_in_dto)
+
+    assert presenter.{model_lower} is not None 
+
+
+def test_{action_lower}_fail():
+
+    presenter = {model}{action}OututPortImpl()
+    gateway = {model}{action}RepositoryImpl()
+
+    target = create_interactor(gateway, presenter)
+
+    {model_lower}_in_dto = valid_{model_lower}_in_dto.model_copy()
+
+    with pytest.raises(BusinessException):
+        target.{action_lower}({model_lower}_in_dto)

@@ -1,0 +1,55 @@
+from .{model_lower}_repository import {model}Repository
+from channel.adapter.gateway.user import UserSession
+from channel.adapter.controller.{model_lower} import (
+    {model}CreateController,
+    {model}UpdateController)
+
+from channel.usecase.models import (
+    {model}CreateInDsDto,
+    {model}CreateOutDsDto,
+    {model}UpdateInDsDto,
+    {model}UpdateOutDsDto,
+    {model}ListInDsDto,
+    {model}ListOutDsDto,
+    UserSessionDsDto,
+)
+from channel.usecase.repository.{model_lower} import {model}UploadRepository
+
+from typing import Optional, List
+
+
+class {model}UploadGateway({model}UploadRepository):
+
+    def __init__(
+            self,
+            {model_lower}_repository: {model}Repository,
+            user_session: UserSession,
+            {model_lower}_create_controller: {model}CreateController,
+            {model_lower}_update_controller: {model}UpdateController,
+    ):
+        self.{model_lower}_repository = {model_lower}_repository
+        self.user_session = user_session
+
+        self.{model_lower}_create_controller = {model_lower}_create_controller
+        self.{model_lower}_update_controller = {model_lower}_update_controller
+
+    def load_session_user(self) -> Optional[UserSessionDsDto]:
+        return self.user_session.load()
+
+    def {model_lower}_list(
+        self,
+        {model_lower}_list_dto: {model}ListInDsDto
+    ) -> List[{model}ListOutDsDto]:
+        return self.{model_lower}_repository.list({model_lower}_list_dto)
+
+    def update(
+        self,
+        {model_lower}_in_dto: {model}UpdateInDto
+    ) -> {model}UpdateOutDto:
+        return self.{model_lower}_update_controller.handle({model_lower}_in_dto)
+
+    def create(
+        self,
+        {model_lower}_in_dto: {model}CreateInDto
+    ) -> {model}CreateOutDto:
+        return self.{model_lower}_create_controller.handle({model_lower}_in_dto)

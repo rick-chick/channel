@@ -1,0 +1,24 @@
+from channel.driver.aws_lambda.invokers.{model_lower}\
+    .aws_lambda_{model_lower}_{action_lower}_invoker import (
+        AwsLambda{model}{action}Invoker)
+from channel.driver.aws_lambda.models import InModel
+from channel.usecase.exception import ValidationException
+from tests.channel.factories import UserSessionDsDtoFactory
+import json
+import pytest
+from sqlalchemy.orm import sessionmaker
+from channel.driver.db.sqlalchemy import create_db_engine
+body: dict = {{"id": -1}}
+event = InModel(
+    path="{model_lower}",
+    httpMethod="get",
+    body=json.dumps(body))
+memory: dict = {{"user": UserSessionDsDtoFactory.build()}}
+
+
+def test():
+    with sessionmaker(create_db_engine())() as session:
+        with pytest.raises(ValidationException):
+            invoker = AwsLambda{model}{action}Invoker()
+            invoker.session = session
+            invoker.invoke(event, memory)

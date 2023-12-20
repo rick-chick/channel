@@ -1,0 +1,28 @@
+from channel.usecase.output_port.{model_lower} import {model}ListOututPort
+from channel.usecase.models import ({model}{action}OutDto)
+
+from typing import List
+
+
+class {model}ListPresenter({model}ListOututPort):
+
+    def __init__(self):
+        self.exceptions = []
+
+    def prepare_success_view(
+        self, {model_lower}s: List[{model}{action}OutDto])\
+            -> List[{model}{action}OutDto]:
+        self.{model_lower}s = {model_lower}s
+        return {model_lower}s
+
+    def prepare_fail_view(self, exception: Exception):
+        self.exceptions.append(exception)
+
+    def errors(self) -> []:
+        return self.exceptions
+
+    def has_errors(self) -> bool:
+        return len(self.exceptions) > 0
+
+    def get_{model_lower}s(self) -> List[{model}{action}OutDto]:
+        return self.{model_lower}s

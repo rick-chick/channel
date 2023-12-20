@@ -1,0 +1,6 @@
+from pytest import raises
+
+
+def test_fail():
+    with raises(SystemExit):
+        import channel.driver.handler.cli.{model_lower}.cli_{model_lower}_{action_lower}_handler

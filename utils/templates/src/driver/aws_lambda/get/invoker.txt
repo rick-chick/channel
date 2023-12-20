@@ -1,0 +1,62 @@
+from channel.driver.aws_lambda.models import OutModel, InModel
+from channel.driver.aws_lambda.translator import AwsLambdaTranslator
+from channel.driver.db.sqlalchemy import Sqlalchemy{model}Repository
+from channel.driver.db.sqlalchemy import SqlalchemyCategoryRepository
+from channel.driver.db.memory import MemoryUserSession
+
+from channel.adapter.controller import UseCaseInvoker
+from channel.adapter.presenter.{model_lower} import {model}{action}Presenter
+from channel.adapter.gateway.{model_lower} import {model}{action}Gateway
+
+from channel.usecase.interactor.{model_lower} import {model}{action}Interactor
+from channel.usecase.models import {model}{action}InDto, {model}{action}OutDto
+
+
+import json
+from typing import Optional
+from sqlalchemy.orm import Session
+
+
+class AwsLambda{model}{action}Invoker(UseCaseInvoker):
+    session: Session
+
+    def __init__(self):
+        self.invoked = False
+        self.presenter = {model}{action}Presenter()
+        self.event = None
+
+    def invoke(self, event: InModel, memory: dict):
+        try:
+            self.presenter = {model}{action}Presenter()
+
+            {model_lower}_repository = Sqlalchemy{model}Repository(self.session)
+            category_repository = SqlalchemyCategoryRepository(self.session)
+            user_session = MemoryUserSession(memory)
+            gateway = {model}{action}Gateway(
+                {model_lower}_repository={model_lower}_repository,
+                user_session=user_session,
+                category_repository=category_repository,
+            )
+
+            interactor = {model}{action}Interactor(gateway, self.presenter)
+            return interactor.{action_lower}(self.translate(event))
+        except Exception as e:
+            self.presenter.prepare_fail_view(e)
+            raise e
+        finally:
+            self.invoked = True
+
+    def model_view(self) -> OutModel:
+        success = {{}}
+        if not self.presenter.has_errors():
+            success = self.presenter.get_{model_lower}().model_dump_json(by_alias=True)
+        return AwsLambdaTranslator.to_output(
+            invoked=self.invoked,
+            has_errors=self.presenter.has_errors(),
+            errors=self.presenter.errors(),
+            event=self.event,
+            success=success
+        )
+
+    def translate(self, event: InModel) -> {model}{action}InDto:
+        return {model}{action}InDto(**json.loads(event.body))

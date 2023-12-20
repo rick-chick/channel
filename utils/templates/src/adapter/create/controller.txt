@@ -1,0 +1,48 @@
+from channel.adapter.gateway.{model_lower} import (
+    {model}{action}Gateway,
+    UserSession,
+    {model}Repository
+)
+from channel.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_presenter import {model}{action}Presenter
+from channel.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_view import {model}{action}View
+from channel.adapter.controller.handler import Handler
+from channel.usecase.interactor.{model_lower} import {model}{action}Interactor
+from channel.usecase.models import (
+    {model}{action}InDto,
+    {model}{action}OutDto
+)
+from channel.adapter.controller.input_parser import InputParser
+
+
+class {model}{action}Controller(Handler):
+
+    def __init__(
+        self,
+        user_session: UserSession,
+        {model_lower}_repository: {model}Repository,
+        {model_lower}_{action_lower}_view: {model}{action}View,
+        {model_lower}_{action_lower}_input_parser: InputParser,
+    ):
+        self.gateway = {model}{action}Gateway(
+            {model_lower}_repository={model_lower}_repository,
+            user_session=user_session,
+        )
+
+        self.parser = {model_lower}_{action_lower}_input_parser
+        self.view = {model_lower}_{action_lower}_view
+        presenter = {model}{action}Presenter(self.view)
+
+        self.{model_lower}_{action_lower}_interactor = {model}{action}Interactor(
+            gateway=self.gateway,
+            presenter=presenter,
+        )
+
+    def handle(
+        self,
+        dto: {model}{action}InDto
+    ) -> {model}{action}OutDto:
+        out_dto = self.{model_lower}_{action_lower}_interactor.{action_lower}(
+          self.parser.parse(dto)
+        )
+        self.view.render()
+        return out_dto

@@ -1,0 +1,20 @@
+from channel.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_view import (
+    {model}{action}View:
+)
+
+from channel.usecase.models import {model}{action}OutDto
+from typing import List
+
+
+class {model}{action}ViewImpl({model}{action}View):
+    def __init__(self):
+        self.exceptions: List[Exception] = []
+
+    def add_result(self, {model_lower}_{action_lower}_out_dto: {model}{action}OutDto):
+        self.{model_lower}_{action_lower}_out_dto = {model_lower}_{action_lower}_out_dto
+
+    def add_exception(self, exception: Exception):
+        self.exceptions.append(exception)
+
+    def render(self):
+        print(self.{model_lower}_{action_lower}_out_dto)

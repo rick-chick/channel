@@ -1,0 +1,10 @@
+from abc import ABC, abstractmethod
+from channel.usecase.models import (
+        {model}{action}InDto, {model}{action}OutDto)
+
+
+class {model}{action}InputPort(ABC):
+
+    @abstractmethod
+    def {action_lower}(self, {model_lower}_dto: {model}{action}InDto) -> {model}{action}OutDto:
+        pass

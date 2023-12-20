@@ -1,0 +1,52 @@
+from channel.usecase.input_port.{model_lower} import {model}{action}InputPort
+from channel.usecase.repository.{model_lower} import {model}{action}Repository
+from channel.usecase.output_port.{model_lower} import {model}{action}OututPort
+
+from channel.usecase.models import (
+    {model}{action}InDto,
+    {model}{action}OutDto,
+    {model}{action}InDsDto,
+  )
+from channel.usecase.exception import (
+    BusinessException, ValidationException)
+
+from channel.entity.models import {model}
+
+from pydantic import ValidationError
+
+
+class {model}{action}Interactor({model}{action}InputPort):
+
+    def __init__(
+            self,
+            gateway: {model}{action}Repository,
+            presenter: {model}{action}OututPort):
+        self.gateway = gateway
+        self.presenter = presenter
+
+    def {action_lower}(
+            self, {model_lower}_dto: {model}{action}InDto) -> {model}{action}OutDto:
+
+        try:
+
+            {model_lower} = {model}(**{model_lower}_dto.model_dump())
+
+            {model_lower}_ds_dto = {model}{action}InDsDto(**{model_lower}.model_dump())
+
+            {model_lower}_res_ds_dto = self.gateway.{action_lower}({model_lower}_ds_dto)
+
+            {model_lower}_out_dto = {model}{action}OutDto(**{model_lower}.model_dump())
+
+            self.presenter.prepare_success_view(
+                {model_lower}_out_dto)
+
+            return {model_lower}_out_dto
+
+        except ValidationError as e:
+            ex = ValidationException(e)
+            self.presenter.prepare_fail_view(ex)
+            raise ex
+
+        except BusinessException as e:
+            self.presenter.prepare_fail_view(e)
+            raise e

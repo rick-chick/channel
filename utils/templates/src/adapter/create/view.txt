@@ -1,0 +1,18 @@
+from abc import abstractmethod
+from channel.usecase.models import {model}{action}OutDto
+from channel.adapter.presenter.renderer import Renderer
+
+
+class {model}{action}View(Renderer):
+
+    @abstractmethod
+    def add_result(self, {model_lower}_{action_lower}_out_dto: {model}{action}OutDto):
+        pass
+
+    @abstractmethod
+    def add_exception(self, exception: Exception):
+        pass
+
+    @abstractmethod
+    def render(self):
+        pass

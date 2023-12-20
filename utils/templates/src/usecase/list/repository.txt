@@ -1,0 +1,22 @@
+from abc import ABC, abstractmethod
+from channel.usecase.models import (
+    {model}{action}InDsDto,
+    {model}{action}OutDsDto,
+    UserSessionDsDto
+)
+
+from typing import List, Optional
+
+
+class {model}ListRepository(ABC):
+
+    @abstractmethod
+    def load_session_user(self) -> Optional[UserSessionDsDto]:
+        pass
+
+    @abstractmethod
+    def list(
+        self,
+        {model_lower}_dto: {model}{action}InDsDto
+    ) -> List[{model}{action}OutDsDto]:
+        pass

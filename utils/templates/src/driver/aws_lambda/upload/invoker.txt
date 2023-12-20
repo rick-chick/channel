@@ -1,0 +1,84 @@
+from channel.driver.aws_lambda.models import OutModel, InModel
+from channel.driver.aws_lambda.translator import AwsLambdaTranslator
+from channel.driver.db.sqlalchemy import (
+    Sqlalchemy{model}Repository,
+)
+from channel.driver.db.memory import MemoryUserSession
+
+from channel.adapter.controller.{model_lower} import (
+    {model}CreateController, {model}UpdateController
+)
+
+from channel.adapter.controller import UseCaseInvoker
+from channel.adapter.presenter.{model_lower} import {model}UploadPresenter
+from channel.adapter.gateway.{model_lower}.{model_lower}_upload_gateway import (
+    {model}UploadGateway)
+
+from channel.usecase.interactor.{model_lower} import {model}UploadInteractor
+from channel.usecase.models import {model}UploadInDto
+from channel.usecase.exception import ValidationException, ValidationError
+
+import json
+from sqlalchemy.orm import Session
+
+
+class AwsLambda{model}UploadInvoker(UseCaseInvoker):
+    session: Session
+
+    def __init__(self):
+        self.invoked = False
+        self.presenter = {model}UploadPresenter()
+
+    def invoke(self, event: InModel, memory: dict):
+        try:
+            self.presenter = {model}UploadPresenter()
+
+            {model_lower}_repository = Sqlalchemy{model}Repository(self.session)
+            user_session = MemoryUserSession(memory)
+
+            {model_lower}_update_controller = {model}UpdateController(
+                user_session=user_session,
+                {model_lower}_repository={model_lower}_repository,
+                {model_lower}_presenter=self.presenter
+            )
+
+            {model_lower}_create_controller = {model}CreateController(
+                user_session=user_session,
+                {model_lower}_repository={model_lower}_repository,
+                {model_lower}_presenter=self.presenter
+            )
+            gateway = {model}UploadGateway(
+                {model_lower}_repository={model_lower}_repository,
+                user_session=user_session,
+                {model_lower}_create_controller={model_lower}_create_controller,
+                {model_lower}_update_controller={model_lower}_update_controller
+            )
+
+            interactor = {model}UploadInteractor(
+                gateway, self.presenter)
+
+            return interactor.upload(self.translate(event))
+        except ValidationError as e:
+            ex = ValidationException(e)
+            self.presenter.prepare_fail_view(ex)
+            raise ex
+        except Exception as e:
+            self.presenter.prepare_fail_view(e)
+            raise e
+        finally:
+            self.invoked = True
+
+    def model_view(self) -> OutModel:
+        success = {{}}
+        if not self.presenter.has_errors():
+            success = self.presenter.get_{model_lower}().model_dump_json(by_alias=True)
+        return AwsLambdaTranslator.to_output(
+            invoked=self.invoked,
+            has_errors=self.presenter.has_errors(),
+            errors=self.presenter.errors(),
+            event=self.event,
+            success=success
+        )
+
+    def translate(self, event: InModel) -> {model}UploadInDto:
+        return {model}UploadInDto(**json.loads(event.body))

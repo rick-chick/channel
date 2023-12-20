@@ -1,0 +1,25 @@
+from channel.driver.aws_lambda.invokers.{model_lower}.aws_lambda_{model_lower}_upload_invoker import (
+        AwsLambda{model}UploadInvoker)
+from channel.driver.aws_lambda.models import InModel
+from channel.usecase.exception import ValidationException
+from channel.driver.db.sqlalchemy import create_db_engine
+from sqlalchemy.orm import sessionmaker
+from tests.channel.factories import UserSessionDsDtoFactory
+import json
+import pytest
+body: dict = {{
+    "name": ""
+}}
+event = InModel(
+    path="{model_lower}s/upload",
+    httpMethod="POST",
+    body=json.dumps(body))
+memory: dict = {{"user": UserSessionDsDtoFactory.build()}}
+
+
+def test():
+    with sessionmaker(create_db_engine())() as session:
+        with pytest.raises(ValidationException):
+            invoker = AwsLambda{model}UploadInvoker()
+            invoker.session = session
+            invoker.invoke(event, memory)

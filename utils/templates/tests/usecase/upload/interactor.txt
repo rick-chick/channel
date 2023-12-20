@@ -1,0 +1,213 @@
+from channel.usecase.interactor.{model_lower} import {model}UploadInteractor
+from channel.usecase.models import (
+    {model}UploadInDto,
+    {model}UploadOutDto,
+    {model}ListInDsDto,
+    {model}ListOutDsDto,
+    UserSessionDsDto
+)
+from channel.usecase.output_port.{model_lower} import {model}UploadOututPort
+from channel.usecase.exception import (
+    BusinessException, UnauthorizedException, EmptyContentException,
+    Duplicate{model}Exception, ContainsInvalidItemsException)
+from channel.usecase.repository.{model_lower} import {model}UploadRepository
+
+from tests.channel.factories import (
+    {model}ListOutDsDtoFactory,
+    UserSessionDsDtoFactory,
+    {model}{action}OutDto,
+    {model}{action}OutDtoFactory,
+    {model}UploadInDtoFactory,
+    {model}UploadItemInDtoFactory
+)
+
+import pytest
+from typing import Optional, List
+
+valid_session_user_ds_dto = UserSessionDsDtoFactory.build()
+
+valid_{model_lower}_in_dto = {model}UploadInDtoFactory.build(
+    items={model}UploadItemInDtoFactory.batch(3)
+
+)
+{model_lower}_code = None
+if valid_{model_lower}_in_dto.items:
+    for item in valid_{model_lower}_in_dto.items:
+        if item.code:
+            {model_lower}_code = item.code
+
+valid_{model_lower}_list_ds_dto = {model}ListOutDsDsDtoFactory.build()
+
+
+valid_{model_lower}_update_output = {model}{action}OutDtoFactory.build()
+valid_{model_lower}_create_output = {model}{action}OutDtoFactory.build()
+
+
+class {model}UploadOututPortImpl({model}UploadOututPort):
+
+    def __init__(self):
+        self.exceptions = []
+        self.{model_lower}: Optional[{model}UploadOutDto] = None
+
+    def prepare_fail_view(self, error: Exception):
+        self.exceptions.append(error)
+
+    def prepare_success_view(self, {model_lower}: {model}UploadOutDto):
+        self.{model_lower} = {model_lower}
+
+    def errors(self) -> List[Exception]:
+        return self.exceptions
+
+    def has_errors(self):
+        return len(self.exceptions) > 0
+
+    def get_{model_lower}(self) -> {model}UploadOutDto:
+        if self.{model_lower}:
+            return self.{model_lower}
+        raise Exception("invalid_access")
+
+
+class {model}UploadRepositoryImpl({model}UploadRepository):
+
+    upload_input: Optional[{model}UploadInDsDto] = None
+    upload_output: Optional[{model}UploadOutDsDto] = None
+
+    load_session_user_output: Optional[UserSessionDsDto] = valid_session_user_ds_dto
+
+    {model_lower}_list_input: Optional[{model}ListInDsDto] = None
+    {model_lower}_list_output: List[{model}ListOutDsDto] = valid_{model_lower}_list_ds_dto
+
+    update_input: List[{model}{action}InDto] = []
+    update_output: {model}{action}OutDto = valid_{model_lower}_update_output
+    update_exception: Optional[BusinessException] = None
+
+    create_input: List[{model}{action}InDto] = []
+    create_output: {model}{action}OutDto = valid_{model_lower}_create_output
+    create_exception: Optional[BusinessException] = None
+
+    def load_session_user(self) -> Optional[UserSessionDsDto]:
+        return self.load_session_user_output
+
+    def {model_lower}_list(
+        self,
+        {model_lower}_list_dto: {model}ListInDsDto
+    ) -> List[{model}ListOutDsDto]:
+        self.{model_lower}_list_input = {model_lower}_list_dto
+        return self.{model_lower}_list_output
+
+    def update(
+        self,
+        {model_lower}_in_dto: {model}{action}InDto
+    ) -> {model}{action}OutDto:
+        if self.update_exception:
+            raise self.update_exception
+        self.update_input.append({model_lower}_in_dto)
+        return self.update_output
+
+    def create(
+        self,
+        {model_lower}_in_dto: {model}{action}InDto
+    ) -> {model}{action}OutDto:
+        if self.create_exception:
+            raise self.create_exception
+        self.create_input.append({model_lower}_in_dto)
+        return self.create_output
+
+
+def create_interactor(
+        gateway={model}UploadRepositoryImpl(),
+        presenter={model}UploadOututPortImpl()) -> {model}UploadInteractor:
+    return {model}UploadInteractor(gateway, presenter)
+
+
+def test_upload_success():
+
+    presenter = {model}UploadOututPortImpl()
+    gateway = {model}UploadRepositoryImpl()
+    gateway.create_input = []
+    gateway.update_input = []
+
+    target = create_interactor(gateway, presenter)
+
+    target.upload(valid_{model_lower}_in_dto)
+
+    assert len(gateway.{model_lower}_list_input.codes) > 0
+
+    assert len(gateway.create_input) == 2
+    assert len(gateway.update_input) == 1
+
+    assert presenter.get_{model_lower}() is not None
+
+    assert gateway.update_input[0].id is not None
+
+
+def test_upload_fail_when_session_{model_lower}_missing():
+
+    presenter = {model}UploadOututPortImpl()
+    gateway = {model}UploadRepositoryImpl()
+    gateway.create_input = []
+    gateway.update_input = []
+    gateway.load_session_user_output = None
+
+    target = create_interactor(gateway, presenter)
+
+    with pytest.raises(UnauthorizedException):
+        target.upload(valid_{model_lower}_in_dto)
+
+
+def test_upload_fail_when_empty_content():
+
+    presenter = {model}UploadOututPortImpl()
+    gateway = {model}UploadRepositoryImpl()
+    gateway.create_input = []
+    gateway.update_input = []
+
+    in_dto = valid_{model_lower}_in_dto.model_copy()
+    in_dto.items = []
+
+    target = create_interactor(gateway, presenter)
+
+    with pytest.raises(EmptyContentException):
+        target.upload(in_dto)
+
+
+def test_upload_output_has_error_when_create_raise_error():
+
+    presenter = {model}UploadOututPortImpl()
+    gateway = {model}UploadRepositoryImpl()
+    gateway.create_input = []
+    gateway.update_input = []
+
+    gateway.create_exception = Duplicate{model}Exception
+
+    in_dto = valid_{model_lower}_in_dto.model_copy()
+
+    target = create_interactor(gateway, presenter)
+
+    with pytest.raises(ContainsInvalidItemsException):
+        target.upload(in_dto)
+
+    assert target.presenter.has_errors()
+    assert type(target.presenter.errors()[0]) == ContainsInvalidItemsException
+    assert "duplicate_{model_lower}" in target.presenter.errors()[0].errors[2]
+
+
+def test_upload_output_has_error_when_update_raise_error():
+
+    presenter = {model}UploadOututPortImpl()
+    gateway = {model}UploadRepositoryImpl()
+    gateway.create_input = []
+    gateway.update_input = []
+
+    gateway.update_exception = Duplicate{model}Exception
+
+    in_dto = valid_{model_lower}_in_dto.model_copy()
+
+    target = create_interactor(gateway, presenter)
+
+    with pytest.raises(ContainsInvalidItemsException):
+        target.upload(in_dto)
+
+    assert target.presenter.has_errors()
+    assert type(target.presenter.errors()[0]) == ContainsInvalidItemsException
+    assert "duplicate_{model_lower}" in target.presenter.errors()[0].errors[1]

@@ -1,0 +1,9 @@
+
+from channel.adapter.gateway.{model_lower} import {model}{action}Gateway
+from tests.channel.adapter.gateway.{model_lower}.{model_lower}_repository_impl import {model}RepositoryImpl
+
+
+def test_success():
+    {model}{action}Gateway(
+        {model_lower}_repository={model}RepositoryImpl()
+    )

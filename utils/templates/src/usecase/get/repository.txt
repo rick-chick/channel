@@ -1,0 +1,21 @@
+from abc import ABC, abstractmethod
+from channel.usecase.models import (
+    {model}{action}OutDsDto,
+    UserSessionDsDto
+)
+
+from typing import Optional
+
+
+class {model}{action}Repository(ABC):
+
+    @abstractmethod
+    def load_session_user(self) -> Optional[UserSessionDsDto]:
+        pass
+
+    @abstractmethod
+    def find_{model_lower}_by_id(
+        self,
+        id: Optional[int]
+    ) -> Optional[{model}{action}OutDsDto]:
+        pass

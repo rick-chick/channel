@@ -1,0 +1,53 @@
+from channel.usecase.input_port.{model_lower} import {model}GetInputPort
+from channel.usecase.repository.{model_lower} import {model}GetRepository
+from channel.usecase.output_port.{model_lower} import {model}GetOututPort
+
+from channel.usecase.models import (
+    {model}{action}InDto,
+    {model}{action}OutDto,
+    UserSessionDsDto
+)
+from channel.usecase.exception import (
+    BusinessException, ValidationException, {model}NotFoundException,
+    UnauthorizedException)
+
+from channel.entity.models import {model}
+
+from pydantic import ValidationError
+from typing import Optional
+
+class {model}GetInteractor({model}GetInputPort):
+
+    def __init__(
+            self,
+            gateway: {model}GetRepository,
+            presenter: {model}GetOututPort):
+        self.gateway = gateway
+        self.presenter = presenter
+
+    def get(
+            self, {model_lower}_dto: {model}{action}InDto) -> {model}{action}OutDto:
+
+        try:
+            {model_lower}_ds_dto = self.gateway.find_{model_lower}_by_id({model_lower}_dto.id)
+
+            session_user_ds_dto = self.gateway.load_session_user()
+
+            if not {model_lower}_ds_dto:
+                raise {model}NotFoundException
+        
+            {model_lower}_out_dto = {model}{action}OutDto(**{model_lower}_ds_dto.model_dump())
+
+            self.presenter.prepare_success_view(
+                {model_lower}_out_dto)
+
+            return {model_lower}_out_dto
+
+        except ValidationError as e:
+            ex = ValidationException(e)
+            self.presenter.prepare_fail_view(ex)
+            raise ex
+
+        except BusinessException as e:
+            self.presenter.prepare_fail_view(e)
+            raise e

@@ -1,0 +1,14 @@
+from channel.driver.view.cli.{model_lower}.cli_{model_lower}_{action_lower}_view import Cli{model}{action}View
+from tests.channel.factories import {model}{action}OutDtoFactory
+
+
+def test_success():
+    target = Cli{model}{action}View()
+    target.add_result({model}{action}OutDtoFactory.build())
+    target.render()
+
+
+def test_fail():
+    target = Cli{model}{action}View()
+    target.add_exception(Exception())
+    target.render()

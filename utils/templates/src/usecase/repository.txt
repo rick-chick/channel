@@ -1,0 +1,10 @@
+from abc import ABC, abstractmethod
+from channel.usecase.models import {model}{action}InDsDto, UserSessionDsDto
+
+from typing import Optional
+
+class {model}{action}Repository(ABC):
+
+    @abstractmethod
+    def {action_lower}(self, {model_lower}_dto: {model}{action}InDsDto):
+        pass

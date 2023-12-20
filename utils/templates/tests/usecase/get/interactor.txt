@@ -1,0 +1,97 @@
+from channel.usecase.interactor.{model_lower} import {model}{action}Interactor
+from channel.usecase.models import (
+    {model}GetOutDsDto,
+    {model}{action}InDto,
+    {model}{action}OutDto,
+    UserSessionDsDto
+)
+from channel.usecase.output_port.{model_lower} import {model}{action}OututPort
+from channel.usecase.exception import BusinessException
+from channel.usecase.repository.{model_lower} import {model}{action}Repository
+
+from tests.channel.factories import (
+  {model}GetOutDsDtoFactory,
+  {model}{action}InDtoFactory,
+  {model}{action}OutDtoFactory,
+  UserSessionDsDtoFactory
+)
+
+import pytest
+from typing import Optional, List
+
+valid_{model_lower}_in_dto = {model}{action}InDtoFactory.build()
+valid_{model_lower}_ds_dto = {model}GetOutDsDtoFactory.build()
+valid_session_user_ds_dto = UserSessionDsDtoFactory.build()
+
+
+class {model}{action}OututPortImpl({model}{action}OututPort):
+
+    def __init__(self):
+        self.exceptions = []
+        self.{model_lower}: Optional[{model}{action}OutDto] = None
+
+    def prepare_fail_view(self, error: Exception):
+        self.exceptions.append(error)
+
+    def prepare_success_view(self, {model_lower}: {model}{action}OutDto):
+        self.{model_lower} = {model_lower}
+
+    def errors(self) -> List[Exception]:
+        return self.exceptions
+
+    def has_errors(self):
+        return len(self.exceptions) > 0
+
+    def get_{model_lower}(self) -> {model}{action}OutDto:
+        if self.{model_lower}:
+            return self.{model_lower}
+        raise Exception("invalid_access")
+
+
+
+class {model}{action}RepositoryImpl({model}{action}Repository):
+
+    find_{model_lower}_by_id_input: Optional[int] = None
+    find_{model_lower}_by_id_output: Optional[{model}GetOutDsDto] =\
+        valid_{model_lower}_ds_dto 
+    load_session_user_output: Optional[UserSessionDsDto] = valid_session_user_ds_dto
+
+    def find_{model_lower}_by_id(self, id: Optional[int]) -> Optional[{model}GetOutDsDto]:
+        self.find_{model_lower}_by_id_input = id
+        return self.find_{model_lower}_by_id_output
+
+    def load_session_user(self) -> Optional[UserSessionDsDto]:
+        return self.load_session_user_output
+
+def create_interactor(
+        gateway={model}{action}RepositoryImpl(),
+        presenter={model}{action}OututPortImpl()) -> {model}{action}Interactor:
+    return {model}{action}Interactor(gateway, presenter)
+
+
+def test_{action_lower}_success():
+
+    presenter = {model}{action}OututPortImpl()
+    gateway = {model}{action}RepositoryImpl()
+
+    gateway.{action_lower}_output = valid_{model_lower}_ds_dto
+
+    target = create_interactor(gateway, presenter)
+
+    target.{action_lower}(valid_{model_lower}_in_dto)
+
+    assert presenter.get_{model_lower}() is not None 
+
+
+def test_{action_lower}_fail():
+
+    presenter = {model}{action}OututPortImpl()
+    gateway = {model}{action}RepositoryImpl()
+    gateway.find_{model_lower}_by_id_output = None
+
+    target = create_interactor(gateway, presenter)
+
+    {model_lower}_in_dto = valid_{model_lower}_in_dto.model_copy()
+
+    with pytest.raises(BusinessException):
+        target.{action_lower}({model_lower}_in_dto)
