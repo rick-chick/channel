@@ -1,4 +1,4 @@
 #!/bin/bash
 RELATIVE_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)"
-ret=`curl -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d "@$RELATIVE_DIR/update.json" http://127.0.0.1:8888/user`
+ret=`curl -X PUT -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d "@$RELATIVE_DIR/update.json" $HOST/user`
 echo $ret
