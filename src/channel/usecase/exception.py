@@ -27,3 +27,7 @@ class UserNotFoundException(BusinessException):
 class UnauthenticateException(BusinessException):
     def __init__(self):
         super().__init__("unauthenticated")
+
+class RecordExistsException(BusinessException):
+    def __init__(self):
+        super().__init__("record_exists")

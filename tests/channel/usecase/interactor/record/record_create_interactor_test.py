@@ -9,7 +9,8 @@ from channel.usecase.models import (
 from channel.usecase.output_port.record import RecordCreateOututPort
 from channel.usecase.exception import (
     BusinessException,
-    UnauthorizedException
+    UnauthorizedException,
+    RecordExistsException
 )
 from channel.usecase.repository.record import RecordCreateRepository
 
@@ -22,6 +23,7 @@ from tests.channel.factories import (
 
 import pytest
 from typing import Optional
+from datetime import datetime
 
 valid_record_in_dto = RecordCreateInDtoFactory.build()
 valid_record_ds_dto = RecordCreateOutDsDtoFactory.build()
@@ -48,6 +50,7 @@ class RecordCreateRepositoryImpl(RecordCreateRepository):
     load_session_user_output: Optional[UserSessionDsDto] = valid_session_user_ds_dto
     find_device_id_by_api_key_input: Optional[str] = None
     load_session_device_out: Optional[DeviceSessionDsDto] = valid_session_device_ds_dto
+    exists_record_by_channel_ids_time_out: bool = False
 
     def create(self, record: RecordCreateInDsDto) -> RecordCreateOutDsDto:
         self.create_input = record
@@ -59,6 +62,13 @@ class RecordCreateRepositoryImpl(RecordCreateRepository):
     def load_session_device(self) -> Optional[DeviceSessionDsDto]:
         return self.load_session_device_out
 
+    def exists_record_by_channel_ids_time(
+        self,
+        device_id: int,
+        time: datetime
+    ) -> bool:
+        self.exists_record_by_channel_ids_time_in = (device_id, time)
+        return self.exists_record_by_channel_ids_time_out
 
 def create_interactor(
         gateway=RecordCreateRepositoryImpl(),
@@ -91,4 +101,18 @@ def test_create_fail_if_device_id_was_none():
     record_in_dto = valid_record_in_dto.model_copy()
 
     with pytest.raises(UnauthorizedException):
+        target.create(record_in_dto)
+
+
+def test_create_fail_if_duplicate_record():
+
+    presenter = RecordCreateOututPortImpl()
+    gateway = RecordCreateRepositoryImpl()
+    gateway.exists_record_by_channel_ids_time_out = True
+
+    target = create_interactor(gateway, presenter)
+
+    record_in_dto = valid_record_in_dto.model_copy()
+
+    with pytest.raises(RecordExistsException):
         target.create(record_in_dto)

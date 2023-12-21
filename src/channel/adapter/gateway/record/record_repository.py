@@ -1,3 +1,4 @@
+from datetime import datetime
 from channel.usecase.models import (
     RecordCreateInDsDto,
     RecordCreateOutDsDto,
@@ -23,4 +24,12 @@ class RecordRepository(ABC):
 
     @abstractmethod
     def delete(self, ds_dto: RecordDeleteInDsDto) -> List[RecordDeleteOutDsDto]:
+        pass
+
+    @abstractmethod
+    def exists_by_channel_ids_time(
+        self,
+        channel_ids: List[int],
+        time: datetime
+    ) -> bool:
         pass

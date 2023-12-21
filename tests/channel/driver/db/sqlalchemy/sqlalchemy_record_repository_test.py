@@ -1,19 +1,15 @@
-from sqlalchemy import create_engine
-
-from channel.driver.db.sqlalchemy.models import (
-    Base, RecordDataSource)
-from channel.driver.db.sqlalchemy import SqlalchemyRecordRepository
-
-from channel.usecase.models import RecordCreateInDsDto
-
-from sqlalchemy.orm import sessionmaker
-import pytest
+from datetime import datetime
 from uuid import uuid4
 
+import pytest
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from channel.driver.db.sqlalchemy import SqlalchemyRecordRepository
+from channel.driver.db.sqlalchemy.models import Base, RecordDataSource
+from channel.usecase.models import RecordCreateInDsDto
+from tests.channel.factories import RecordCreateInDsDtoFactory
 from tests.conftest import DATABASE_URL
-from tests.channel.factories import (
-    RecordCreateInDsDtoFactory
-)
 
 engine = create_engine(url=DATABASE_URL, echo=True)
 
@@ -48,9 +44,59 @@ def scope_module():
 
 def test_create_success():
     session = sessionmaker(engine)()
-    target = SqlalchemyRecordRepository(session)
-    record_ds_dto = RecordCreateInDsDtoFactory.build()
-    record_output_ds_dto = target.create(record_ds_dto)
+    try:
+        target = SqlalchemyRecordRepository(session)
+        record_ds_dto = RecordCreateInDsDtoFactory.build()
+        record_output_ds_dto = target.create(record_ds_dto)
 
-    assert record_output_ds_dto is not None
-    session.rollback()
+        assert record_output_ds_dto is not None
+    finally:
+        session.rollback()
+
+
+def test_exists_by_device_id_time_success():
+    session = sessionmaker(engine)()
+    try:
+        target = SqlalchemyRecordRepository(session)
+
+        record_ds_dto = RecordCreateInDsDtoFactory.build()
+        record_output_ds_dto = target.create(record_ds_dto)
+
+        record_ds_dto = RecordCreateInDsDtoFactory.build()
+        record_output_ds_dto = target.create(record_ds_dto)
+
+        ret = target.exists_by_channel_ids_time(
+            [record_ds_dto.channel_id],
+            record_output_ds_dto.time
+        )
+
+        assert ret
+    finally:
+        session.rollback()
+
+def test_exists_by_device_id_time_fail():
+    session = sessionmaker(engine)()
+    try:
+        target = SqlalchemyRecordRepository(session)
+
+        record_ds_dto = RecordCreateInDsDtoFactory.build()
+        target.create(record_ds_dto)
+
+        record_ds_dto = RecordCreateInDsDtoFactory.build()
+        target.create(record_ds_dto)
+
+        ret = target.exists_by_channel_ids_time(
+            [record_ds_dto.channel_id],
+            datetime.now()
+        )
+
+        assert not ret
+
+        ret = target.exists_by_channel_ids_time(
+            [-1],
+            record_ds_dto.time
+        )
+
+        assert not ret
+    finally:
+        session.rollback()

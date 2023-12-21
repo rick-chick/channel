@@ -1,3 +1,4 @@
+from datetime import datetime
 from channel.adapter.gateway.device.device_repository import DeviceRepository
 from channel.adapter.gateway.device.device_session import DeviceSession
 from .record_repository import RecordRepository
@@ -11,7 +12,7 @@ from channel.usecase.models import (
 )
 from channel.usecase.repository.record import RecordCreateRepository
 
-from typing import Optional
+from typing import List, Optional
 
 
 class RecordCreateGateway(RecordCreateRepository):
@@ -39,3 +40,13 @@ class RecordCreateGateway(RecordCreateRepository):
 
     def load_session_user(self) -> Optional[UserSessionDsDto]:
         return self.user_session.load()
+
+    def exists_record_by_channel_ids_time(
+        self,
+        channel_ids: List[int],
+        time: datetime
+    ) -> bool:
+        return self.record_repository.exists_by_channel_ids_time(
+            channel_ids,
+            time
+        )

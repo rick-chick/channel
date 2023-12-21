@@ -1,21 +1,16 @@
-from channel.usecase.input_port.record import RecordCreateInputPort
-from channel.usecase.repository.record import RecordCreateRepository
-from channel.usecase.output_port.record import RecordCreateOututPort
-from channel.usecase.interactor.record.translator import RecordTranslator
-
-from channel.usecase.models import (
-    RecordCreateInDto,
-    RecordCreateOutDto
-)
+from pydantic import ValidationError
+from channel.entity.models import Record
 from channel.usecase.exception import (
     BusinessException,
+    RecordExistsException,
+    UnauthorizedException,
     ValidationException,
-    UnauthorizedException
 )
-
-from channel.entity.models import Record
-
-from pydantic import ValidationError
+from channel.usecase.input_port.record import RecordCreateInputPort
+from channel.usecase.interactor.record.translator import RecordTranslator
+from channel.usecase.models import RecordCreateInDto, RecordCreateOutDto
+from channel.usecase.output_port.record import RecordCreateOututPort
+from channel.usecase.repository.record import RecordCreateRepository
 
 
 class RecordCreateInteractor(RecordCreateInputPort):
@@ -49,6 +44,14 @@ class RecordCreateInteractor(RecordCreateInputPort):
                 record
             )
 
+            # Check Duplication
+            if self.gateway.exists_record_by_channel_ids_time(
+                [record_ds_dto.channel_id for record_ds_dto in record_ds_dto_list],
+                record.time
+            ):
+                raise RecordExistsException
+
+
             record_res_ds_dto_list = []
             for record_ds_dto in record_ds_dto_list:
                 record_res_ds_dto_list.append(
@@ -74,3 +77,6 @@ class RecordCreateInteractor(RecordCreateInputPort):
         except BusinessException as e:
             self.presenter.prepare_fail_view(e)
             raise e
+
+        finally:
+            pass
