@@ -2,14 +2,10 @@ from abc import ABC, abstractmethod
 from channel.usecase.models import {model}{action}OutDto
 
 
-from typing import List
-
-
-class {model}ListOututPort(ABC):
+class {model}{action}OututPort(ABC):
 
     @abstractmethod
-    def prepare_success_view(self, {model_lower}: List[{model}{action}OutDto])\
-            -> List[{model}{action}OutDto]:
+    def prepare_success_view(self, {model_lower}: {model}{action}OutDto) -> {model}{action}OutDto:
         pass
 
     @abstractmethod

@@ -1,94 +1,89 @@
-from channel.usecase.interactor.{model_lower} import {model}ListInteractor
+from channel.usecase.interactor.{model_lower} import {model}{action}Interactor
 from channel.usecase.models import (
-    {model}ListOutDto,
-    {model}ListOutDsDto,
-    {model}ListInDto,
-    {model}ListInDsDto,
+    {model}{action}InDsDto,
+    {model}{action}OutDsDto,
+    {model}{action}InDto,
+    {model}{action}OutDto,
     UserSessionDsDto
 )
-from channel.usecase.output_port.{model_lower} import {model}ListOututPort
-from channel.usecase.repository.{model_lower} import {model}ListRepository
+from channel.usecase.output_port.{model_lower} import {model}{action}OututPort
+from channel.usecase.exception import BusinessException
+from channel.usecase.repository.{model_lower} import {model}{action}Repository
 
 from tests.channel.factories import (
-    {model}ListOutDsDtoFactory,
+    {model}{action}DsDtoFactory,
+    {model}{action}InDtoFactory,
+    {model}{action}OutDtoFactory,
     UserSessionDsDtoFactory
 )
 
+import pytest
 from typing import Optional, List
 
-valid_{model_lower}_in_dto = {model}ListInDto()
-valid_{model_lower}_ds_dto = {model}ListOutDsDtoFactory.batch(3)
+valid_{model_lower}_in_dto = {model}{action}InDtoFactory.build()
+valid_{model_lower}_ds_dto = {model}{action}DsDtoFactory.build()
 valid_session_user_ds_dto = UserSessionDsDtoFactory.build()
 
-
-class {model}ListOututPortImpl({model}ListOututPort):
+class {model}{action}OututPortImpl({model}{action}OututPort):
 
     def __init__(self):
         self.exceptions = []
-        self.{model_lower}s: Optional[List[{model}{action}OutDto]] = None
+        self.{model_lower}: Optional[{model}{action}OutDto] = None
 
-    def prepare_fail_view(self, error: Exception):
-        self.exceptions.append(error)
+    def prepare_fail_view(self, exception: Exception):
+        self.exceptions.append(exception)
 
-    def prepare_success_view(self, {model_lower}s: List[{model}{action}OutDto]):
-        self.{model_lower}s = {model_lower}s
-
-    def errors(self) -> List[Exception]:
-        return self.exceptions
-
-    def has_errors(self):
-        return len(self.exceptions) > 0
-
-    def get_{model_lower}s(self) -> List[{model}{action}OutDto]:
-        if self.{model_lower}s:
-            return self.{model_lower}s
-        raise Exception("invalid_access")
+    def prepare_success_view(self, {model_lower}: {model}{action}OutDto):
+        self.{model_lower} = {model_lower}
+        return {model_lower}
 
 
-class {model}ListRepositoryImpl({model}ListRepository):
 
-    list_input: Optional[{model}ListInDsDto] = None
-    list_output: Optional[{model}ListOutDsDto] = None
+class {model}{action}RepositoryImpl({model}{action}Repository):
+
+    {action_lower}_input: Optional[{model}{action}InDsDto] = None
+    {action_lower}_output: Optional[{model}{action}OutDsDto] = valid_{model_lower}_ds_dto 
     load_session_user_output: Optional[UserSessionDsDto] = valid_session_user_ds_dto
 
-    def list(self, {model_lower}: {model}ListInDsDto):
-        self.list_input = {model_lower}
-        return self.list_output
-
+    def {action_lower}(
+        self,
+        {model_lower}_dto: {model}{action}InDsDto
+    ):
+        self.{action_lower}_input = {model_lower}_dto
+        return self.{action_lower}_output
+    
     def load_session_user(self) -> Optional[UserSessionDsDto]:
         return self.load_session_user_output
 
+
 def create_interactor(
-        gateway={model}ListRepositoryImpl(),
-        presenter={model}ListOututPortImpl()) -> {model}ListInteractor:
-    return {model}ListInteractor(gateway, presenter)
+        gateway={model}{action}RepositoryImpl(),
+        presenter={model}{action}OututPortImpl()) -> {model}{action}Interactor:
+    return {model}{action}Interactor(gateway, presenter)
 
 
-def test_list_success():
+def test_{action_lower}_success():
 
-    presenter = {model}ListOututPortImpl()
-    gateway = {model}ListRepositoryImpl()
+    presenter = {model}{action}OututPortImpl()
+    gateway = {model}{action}RepositoryImpl()
 
-    gateway.list_output = valid_{model_lower}_ds_dto
+    gateway.{action_lower}_output = valid_{model_lower}_ds_dto
 
     target = create_interactor(gateway, presenter)
 
-    target.list(valid_{model_lower}_in_dto)
+    target.{action_lower}(valid_{model_lower}_in_dto)
 
-    assert presenter.get_{model_lower}s() is not None
-    assert len(presenter.get_{model_lower}s()) is len(valid_{model_lower}_ds_dto)
+    assert presenter.{model_lower} is not None 
 
 
-def test_list_fail():
+def test_{action_lower}_fail():
 
-    presenter = {model}ListOututPortImpl()
-    gateway = {model}ListRepositoryImpl()
-    gateway.list_input = None
+    presenter = {model}{action}OututPortImpl()
+    gateway = {model}{action}RepositoryImpl()
 
     target = create_interactor(gateway, presenter)
 
     {model_lower}_in_dto = valid_{model_lower}_in_dto.model_copy()
 
-    res = target.list({model_lower}_in_dto)
-    assert res is not None
-    assert len(res) == 0
+    with pytest.raises(BusinessException):
+        target.{action_lower}({model_lower}_in_dto)

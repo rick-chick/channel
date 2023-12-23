@@ -277,11 +277,16 @@ class ChannelUpdateOutDsDto(BaseModel):
 
 
 class ChannelListInDsDto(BaseModel):
-    pass
+    device_id: int
 
 
 class ChannelListOutDsDto(BaseModel):
     model_config = out_ds_config
+
+    id: int
+    name: str
+    unit: str
+    tags: List[str] = []
 
 
 class ChannelDeleteInDsDto(BaseModel):
@@ -324,12 +329,37 @@ class RecordCreateOutDsDto(BaseModel):
     model_config = out_ds_config
 
 
+class RecordListInDto(BaseModel):
+    device_id: int
+    date_from: datetime
+    date_to: datetime
+
+
+class RecordListDataOutDto(BaseModel):
+    # 複数のラインチャートを書く場合、それぞれのラインチャートにつけるラベル
+    label: str
+    # Y軸
+    data: List[Optional[float]]
+
+
+class RecordListOutDto(BaseModel):
+    # X軸
+    labels: List[datetime]
+    datasets: List[RecordListDataOutDto]
+
+
 class RecordListInDsDto(BaseModel):
-    pass
+    device_id: int
+    date_from: datetime
+    date_to: datetime
 
 
 class RecordListOutDsDto(BaseModel):
     model_config = out_ds_config
+
+    channel_id: int
+    time: datetime
+    value: Optional[float] = None
 
 
 class RecordDeleteInDsDto(BaseModel):

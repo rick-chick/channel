@@ -6,6 +6,7 @@ from channel.usecase.models import (
     ChannelCreateInDto,
     ChannelCreateOutDsDto,
     ChannelCreateOutDto,
+    ChannelListOutDsDto,
     DeviceAuthenticateInDto,
     DeviceAuthenticateOutDto,
     DeviceCreateInDsDto,
@@ -18,6 +19,11 @@ from channel.usecase.models import (
     RecordCreateInDto,
     RecordCreateOutDsDto,
     RecordCreateOutDto,
+    RecordListDataOutDto,
+    RecordListInDsDto,
+    RecordListInDto,
+    RecordListOutDsDto,
+    RecordListOutDto,
     UserAuthenticateInDto,
     UserAuthenticateOutDsDto,
     UserAuthenticateOutDto,
@@ -25,14 +31,14 @@ from channel.usecase.models import (
     UserCreateInDto,
     UserCreateOutDsDto,
     UserCreateOutDto,
-    UserUpdateInDsDto,
-    UserUpdateInDto,
-    UserUpdateOutDsDto,
-    UserUpdateOutDto,
     UserOutDsDto,
     UserSessionDsDto,
     UserTokenAuthenticateInDto,
     UserTokenAuthenticateOutDto,
+    UserUpdateInDsDto,
+    UserUpdateInDto,
+    UserUpdateOutDsDto,
+    UserUpdateOutDto,
 )
 
 faker = Faker(locale="ja_JP")
@@ -122,6 +128,7 @@ class UserUpdateInDtoFactory(ModelFactory[UserUpdateInDto]):
 
 class UserUpdateOutDtoFactory(ModelFactory[UserUpdateOutDto]):
     __model__ = UserUpdateOutDto
+
 
 class UserSessionDsDtoFactory(ModelFactory[UserSessionDsDto]):
     __model__ = UserSessionDsDto
@@ -214,23 +221,49 @@ class ChannelCreateOutDtoFactory(ModelFactory[ChannelCreateOutDto]):
     __model__ = ChannelCreateOutDto
 
 
+class ChanneListOutDsDtoFactory(ModelFactory[ChannelListOutDsDto]):
+    __model__=ChannelListOutDsDto
+
 #################################################
 # Record
 #################################################
 
 class RecordCreateInDsDtoFactory(ModelFactory[RecordCreateInDsDto]):
-    __model__ = RecordCreateInDsDto
-    __faker__ = faker
+    __model__=RecordCreateInDsDto
+    __faker__=faker
 
 
 class RecordCreateOutDsDtoFactory(ModelFactory[RecordCreateOutDsDto]):
-    __model__ = RecordCreateOutDsDto
+    __model__=RecordCreateOutDsDto
 
 
 class RecordCreateInDtoFactory(ModelFactory[RecordCreateInDto]):
-    __faker__ = faker
-    __model__ = RecordCreateInDto
+    __faker__=faker
+    __model__=RecordCreateInDto
 
 
 class RecordCreateOutDtoFactory(ModelFactory[RecordCreateOutDto]):
-    __model__ = RecordCreateOutDto
+    __model__=RecordCreateOutDto
+
+
+class RecordListInDsDtoFactory(ModelFactory[RecordListInDsDto]):
+    __model__=RecordListInDsDto
+    __faker__=faker
+
+
+class RecordListOutDsDtoFactory(ModelFactory[RecordListOutDsDto]):
+    __model__=RecordListOutDsDto
+    __faker__=faker
+
+
+class RecordListInDtoFactory(ModelFactory[RecordListInDto]):
+    __model__=RecordListInDto
+    __faker__=faker
+
+
+class RecordListIDataOutDtoFactory(ModelFactory[RecordListDataOutDto]):
+    __model__=RecordListDataOutDto
+
+
+class RecordListOutDtoFactory(ModelFactory[RecordListOutDto]):
+    __model__=RecordListOutDto

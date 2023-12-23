@@ -5,18 +5,17 @@ from channel.usecase.models import (
     UserSessionDsDto
 )
 
-from typing import List, Optional
+from typing import Optional
 
-
-class {model}ListRepository(ABC):
+class {model}{action}Repository(ABC):
 
     @abstractmethod
     def load_session_user(self) -> Optional[UserSessionDsDto]:
         pass
 
     @abstractmethod
-    def list(
+    def {action_lower}(
         self,
         {model_lower}_dto: {model}{action}InDsDto
-    ) -> List[{model}{action}OutDsDto]:
+    ) -> {model}{action}OutDsDto:
         pass

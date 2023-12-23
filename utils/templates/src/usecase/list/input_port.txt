@@ -1,13 +1,10 @@
 from abc import ABC, abstractmethod
 from channel.usecase.models import (
-    {model}ListInDto, {model}{action}OutDto)
-
-from typing import List
+        {model}{action}InDto, {model}{action}OutDto)
 
 
-class {model}ListInputPort(ABC):
+class {model}{action}InputPort(ABC):
 
     @abstractmethod
-    def list(self, {model_lower}_dto: {model}ListInDto)\
-            -> List[{model}{action}OutDto]:
+    def {action_lower}(self, {model_lower}_dto: {model}{action}InDto) -> {model}{action}OutDto:
         pass

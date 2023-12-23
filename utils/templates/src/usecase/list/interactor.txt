@@ -1,45 +1,46 @@
-from channel.usecase.input_port.{model_lower} import {model}ListInputPort
-from channel.usecase.repository.{model_lower} import {model}ListRepository
+from channel.usecase.input_port.{model_lower} import {model}{action}InputPort
+from channel.usecase.repository.{model_lower} import {model}{action}Repository
 from channel.usecase.models import (
-    {model}{action}OutDsDto,
-    {model}{action}InDsDto,
-    UserSessionDsDto
+    {model}{action}InDsDto
 )
-from channel.usecase.output_port.{model_lower} import {model}ListOututPort
+from channel.usecase.output_port.{model_lower} import {model}{action}OututPort
 
 from channel.usecase.models import (
-    {model}ListInDto, {model}{action}OutDto)
+    {model}{action}InDto,
+    {model}{action}OutDto
+  )
 from channel.usecase.exception import (
-    BusinessException, ValidationException,
-    UnauthorizedException)
+    BusinessException,
+    ValidationException,
+    UnauthorizedException
+)
+from channel.entity.models import {model}
 
 from pydantic import ValidationError
-from typing import List, Optional
+from typing import Optional
 
 
-class {model}ListInteractor({model}ListInputPort):
+class {model}{action}Interactor({model}{action}InputPort):
 
     def __init__(
             self,
-            gateway: {model}ListRepository,
-            presenter: {model}ListOututPort):
+            gateway: {model}{action}Repository,
+            presenter: {model}{action}OututPort):
         self.gateway = gateway
         self.presenter = presenter
 
-    def list(
-        self, {model_lower}_dto: {model}ListInDto) ->\
-            List[{model}{action}OutDto]:
+    def {action_lower}(
+            self, {model_lower}_dto: {model}{action}InDto) -> {model}{action}OutDto:
 
         try:
-            {model_lower}_ds_dto = {model}{action}InDsDto(
-                **{model_lower}_dto.model_dump())
+
+            {model_lower} = {model}(**{model_lower}_dto.model_dump())
 
             session_user_ds_dto = self.gateway.load_session_user()
 
-            {model_lower}_res_ds_dtos: List[{model}{action}OutDsDto]\
-                = self.gateway.list(
-                    {model_lower}_ds_dto,
-                )
+            {model_lower}_ds_dto = {model}{action}InDsDto(
+                **{model_lower}.model_dump(),
+            )
 
             if not {model_lower}_res_ds_dtos:
                 {model_lower}_res_ds_dtos = []

@@ -1,3 +1,12 @@
+from datetime import datetime
+from typing import List, Optional
+
+import pytest
+
+from channel.usecase.exception import (
+    RecordExistsException,
+    UnauthorizedException,
+)
 from channel.usecase.interactor.record import RecordCreateInteractor
 from channel.usecase.models import (
     DeviceSessionDsDto,
@@ -7,28 +16,19 @@ from channel.usecase.models import (
     UserSessionDsDto,
 )
 from channel.usecase.output_port.record import RecordCreateOututPort
-from channel.usecase.exception import (
-    BusinessException,
-    UnauthorizedException,
-    RecordExistsException
-)
 from channel.usecase.repository.record import RecordCreateRepository
-
 from tests.channel.factories import (
     DeviceSessionDsDtoFactory,
-    RecordCreateOutDsDtoFactory,
     RecordCreateInDtoFactory,
-    UserSessionDsDtoFactory
+    RecordCreateOutDsDtoFactory,
+    UserSessionDsDtoFactory,
 )
-
-import pytest
-from typing import Optional
-from datetime import datetime
 
 valid_record_in_dto = RecordCreateInDtoFactory.build()
 valid_record_ds_dto = RecordCreateOutDsDtoFactory.build()
 valid_session_user_ds_dto = UserSessionDsDtoFactory.build()
 valid_session_device_ds_dto = DeviceSessionDsDtoFactory.build()
+
 
 class RecordCreateOututPortImpl(RecordCreateOututPort):
 
@@ -42,6 +42,7 @@ class RecordCreateOututPortImpl(RecordCreateOututPort):
     def prepare_success_view(self, record: RecordCreateOutDto) -> RecordCreateOutDto:
         self.record = record
         return self.record
+
 
 class RecordCreateRepositoryImpl(RecordCreateRepository):
 
@@ -64,11 +65,12 @@ class RecordCreateRepositoryImpl(RecordCreateRepository):
 
     def exists_record_by_channel_ids_time(
         self,
-        device_id: int,
+        channel_ids: List[int],
         time: datetime
     ) -> bool:
-        self.exists_record_by_channel_ids_time_in = (device_id, time)
+        self.exists_record_by_channel_ids_time_in = (channel_ids, time)
         return self.exists_record_by_channel_ids_time_out
+
 
 def create_interactor(
         gateway=RecordCreateRepositoryImpl(),
