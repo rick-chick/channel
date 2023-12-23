@@ -256,6 +256,10 @@ def generate_adapter_controller():
     controller_test_template = os.path.join(
         templates_test_dir, "controller.txt")
 
+    # tests/parser template
+    controller_test_parser_template = os.path.join(
+        templates_test_dir, "parser.txt")
+
     # src 
     project_dir = file_path("../src/channel/")
     controller_dir = os.path.join(
@@ -266,13 +270,14 @@ def generate_adapter_controller():
     controller_test_dir = os.path.join(
         test_dir, f"adapter/controller/{model_lower}")
 
+
     generate_file_from_template(
         controller_template, model, action, controller_dir, suffix="_controller")
     generate_file_from_template(
         controller_test_template, model, action, controller_test_dir,
         suffix="_controller_test", need_input=False)
     generate_file_from_template(
-        controller_template, model, action, controller_test_dir,
+        controller_test_parser_template, model, action, controller_test_dir,
         suffix="_input_parser_impl", need_input=False)
 
 

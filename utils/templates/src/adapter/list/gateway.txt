@@ -1,14 +1,14 @@
 from .{model_lower}_repository import {model}Repository
 from channel.adapter.gateway.user import UserSession
 
-from channel.usecase.models import(
-    {model}{action}OutDsDto,
+from channel.usecase.models import (
     {model}{action}InDsDto,
-    UserSessionDsDto
+    {model}{action}OutDsDto,
+    UserSessionDsDto,
 )
 from channel.usecase.repository.{model_lower} import {model}{action}Repository
 
-from typing import List, Optional
+from typing import Optional
 
 
 class {model}{action}Gateway({model}{action}Repository):
@@ -23,7 +23,7 @@ class {model}{action}Gateway({model}{action}Repository):
     def {action_lower}(
         self,
         {model_lower}_dto: {model}{action}InDsDto
-    ) -> List[{model}{action}OutDsDto]:
+    ) -> {model}{action}OutDsDto:
         return self.{model_lower}_repository.{action_lower}({model_lower}_dto)
 
     def load_session_user(self) -> Optional[UserSessionDsDto]:
