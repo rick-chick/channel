@@ -1,5 +1,4 @@
 from pydantic import ValidationError
-
 from channel.usecase.exception import (
     BusinessException,
     UnauthenticateException,
@@ -31,7 +30,8 @@ class DeviceAuthenticateInteractor(DeviceAuthenticateInputPort):
         self.presenter = presenter
 
     def authenticate(
-            self, device_dto: DeviceAuthenticateInDto) -> DeviceAuthenticateOutDto:
+            self, device_dto: DeviceAuthenticateInDto
+    ) -> DeviceAuthenticateOutDto:
 
         try:
 
@@ -42,10 +42,9 @@ class DeviceAuthenticateInteractor(DeviceAuthenticateInputPort):
             if device_id is None:
                 raise UnauthenticateException
 
-
             # セッションにDeviceを保存
             device_session_ds_dto = DeviceSessionDsDto(
-                id=device_id
+                id=device_id,
             )
             self.gateway.save_device_session(device_session_ds_dto)
 
