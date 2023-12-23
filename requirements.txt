@@ -32,3 +32,5 @@ locust
 
 injector
 pyright
+
+autopep8
