@@ -349,7 +349,7 @@ class RecordListOutDto(BaseModel):
 
 
 class RecordListInDsDto(BaseModel):
-    device_id: int
+    channel_ids: List[int]
     date_from: datetime
     date_to: datetime
 

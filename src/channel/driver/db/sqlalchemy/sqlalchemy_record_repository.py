@@ -41,7 +41,15 @@ class SqlalchemyRecordRepository(RecordRepository):
         ds_dto: RecordListInDsDto
     ) -> List[RecordListOutDsDto]:
 
-        record_ds = self.session.query(RecordDataSource).all()
+        record_ds = self.session.query(
+            RecordDataSource
+        ).filter(
+            and_(
+                RecordDataSource.channel_id.in_(ds_dto.channel_ids),
+                RecordDataSource.time.__ge__(ds_dto.date_from),
+                RecordDataSource.time.__le__(ds_dto.date_to),
+            )
+        ).all()
 
         if not record_ds:
             return []

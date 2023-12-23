@@ -36,23 +36,26 @@ class RecordListInteractor(RecordListInputPort):
             if not session_user_ds_dto:
                 raise UnauthorizedException
 
-            record_ds_dto = RecordListInDsDto(
-                **record_dto.model_dump(),
-            )
-
-            # 検索 Record
-            record_res_ds_dtos = self.gateway.list(record_ds_dto)
             # 検索 Channel
             channel_res_ds_dtos = self.gateway.channel_list(
                 ChannelListInDsDto(
-                    device_id=record_ds_dto.device_id
+                    device_id=record_dto.device_id
                 )
+            )
+
+            # 検索 Record
+            record_ds_dto = RecordListInDsDto(
+                **record_dto.model_dump(),
+                channel_ids=[channel.id for channel in channel_res_ds_dtos]
+            )
+            record_res_ds_dtos = self.gateway.list(
+                record_ds_dto
             )
 
             # 変換
             record_out_dtos = self.translator.ds_to_list_out(
                 record_res_ds_dtos,
-		        channel_res_ds_dtos
+                channel_res_ds_dtos
             )
 
             self.presenter.prepare_success_view(
