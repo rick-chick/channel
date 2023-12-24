@@ -17,6 +17,7 @@ from channel.driver.db.sqlalchemy.sqlalchemy_record_repository import Sqlalchemy
 from channel.driver.db.sqlalchemy.sqlalchemy_user_repository import (
     SqlalchemyUserRepository,
 )
+from channel.driver.env import ALLOWD_ORIGINS
 from channel.driver.handler.cli.handler_buss import UserTokenAuthenticateHandlerBuss
 from channel.driver.handler.flask.channel.flask_channel_create_input_parser import FlaskChannelCreateInputParser
 from channel.driver.handler.flask.device.flask_device_create_input_parser import FlaskDeviceCreateInputParser
@@ -35,8 +36,10 @@ from channel.driver.view.flask.user.flask_user_authenticate_view import (
     FlaskUserAuthenticateView,
 )
 from channel.driver.view.flask.user.flask_user_update_view import FlaskUserUpdateView
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, origins=ALLOWD_ORIGINS)
 
 
 @app.route('/user/authenticate', methods=["POST"])

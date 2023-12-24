@@ -27,6 +27,7 @@ snakecase
 colorama
 
 flask
+flask-cors
 
 locust
 
