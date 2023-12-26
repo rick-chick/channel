@@ -221,49 +221,50 @@ class ChannelCreateOutDtoFactory(ModelFactory[ChannelCreateOutDto]):
     __model__ = ChannelCreateOutDto
 
 
-class ChanneListOutDsDtoFactory(ModelFactory[ChannelListOutDsDto]):
-    __model__=ChannelListOutDsDto
+class ChannelListOutDsDtoFactory(ModelFactory[ChannelListOutDsDto]):
+    __model__ = ChannelListOutDsDto
 
 #################################################
 # Record
 #################################################
 
+
 class RecordCreateInDsDtoFactory(ModelFactory[RecordCreateInDsDto]):
-    __model__=RecordCreateInDsDto
-    __faker__=faker
+    __model__ = RecordCreateInDsDto
+    __faker__ = faker
 
 
 class RecordCreateOutDsDtoFactory(ModelFactory[RecordCreateOutDsDto]):
-    __model__=RecordCreateOutDsDto
+    __model__ = RecordCreateOutDsDto
 
 
 class RecordCreateInDtoFactory(ModelFactory[RecordCreateInDto]):
-    __faker__=faker
-    __model__=RecordCreateInDto
+    __faker__ = faker
+    __model__ = RecordCreateInDto
 
 
 class RecordCreateOutDtoFactory(ModelFactory[RecordCreateOutDto]):
-    __model__=RecordCreateOutDto
+    __model__ = RecordCreateOutDto
 
 
 class RecordListInDsDtoFactory(ModelFactory[RecordListInDsDto]):
-    __model__=RecordListInDsDto
-    __faker__=faker
+    __model__ = RecordListInDsDto
+    __faker__ = faker
 
 
 class RecordListOutDsDtoFactory(ModelFactory[RecordListOutDsDto]):
-    __model__=RecordListOutDsDto
-    __faker__=faker
+    __model__ = RecordListOutDsDto
+    __faker__ = faker
 
 
 class RecordListInDtoFactory(ModelFactory[RecordListInDto]):
-    __model__=RecordListInDto
-    __faker__=faker
+    __model__ = RecordListInDto
+    __faker__ = faker
 
 
 class RecordListIDataOutDtoFactory(ModelFactory[RecordListDataOutDto]):
-    __model__=RecordListDataOutDto
+    __model__ = RecordListDataOutDto
 
 
 class RecordListOutDtoFactory(ModelFactory[RecordListOutDto]):
-    __model__=RecordListOutDto
+    __model__ = RecordListOutDto

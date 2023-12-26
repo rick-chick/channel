@@ -1,3 +1,4 @@
+from datetime import datetime
 from channel.usecase.interactor.record import RecordListInteractor
 from channel.usecase.models import (
     ChannelListInDsDto,
@@ -12,7 +13,7 @@ from channel.usecase.exception import BusinessException
 from channel.usecase.repository.record import RecordListRepository
 
 from tests.channel.factories import (
-    ChanneListOutDsDtoFactory,
+    ChannelListOutDsDtoFactory,
     RecordListOutDsDtoFactory,
     RecordListInDtoFactory,
     UserSessionDsDtoFactory
@@ -24,7 +25,8 @@ from typing import Optional, List
 valid_record_in_dto = RecordListInDtoFactory.build()
 valid_record_ds_dto = RecordListOutDsDtoFactory.batch(3)
 valid_session_user_ds_dto = UserSessionDsDtoFactory.build()
-valid_channel_ds_dto = ChanneListOutDsDtoFactory.batch(3)
+valid_channel_ds_dto = ChannelListOutDsDtoFactory.batch(3)
+
 
 class RecordListOututPortImpl(RecordListOututPort):
 
@@ -40,11 +42,10 @@ class RecordListOututPortImpl(RecordListOututPort):
         return record
 
 
-
 class RecordListRepositoryImpl(RecordListRepository):
 
     list_input: Optional[RecordListInDsDto] = None
-    list_output: List[RecordListOutDsDto] = valid_record_ds_dto 
+    list_output: List[RecordListOutDsDto] = valid_record_ds_dto
     load_session_user_output: Optional[UserSessionDsDto] = valid_session_user_ds_dto
     channel_list_output: List[ChannelListOutDsDto] = valid_channel_ds_dto
 
@@ -62,7 +63,6 @@ class RecordListRepositoryImpl(RecordListRepository):
         self.channel_list_input = channel_dto
         return self.channel_list_output
 
-    
     def load_session_user(self) -> Optional[UserSessionDsDto]:
         return self.load_session_user_output
 
@@ -84,7 +84,7 @@ def test_list_success():
 
     target.list(valid_record_in_dto)
 
-    assert presenter.record is not None 
+    assert presenter.record is not None
 
 
 def test_list_fail_if_user_not_authenticated():
@@ -99,3 +99,47 @@ def test_list_fail_if_user_not_authenticated():
 
     with pytest.raises(BusinessException):
         target.list(record_in_dto)
+
+
+def test_list_aggregate_success():
+    presenter = RecordListOututPortImpl()
+    gateway = RecordListRepositoryImpl()
+
+    target = create_interactor(gateway, presenter)
+
+    record_in_dto = valid_record_in_dto.model_copy()
+    record_in_dto.date_from = datetime(2000, 1, 1)
+    record_in_dto.date_to = datetime(2000, 1, 2)
+    record_in_dto.span = 30
+
+    gateway.channel_list_output = [
+        ChannelListOutDsDtoFactory.build(
+            id=1,
+            name='hoge',
+        )
+    ]
+
+    gateway.list_output = [
+        RecordListOutDsDtoFactory.build(
+            time=datetime(2000, 1, 1, 0, 0, 30),
+            channel_id=1,
+            value=2
+        ),
+        RecordListOutDsDtoFactory.build(
+            time=datetime(2000, 1, 1, 0, 29, 59),
+            channel_id=1,
+            value=4
+        ),
+        RecordListOutDsDtoFactory.build(
+            time=datetime(2000, 1, 1, 0, 30, 00),
+            channel_id=1,
+            value=2
+        ),
+    ]
+
+    ret = target.list(record_in_dto)
+    assert ret.labels[0] == datetime(2000, 1, 1, 0, 0, 0)
+    assert len(ret.datasets) == 1
+    assert ret.datasets[0].label == 'hoge'
+    assert ret.datasets[0].data[0] == 3
+    assert ret.datasets[0].data[1] == 2

@@ -333,6 +333,7 @@ class RecordListInDto(BaseModel):
     device_id: int
     date_from: datetime
     date_to: datetime
+    span: int
 
 
 class RecordListDataOutDto(BaseModel):

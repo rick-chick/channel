@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from pydantic import ValidationError
@@ -10,7 +11,7 @@ from channel.usecase.exception import (
 )
 from channel.usecase.input_port.record import RecordListInputPort
 from channel.usecase.interactor.record.translator import RecordTranslator
-from channel.usecase.models import ChannelListInDsDto, RecordListInDsDto, RecordListDataOutDto
+from channel.usecase.models import ChannelListInDsDto, RecordListInDsDto, RecordListDataOutDto, RecordListOutDsDto
 from channel.usecase.models import RecordListInDto, RecordListOutDto
 from channel.usecase.output_port.record import RecordListOututPort
 from channel.usecase.repository.record import RecordListRepository
@@ -52,9 +53,55 @@ class RecordListInteractor(RecordListInputPort):
                 record_ds_dto
             )
 
+            # 集計
+            current_start = record_dto.date_from
+            records = []
+            i = 0
+            while current_start <= record_dto.date_to:
+                # 集計範囲の終了位置
+                current_end = current_start + \
+                    timedelta(minutes=record_dto.span)
+
+                # 各チャンネルの集計値
+                sums = {}
+                counts = {}
+                for channel in channel_res_ds_dtos:
+                    sums[channel.id] = 0
+                    counts[channel.id] = 0
+
+                # 集計
+                while i < len(record_res_ds_dtos):
+                    record = record_res_ds_dtos[i]
+                    time = record.time.astimezone(timezone.utc)
+
+                    # 範囲外の場合はブレーク
+                    if current_start > time or current_end <= time:
+                        break
+
+                    if record.channel_id in sums:
+                        sums[record.channel_id] += record.value
+                        counts[record.channel_id] += 1
+
+                    i += 1
+
+                # 平均を求める
+                for channel in channel_res_ds_dtos:
+                    average = 0
+                    if counts[channel.id] > 0:
+                        average = sums[channel.id] / counts[channel.id]
+                    records.append(RecordListOutDsDto(
+                        time=current_start,
+                        channel_id=channel.id,
+                        value=average,
+                    ))
+
+                # 集計範囲の開始位置
+                current_start = current_start + \
+                    timedelta(minutes=record_dto.span)
+
             # 変換
             record_out_dtos = self.translator.ds_to_list_out(
-                record_res_ds_dtos,
+                records,
                 channel_res_ds_dtos
             )
 
