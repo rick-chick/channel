@@ -49,6 +49,8 @@ class SqlalchemyRecordRepository(RecordRepository):
                 RecordDataSource.time.__ge__(ds_dto.date_from),
                 RecordDataSource.time.__le__(ds_dto.date_to),
             )
+        ).order_by(
+            RecordDataSource.time
         ).all()
 
         if not record_ds:
