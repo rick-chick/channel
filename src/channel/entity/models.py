@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, List, Dict
-from datetime import datetime
+from datetime import datetime, timedelta
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -25,9 +25,12 @@ class User(BaseModel):
         return pwd_context.verify(self.password, self.password_hash)
 
     def create_jwt(self) -> str:
+        expiration_minutes = 10
+        expiration_time = datetime.utcnow() + timedelta(minutes=expiration_minutes)
         return jwt.encode(
             {
-                "sub": self.id
+                "sub": self.id,
+                "exp": expiration_time
             },
             SECRET_KEY,
             algorithm=ALGORITHM
