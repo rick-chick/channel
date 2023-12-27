@@ -72,7 +72,10 @@ class RecordListInteractor(RecordListInputPort):
                 # 集計
                 while i < len(record_res_ds_dtos):
                     record = record_res_ds_dtos[i]
-                    time = record.time.astimezone(timezone.utc)
+                    if (current_start.tzinfo or current_end.tzinfo):
+                        time = record.time.astimezone(timezone.utc)
+                    else:
+                        time = record.time
 
                     # 範囲外の場合はブレーク
                     if current_start > time or current_end <= time:
