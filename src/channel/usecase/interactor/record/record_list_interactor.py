@@ -1,9 +1,7 @@
-from datetime import datetime, timedelta, timezone
-from typing import Optional
+from datetime import timedelta, timezone
 
 from pydantic import ValidationError
 
-from channel.entity.models import Record
 from channel.usecase.exception import (
     BusinessException,
     UnauthorizedException,
@@ -11,7 +9,7 @@ from channel.usecase.exception import (
 )
 from channel.usecase.input_port.record import RecordListInputPort
 from channel.usecase.interactor.record.translator import RecordTranslator
-from channel.usecase.models import ChannelListInDsDto, RecordListInDsDto, RecordListDataOutDto, RecordListOutDsDto
+from channel.usecase.models import ChannelListInDsDto, RecordListInDsDto, RecordListOutDsDto
 from channel.usecase.models import RecordListInDto, RecordListOutDto
 from channel.usecase.output_port.record import RecordListOututPort
 from channel.usecase.repository.record import RecordListRepository
@@ -78,7 +76,11 @@ class RecordListInteractor(RecordListInputPort):
                         time = record.time
 
                     # 範囲外の場合はブレーク
-                    if current_start > time or current_end <= time:
+                    if current_start > time:
+                        i += 1
+                        continue
+
+                    if current_end <= time:
                         break
 
                     if record.channel_id in sums:
