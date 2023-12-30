@@ -91,7 +91,7 @@ class RecordListInteractor(RecordListInputPort):
 
                 # 平均を求める
                 for channel in channel_res_ds_dtos:
-                    average = 0
+                    average = None
                     if counts[channel.id] > 0:
                         average = sums[channel.id] / counts[channel.id]
                     records.append(RecordListOutDsDto(

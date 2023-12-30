@@ -281,4 +281,4 @@ def test_list_aggregate_success_when_range_is_60():
     assert len(ret.datasets) == 1
     assert ret.datasets[0].label == 'hoge'
     assert ret.datasets[0].data[0] == 8/3
-    assert ret.datasets[0].data[1] == 0
+    assert ret.datasets[0].data[1] == None
