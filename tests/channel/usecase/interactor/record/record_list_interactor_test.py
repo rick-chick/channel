@@ -108,8 +108,8 @@ def test_list_aggregate_success():
     target = create_interactor(gateway, presenter)
 
     record_in_dto = valid_record_in_dto.model_copy()
-    record_in_dto.date_from = datetime(2000, 1, 1, 0, 0, 0, 0, timezone.utc)
-    record_in_dto.date_to = datetime(2000, 1, 2, 0, 0, 0, 0, timezone.utc)
+    record_in_dto.date_from = datetime(2000, 1, 1, 0, 0, 0, 0)
+    record_in_dto.date_to = datetime(2000, 1, 2, 0, 0, 0, 0)
     record_in_dto.span = 30
 
     gateway.channel_list_output = [
@@ -121,25 +121,25 @@ def test_list_aggregate_success():
 
     gateway.list_output = [
         RecordListOutDsDtoFactory.build(
-            time=datetime(2000, 1, 1, 0, 0, 30, 0, timezone.utc),
+            time=datetime(2000, 1, 1, 0, 0, 30, 0),
             channel_id=1,
             value=2
         ),
         RecordListOutDsDtoFactory.build(
-            time=datetime(2000, 1, 1, 0, 29, 59, 0, timezone.utc),
+            time=datetime(2000, 1, 1, 0, 29, 59, 0),
             channel_id=1,
             value=4
         ),
         RecordListOutDsDtoFactory.build(
-            time=datetime(2000, 1, 1, 0, 30, 0, 0, timezone.utc),
+            time=datetime(2000, 1, 1, 0, 30, 0, 0),
             channel_id=1,
             value=2
         ),
     ]
 
     ret = target.list(record_in_dto)
-    assert ret.labels[0] == datetime(2000, 1, 1, 0, 0, 0, 0, timezone.utc)
-    assert ret.labels[1] == datetime(2000, 1, 1, 0, 30, 0, 0, timezone.utc)
+    assert ret.labels[0] == datetime(2000, 1, 1, 0, 0, 0, 0)
+    assert ret.labels[1] == datetime(2000, 1, 1, 0, 30, 0, 0)
     assert len(ret.datasets) == 1
     assert ret.datasets[0].label == 'hoge'
     assert ret.datasets[0].data[0] == 3
@@ -153,8 +153,8 @@ def test_list_aggregate_success_when_first_span_has_no_item():
     target = create_interactor(gateway, presenter)
 
     record_in_dto = valid_record_in_dto.model_copy()
-    record_in_dto.date_from = datetime(2000, 1, 1, 0, 0, 0, 0, timezone.utc)
-    record_in_dto.date_to = datetime(2000, 1, 2, 0, 0, 0, 0, timezone.utc)
+    record_in_dto.date_from = datetime(2000, 1, 1, 0, 0, 0, 0)
+    record_in_dto.date_to = datetime(2000, 1, 2, 0, 0, 0, 0)
     record_in_dto.span = 30
 
     gateway.channel_list_output = [
@@ -166,25 +166,25 @@ def test_list_aggregate_success_when_first_span_has_no_item():
 
     gateway.list_output = [
         RecordListOutDsDtoFactory.build(
-            time=datetime(2000, 1, 1, 1, 0, 30, 0, timezone.utc),
+            time=datetime(2000, 1, 1, 1, 0, 30, 0),
             channel_id=1,
             value=2
         ),
         RecordListOutDsDtoFactory.build(
-            time=datetime(2000, 1, 1, 1, 29, 59, 0, timezone.utc),
+            time=datetime(2000, 1, 1, 1, 29, 59, 0),
             channel_id=1,
             value=4
         ),
         RecordListOutDsDtoFactory.build(
-            time=datetime(2000, 1, 1, 1, 30, 00, 0, timezone.utc),
+            time=datetime(2000, 1, 1, 1, 30, 00, 0),
             channel_id=1,
             value=2
         ),
     ]
 
     ret = target.list(record_in_dto)
-    assert ret.labels[0] == datetime(2000, 1, 1, 0, 0, 0, 0, timezone.utc)
-    assert ret.labels[1] == datetime(2000, 1, 1, 0, 30, 0, 0, timezone.utc)
+    assert ret.labels[0] == datetime(2000, 1, 1, 0, 0, 0, 0)
+    assert ret.labels[1] == datetime(2000, 1, 1, 0, 30, 0, 0)
     assert len(ret.datasets) == 1
     assert len(ret.labels) == len(ret.datasets[0].data)
     assert ret.datasets[0].label == 'hoge'
@@ -199,8 +199,8 @@ def test_list_aggregate_success_when_first_record_is_too_old():
     target = create_interactor(gateway, presenter)
 
     record_in_dto = valid_record_in_dto.model_copy()
-    record_in_dto.date_from = datetime(2000, 1, 1, 0, 0, 0, 0, timezone.utc)
-    record_in_dto.date_to = datetime(2000, 1, 2, 0, 0, 0, 0, timezone.utc)
+    record_in_dto.date_from = datetime(2000, 1, 1, 0, 0, 0, 0)
+    record_in_dto.date_to = datetime(2000, 1, 2, 0, 0, 0, 0)
     record_in_dto.span = 30
 
     gateway.channel_list_output = [
@@ -212,25 +212,25 @@ def test_list_aggregate_success_when_first_record_is_too_old():
 
     gateway.list_output = [
         RecordListOutDsDtoFactory.build(
-            time=datetime(1999, 12, 31, 1, 0, 30, 0, timezone.utc),
+            time=datetime(1999, 12, 31, 1, 0, 30, 0),
             channel_id=1,
             value=2
         ),
         RecordListOutDsDtoFactory.build(
-            time=datetime(2000, 1, 1, 0, 29, 59, 0, timezone.utc),
+            time=datetime(2000, 1, 1, 0, 29, 59, 0),
             channel_id=1,
             value=4
         ),
         RecordListOutDsDtoFactory.build(
-            time=datetime(2000, 1, 1, 0, 30, 00, 0, timezone.utc),
+            time=datetime(2000, 1, 1, 0, 30, 00, 0),
             channel_id=1,
             value=2
         ),
     ]
 
     ret = target.list(record_in_dto)
-    assert ret.labels[0] == datetime(2000, 1, 1, 0, 0, 0, 0, timezone.utc)
-    assert ret.labels[1] == datetime(2000, 1, 1, 0, 30, 0, 0, timezone.utc)
+    assert ret.labels[0] == datetime(2000, 1, 1, 0, 0, 0, 0)
+    assert ret.labels[1] == datetime(2000, 1, 1, 0, 30, 0, 0)
     assert len(ret.datasets) == 1
     assert len(ret.labels) == len(ret.datasets[0].data)
     assert ret.datasets[0].label == 'hoge'
@@ -245,8 +245,8 @@ def test_list_aggregate_success_when_range_is_60():
     target = create_interactor(gateway, presenter)
 
     record_in_dto = valid_record_in_dto.model_copy()
-    record_in_dto.date_from = datetime(2000, 1, 1, 0, 0, 0, 0, timezone.utc)
-    record_in_dto.date_to = datetime(2000, 1, 2, 0, 0, 0, 0, timezone.utc)
+    record_in_dto.date_from = datetime(2000, 1, 1, 0, 0, 0, 0)
+    record_in_dto.date_to = datetime(2000, 1, 2, 0, 0, 0, 0)
     record_in_dto.span = 60
 
     gateway.channel_list_output = [
@@ -258,25 +258,25 @@ def test_list_aggregate_success_when_range_is_60():
 
     gateway.list_output = [
         RecordListOutDsDtoFactory.build(
-            time=datetime(2000, 1, 1, 0, 0, 30, 0, timezone.utc),
+            time=datetime(2000, 1, 1, 0, 0, 30, 0),
             channel_id=1,
             value=2
         ),
         RecordListOutDsDtoFactory.build(
-            time=datetime(2000, 1, 1, 0, 29, 59, 0, timezone.utc),
+            time=datetime(2000, 1, 1, 0, 29, 59, 0),
             channel_id=1,
             value=4
         ),
         RecordListOutDsDtoFactory.build(
-            time=datetime(2000, 1, 1, 0, 30, 00, 0, timezone.utc),
+            time=datetime(2000, 1, 1, 0, 30, 00, 0),
             channel_id=1,
             value=2
         ),
     ]
 
     ret = target.list(record_in_dto)
-    assert ret.labels[0] == datetime(2000, 1, 1, 0, 0, 0, 0, timezone.utc)
-    assert ret.labels[1] == datetime(2000, 1, 1, 1, 0, 0, 0, timezone.utc)
+    assert ret.labels[0] == datetime(2000, 1, 1, 0, 0, 0, 0)
+    assert ret.labels[1] == datetime(2000, 1, 1, 1, 0, 0, 0)
     assert len(ret.labels) == len(ret.datasets[0].data)
     assert len(ret.datasets) == 1
     assert ret.datasets[0].label == 'hoge'

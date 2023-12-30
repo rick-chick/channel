@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator, validator
 
 
 out_ds_config = ConfigDict(from_attributes=True)
@@ -334,6 +334,13 @@ class RecordListInDto(BaseModel):
     date_from: datetime
     date_to: datetime
     span: int
+
+    @field_validator('date_from', 'date_to', mode='after')
+    def validate_timezone(cls, v: datetime):
+        if v.tzinfo:
+            return v.astimezone(timezone.utc).replace(tzinfo=None)
+        else:
+            return v.replace(tzinfo=None)
 
 
 class RecordListDataOutDto(BaseModel):
