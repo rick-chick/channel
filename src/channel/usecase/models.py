@@ -291,8 +291,26 @@ class ChannelUpdateOutDsDto(BaseModel):
     model_config = out_ds_config
 
 
+class ChannelListInDto(BaseModel):
+    pass
+
+
+class ChannelListDataOutDto(BaseModel):
+    id: int
+    name: str
+    unit: str
+    tags: List[str] = []
+
+
+class ChannelListOutDto(BaseModel):
+    model_config = out_ds_config
+
+    values: List[ChannelListDataOutDto]
+
+
 class ChannelListInDsDto(BaseModel):
-    device_id: int
+    device_id: Optional[int] = None
+    device_ids: Optional[List[int]] = None
 
 
 class ChannelListOutDsDto(BaseModel):

@@ -11,7 +11,7 @@ from channel.usecase.exception import BusinessException
 from channel.usecase.repository.{model_lower} import {model}{action}Repository
 
 from tests.channel.factories import (
-    {model}{action}DsDtoFactory,
+    {model}{action}OutDsDtoFactory,
     {model}{action}InDtoFactory,
     {model}{action}OutDtoFactory,
     UserSessionDsDtoFactory
@@ -21,7 +21,7 @@ import pytest
 from typing import Optional, List
 
 valid_{model_lower}_in_dto = {model}{action}InDtoFactory.build()
-valid_{model_lower}_ds_dto = {model}{action}DsDtoFactory.build()
+valid_{model_lower}_ds_dto = {model}{action}OutDsDtoFactory.batch(3)
 valid_session_user_ds_dto = UserSessionDsDtoFactory.build()
 
 class {model}{action}OututPortImpl({model}{action}OututPort):

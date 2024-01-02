@@ -6,7 +6,10 @@ from channel.usecase.models import (
     ChannelCreateInDto,
     ChannelCreateOutDsDto,
     ChannelCreateOutDto,
+    ChannelListInDsDto,
+    ChannelListInDto,
     ChannelListOutDsDto,
+    ChannelListOutDto,
     DeviceAuthenticateInDto,
     DeviceAuthenticateOutDto,
     DeviceCreateInDsDto,
@@ -243,6 +246,18 @@ class ChannelCreateOutDtoFactory(ModelFactory[ChannelCreateOutDto]):
 
 class ChannelListOutDsDtoFactory(ModelFactory[ChannelListOutDsDto]):
     __model__ = ChannelListOutDsDto
+
+
+class ChannelListInDsDtoFactory(ModelFactory[ChannelListInDsDto]):
+    __model__ = ChannelListInDsDto
+
+
+class ChannelListInDtoFactory(ModelFactory[ChannelListInDto]):
+    __model__ = ChannelListInDto
+
+
+class ChannelListOutDtoFactory(ModelFactory[ChannelListOutDto]):
+    __model__ = ChannelListOutDto
 
 #################################################
 # Record

@@ -1,3 +1,4 @@
+from sqlalchemy import and_
 from typing import List, Optional
 
 from sqlalchemy.orm import Session
@@ -45,10 +46,26 @@ class SqlalchemyChannelRepository(ChannelRepository):
 
     def list(
         self,
-        channel_ds_dto: ChannelListInDsDto
+        ds_dto: ChannelListInDsDto
     ) -> List[ChannelListOutDsDto]:
+        filters = []
 
-        channel_ds = self.session.query(ChannelDataSource).all()
+        # where 句
+        if ds_dto.device_id:
+            filters.append(
+                ChannelDataSource.device_id == ds_dto.device_id
+            )
+        if ds_dto.device_ids:
+            filters.append(
+                ChannelDataSource.device_id.in_(ds_dto.device_ids)
+            )
+
+        # 検索
+        channel_ds = self.session.query(
+            ChannelDataSource
+        ).filter(
+            and_(*filters)
+        ).all()
 
         if not channel_ds:
             return []
