@@ -8,7 +8,7 @@ from channel.usecase.models import (
 )
 from channel.usecase.repository.{model_lower} import {model}{action}Repository
 
-from typing import Optional
+from typing import Optional, List
 
 
 class {model}{action}Gateway({model}{action}Repository):
@@ -23,7 +23,7 @@ class {model}{action}Gateway({model}{action}Repository):
     def {action_lower}(
         self,
         {model_lower}_dto: {model}{action}InDsDto
-    ) -> {model}{action}OutDsDto:
+    ) -> List[{model}{action}OutDsDto]:
         return self.{model_lower}_repository.{action_lower}({model_lower}_dto)
 
     def load_session_user(self) -> Optional[UserSessionDsDto]:

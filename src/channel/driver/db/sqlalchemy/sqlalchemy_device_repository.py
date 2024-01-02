@@ -1,3 +1,4 @@
+from sqlalchemy import and_
 from channel.adapter.gateway.device.device_repository import DeviceRepository
 from .models import DeviceDataSource
 from .sqlalchemy_translator import SqlalchemyDeviceTranslator
@@ -56,7 +57,17 @@ class SqlalchemyDeviceRepository(DeviceRepository):
         ds_dto: DeviceListInDsDto
     ) -> List[DeviceListOutDsDto]:
 
-        device_ds = self.session.query(DeviceDataSource).all()
+        # where句
+        where = and_(
+            DeviceDataSource.user_id == ds_dto.user_id
+        )
+
+        # 検索
+        device_ds = self.session.query(
+            DeviceDataSource
+        ).filter(
+            where
+        ).all()
 
         if not device_ds:
             return []

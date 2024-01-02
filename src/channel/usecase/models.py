@@ -178,12 +178,27 @@ class DeviceUpdateOutDsDto(BaseModel):
     model_config = out_ds_config
 
 
+class DeviceListInDto(BaseModel):
+    user_id: str
+
+
+class DeviceListDataOutDto(BaseModel):
+    id: int
+    channel_ids: List[int]
+    channel_names: List[str]
+
+
+class DeviceListOutDto(BaseModel):
+    values: List[DeviceListDataOutDto] = []
+
+
 class DeviceListInDsDto(BaseModel):
-    pass
+    user_id: str
 
 
 class DeviceListOutDsDto(BaseModel):
     model_config = out_ds_config
+    id: int
 
 
 class DeviceDeleteInDsDto(BaseModel):

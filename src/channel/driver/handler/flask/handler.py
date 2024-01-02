@@ -1,6 +1,7 @@
 from flask import Flask, request
 from channel.adapter.controller.channel.channel_create_controller import ChannelCreateController
 from channel.adapter.controller.device.device_create_controller import DeviceCreateController
+from channel.adapter.controller.device.device_list_controller import DeviceListController
 from channel.adapter.controller.record.record_create_controller import RecordCreateController
 from channel.adapter.controller.record.record_list_controller import RecordListController
 
@@ -21,6 +22,7 @@ from channel.driver.env import ALLOWD_ORIGINS
 from channel.driver.handler.cli.handler_buss import UserTokenAuthenticateHandlerBuss
 from channel.driver.handler.flask.channel.flask_channel_create_input_parser import FlaskChannelCreateInputParser
 from channel.driver.handler.flask.device.flask_device_create_input_parser import FlaskDeviceCreateInputParser
+from channel.driver.handler.flask.device.flask_device_list_input_parser import FlaskDeviceListInputParser
 from channel.driver.handler.flask.handler_buss import FlaskDeviceKeyAuthenticateHandlerBuss, FlaskUserTokenAuthenticateHandlerBuss
 from channel.driver.handler.flask.record.flask_record_create_input_parser import FlaskRecordCreateInputParser
 from channel.driver.handler.flask.record.flask_record_list_input_parser import FlaskRecordListInputParser
@@ -30,6 +32,7 @@ from channel.driver.handler.flask.user.flask_user_authenticate_input_parser impo
 from channel.driver.handler.flask.user.flask_user_update_input_parser import FlaskUserUpdateInputParser
 from channel.driver.view.flask.channel.flask_channel_create_view import FlaskChannelCreateView
 from channel.driver.view.flask.device.flask_device_create_view import FlaskDeviceCreateView
+from channel.driver.view.flask.device.flask_device_list_view import FlaskDeviceListView
 from channel.driver.view.flask.record.flask_record_create_view import FlaskRecordCreateView
 from channel.driver.view.flask.record.flask_record_list_view import FlaskRecordListView
 from channel.driver.view.flask.user.flask_user_authenticate_view import (
@@ -91,6 +94,26 @@ def device_create():
         user_session=MemoryUserRepository(memory),
         device_repository=SqlalchemyDeviceRepository(session),
         device_view=view,
+    )
+    buss.add(controller)
+
+    buss.handle(request)
+    return view.render()
+
+
+@app.route('/devices', methods=["POST"])
+def device_list():
+    memory = {}
+    session = Session()
+
+    buss = FlaskUserTokenAuthenticateHandlerBuss(memory, session)
+
+    view = FlaskDeviceListView()
+    controller = DeviceListController(
+        device_list_input_parser=FlaskDeviceListInputParser(memory),
+        user_session=MemoryUserRepository(memory),
+        device_repository=SqlalchemyDeviceRepository(session),
+        device_list_view=view,
     )
     buss.add(controller)
 

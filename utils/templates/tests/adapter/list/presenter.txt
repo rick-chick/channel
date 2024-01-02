@@ -1,19 +1,21 @@
 from channel.adapter.presenter.{model_lower} import (
     {model}{action}Presenter)
 from channel.usecase.models import {model}{action}OutDto
+from tests.channel.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_view_impl import {model}{action}ViewImpl
 
 
 def test_prepare_success_view():
-    target = {model}{action}Presenter()
+    view = {model}{action}ViewImpl()
+    target = {model}{action}Presenter(view)
     {model_lower} = {model}{action}OutDto()
     target.prepare_success_view({model_lower})
 
-    assert target.get_{model_lower}s() == {model_lower}
+    assert view.{model_lower}_{action_lower}_out_dto == {model_lower}
 
 
 def test_prepare_fail_view():
-    target = {model}{action}Presenter()
+    view = {model}{action}ViewImpl()
+    target = {model}{action}Presenter(view)
     target.prepare_fail_view(Exception())
 
-    assert len(target.errors()) > 0
-    assert target.has_errors()
+    assert len(view.exceptions) > 0

@@ -1,4 +1,5 @@
 from channel.adapter.controller.{model_lower}.{model_lower}_{action_lower}_controller import {model}{action}Controller
+from tests.channel.adapter.controller.{model_lower}.{model_lower}_{action_lower}_input_parser_impl import {model}{action}InputParserImpl
 from tests.channel.adapter.gateway.user.user_session_impl import UserSessionImpl
 from tests.channel.adapter.gateway.{model_lower}.{model_lower}_repository_impl import {model}RepositoryImpl
 from tests.channel.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_view_impl import {model}{action}ViewImpl
@@ -7,6 +8,7 @@ from tests.channel.factories import {model}{action}InDtoFactory
 
 def test_success():
     target = {model}{action}Controller(
+        {model_lower}_{action_lower}_input_parser={model}{action}InputParserImpl(),
         user_session=UserSessionImpl(),
         {model_lower}_repository={model}RepositoryImpl(),
         {model_lower}_{action_lower}_view={model}{action}ViewImpl()

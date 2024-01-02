@@ -13,6 +13,10 @@ from channel.usecase.models import (
     DeviceCreateInDto,
     DeviceCreateOutDsDto,
     DeviceCreateOutDto,
+    DeviceListInDsDto,
+    DeviceListInDto,
+    DeviceListOutDsDto,
+    DeviceListOutDto,
     DeviceOutDsDto,
     DeviceSessionDsDto,
     RecordCreateInDsDto,
@@ -197,6 +201,22 @@ class DeviceOutDsDtoFactory(ModelFactory[DeviceOutDsDto]):
 
 class DeviceSessionDsDtoFactory(ModelFactory[DeviceSessionDsDto]):
     __model__ = DeviceSessionDsDto
+
+
+class DeviceListOutDtoFactory(ModelFactory[DeviceListOutDto]):
+    __model__ = DeviceListOutDto
+
+
+class DeviceListInDsDtoFactory(ModelFactory[DeviceListInDsDto]):
+    __model__ = DeviceListInDsDto
+
+
+class DeviceListOutDsDtoFactory(ModelFactory[DeviceListOutDsDto]):
+    __model__ = DeviceListOutDsDto
+
+
+class DeviceListInDtoFactory(ModelFactory[DeviceListInDto]):
+    __model__ = DeviceListInDto
 
 
 #################################################

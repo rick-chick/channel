@@ -7,12 +7,14 @@ from channel.usecase.output_port.{model_lower} import {model}{action}OututPort
 
 from channel.usecase.models import (
     {model}{action}InDto,
-    {model}{action}OutDto
+    {model}{action}OutDto,
+    {model}{action}DataOutDto,
   )
 from channel.usecase.exception import (
     BusinessException,
     ValidationException,
-    UnauthorizedException
+    UnauthorizedException,
+    UnauthenticateException
 )
 from channel.entity.models import {model}
 
@@ -36,23 +38,29 @@ class {model}{action}Interactor({model}{action}InputPort):
 
             {model_lower} = {model}(**{model_lower}_dto.model_dump())
 
+            # ユーザ認証チェック
             session_user_ds_dto = self.gateway.load_session_user()
+            if not session_user_ds_dto:
+                raise UnauthenticateException
 
-            {model_lower}_ds_dto = {model}{action}InDsDto(
-                **{model_lower}.model_dump(),
+            # 検索
+            {model_lower}_out_ds_dtos = self.gateway.{action_lower}(
+                {model}{action}InDsDto(
+                    **{model_lower}.model_dump(),
+                )
             )
 
-            if not {model_lower}_res_ds_dtos:
-                {model_lower}_res_ds_dtos = []
+            # 変換
+            out_dto  = {model}{action}OutDt(
+                values = [
+                  {model}{action}DataOutDto(**ds_dto.model_dump())
+                  for ds_dto in {model_lower}_out_ds_dtos
+                ]
+            )
 
-            {model_lower}_out_dtos = [
-                {model}{action}OutDto(**ds_dto.model_dump())
-                for ds_dto in {model_lower}_res_ds_dtos]
+            self.presenter.prepare_success_view(out_dto)
 
-            self.presenter.prepare_success_view(
-                {model_lower}_out_dtos)
-
-            return {model_lower}_out_dtos
+            return out_dto
 
         except ValidationError as e:
             ex = ValidationException(e)

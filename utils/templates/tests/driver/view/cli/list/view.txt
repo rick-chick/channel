@@ -1,3 +1,4 @@
+from typing import Any
 from channel.driver.view.cli.{model_lower}.cli_{model_lower}_{action_lower}_view import Cli{model}{action}View
 from tests.channel.factories import {model}{action}OutDtoFactory
 
