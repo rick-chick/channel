@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 from channel.usecase.models import (
+    ChannelListInDsDto,
+    ChannelListOutDsDto,
+    ChannelListOutDto,
     DeviceListInDsDto,
     DeviceListOutDsDto,
     UserSessionDsDto
@@ -19,4 +22,11 @@ class DeviceListRepository(ABC):
         self,
         device_dto: DeviceListInDsDto
     ) -> List[DeviceListOutDsDto]:
+        pass
+
+    @abstractmethod
+    def list_channel(
+        self,
+        channel_dto: ChannelListInDsDto
+    ) -> List[ChannelListOutDsDto]:
         pass

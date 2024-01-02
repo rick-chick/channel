@@ -1,3 +1,4 @@
+from channel.adapter.gateway.channel.channel_repository import ChannelRepository
 from channel.adapter.gateway.device import (
     DeviceListGateway,
     UserSession,
@@ -20,11 +21,13 @@ class DeviceListController(Handler):
         self,
         user_session: UserSession,
         device_repository: DeviceRepository,
+        channel_repository: ChannelRepository,
         device_list_view: DeviceListView,
         device_list_input_parser: InputParser,
     ):
         self.gateway = DeviceListGateway(
             device_repository=device_repository,
+            channel_repository=channel_repository,
             user_session=user_session,
         )
 
@@ -42,7 +45,7 @@ class DeviceListController(Handler):
         dto: DeviceListInDto
     ) -> DeviceListOutDto:
         out_dto = self.device_list_interactor.list(
-          self.parser.parse(dto)
+            self.parser.parse(dto)
         )
         self.view.render()
         return out_dto

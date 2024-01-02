@@ -1,5 +1,7 @@
 from channel.usecase.interactor.device import DeviceListInteractor
 from channel.usecase.models import (
+    ChannelListInDsDto,
+    ChannelListOutDsDto,
     DeviceListInDsDto,
     DeviceListOutDsDto,
     DeviceListInDto,
@@ -11,6 +13,7 @@ from channel.usecase.exception import BusinessException
 from channel.usecase.repository.device import DeviceListRepository
 
 from tests.channel.factories import (
+    ChannelListOutDsDtoFactory,
     DeviceListOutDsDtoFactory,
     DeviceListInDtoFactory,
     DeviceListOutDtoFactory,
@@ -23,6 +26,7 @@ from typing import Optional, List
 valid_device_in_dto = DeviceListInDtoFactory.build()
 valid_device_ds_dto = DeviceListOutDsDtoFactory.batch(3)
 valid_session_user_ds_dto = UserSessionDsDtoFactory.build()
+valid_channel_ds_dto = ChannelListOutDsDtoFactory.batch(3)
 
 
 class DeviceListOututPortImpl(DeviceListOututPort):
@@ -44,6 +48,7 @@ class DeviceListRepositoryImpl(DeviceListRepository):
     list_input: Optional[DeviceListInDsDto] = None
     list_output: List[DeviceListOutDsDto] = valid_device_ds_dto
     load_session_user_output: Optional[UserSessionDsDto] = valid_session_user_ds_dto
+    list_channel_out: List[ChannelListOutDsDto] = valid_channel_ds_dto
 
     def list(
         self,
@@ -54,6 +59,13 @@ class DeviceListRepositoryImpl(DeviceListRepository):
 
     def load_session_user(self) -> Optional[UserSessionDsDto]:
         return self.load_session_user_output
+
+    def list_channel(
+        self,
+        channel_dto: ChannelListInDsDto
+    ) -> List[ChannelListOutDsDto]:
+        self.list_channel_in = channel_dto
+        return self.list_channel_out
 
 
 def create_interactor(

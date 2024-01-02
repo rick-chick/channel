@@ -26,7 +26,9 @@ def test_ds_to_list_out_when_input_length_is_one():
         ChannelListOutDsDto(
             id=1,
             name="hoge",
-            unit="huga"
+            unit="huga",
+            device_id=1
+
         )
     ]
     record_ds_dto: List[RecordListOutDsDto] = [
@@ -57,12 +59,14 @@ def test_ds_to_list_out_when_data_channel_count_is_two():
         ChannelListOutDsDto(
             id=1,
             name="hoge",
-            unit="huga"
+            unit="huga",
+            device_id=1
         ),
         ChannelListOutDsDto(
             id=2,
             name="bra",
-            unit="role"
+            unit="role",
+            device_id=1
         )
     ]
     record_ds_dto: List[RecordListOutDsDto] = [
@@ -102,12 +106,14 @@ def test_ds_to_list_out_when_data_label_count_is_two():
         ChannelListOutDsDto(
             id=1,
             name="hoge",
-            unit="huga"
+            unit="huga",
+            device_id=1
         ),
         ChannelListOutDsDto(
             id=2,
             name="bra",
-            unit="role"
+            unit="role",
+            device_id=1
         )
     ]
     record_ds_dto: List[RecordListOutDsDto] = [

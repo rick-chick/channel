@@ -1,4 +1,5 @@
 from channel.driver.db.sqlalchemy.conf import Session
+from channel.driver.db.sqlalchemy.sqlalchemy_channel_repository import SqlalchemyChannelRepository
 from channel.driver.handler.cli.parser import parse
 from channel.driver.handler.cli.device.cli_device_list_input_parser import CliDeviceListInputParser
 from channel.driver.view.cli.device.cli_device_list_view import CliDeviceListView
@@ -23,6 +24,7 @@ buss = UserTokenAuthenticateHandlerBuss(memory, session)
 
 controller = DeviceListController(
     device_list_input_parser=CliDeviceListInputParser(memory),
+    channel_repository=SqlalchemyChannelRepository(session),
     user_session=MemoryUserRepository(memory),
     device_repository=SqlalchemyDeviceRepository(session),
     device_list_view=CliDeviceListView(),

@@ -19,7 +19,7 @@ from channel.usecase.exception import (
 from channel.entity.models import Device
 
 from pydantic import ValidationError
-from typing import Optional
+from typing import List, Optional
 
 
 class DeviceListInteractor(DeviceListInputPort):
@@ -48,22 +48,42 @@ class DeviceListInteractor(DeviceListInputPort):
                 )
             )
 
-            # TODO: Channel検索
+            # Channel検索
+            channels = self.gateway.list_channel(
+                ChannelListInDsDto(
+                    device_ids=[device.id for device in device_out_ds_dtos]
+                )
+            )
+
+            # DeviceIdでChannelリストを引けるようにする
+            channel_map = {}
+            for device in device_out_ds_dtos:
+                channel_map[device.id] = []
+            for channel in channels:
+                if channel.device_id in channel_map:
+                    channel_map[channel.device_id].append(channel)
 
             # 変換
-            out_dto = DeviceListOutDto()
-            if device_out_ds_dtos:
-                out_dto = DeviceListOutDto(
-                    values=[
-                        DeviceListDataOutDto(
-                            id=ds_dto.id,
-                            # TODO:
-                            channel_ids=[],
-                            channel_names=[]
-                        )
-                        for ds_dto in device_out_ds_dtos
-                    ]
+            values = []
+            for ds_dto in device_out_ds_dtos:
+                if ds_dto.id not in channel_map:
+                    continue
+
+                channel_ids = []
+                channel_names = []
+                for channel in channel_map[ds_dto.id]:
+                    channel_ids.append(channel.id)
+                    channel_names.append(channel.name)
+
+                values.append(
+                    DeviceListDataOutDto(
+                        id=ds_dto.id,
+                        channel_ids=channel_ids,
+                        channel_names=channel_names
+                    )
                 )
+
+            out_dto = DeviceListOutDto(values=values)
 
             self.presenter.prepare_success_view(out_dto)
 

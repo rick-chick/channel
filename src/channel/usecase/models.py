@@ -316,6 +316,7 @@ class ChannelListInDsDto(BaseModel):
 class ChannelListOutDsDto(BaseModel):
     model_config = out_ds_config
 
+    device_id: int
     id: int
     name: str
     unit: str
