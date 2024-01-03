@@ -179,13 +179,17 @@ class DeviceUpdateOutDsDto(BaseModel):
 
 
 class DeviceListInDto(BaseModel):
-    user_id: str
+    pass
+
+
+class DeviceListChannelDataOutDto(BaseModel):
+    name: str
+    id: int
 
 
 class DeviceListDataOutDto(BaseModel):
     id: int
-    channel_ids: List[int]
-    channel_names: List[str]
+    channels: List[DeviceListChannelDataOutDto]
 
 
 class DeviceListOutDto(BaseModel):

@@ -2,6 +2,7 @@ from channel.usecase.input_port.device import DeviceListInputPort
 from channel.usecase.repository.device import DeviceListRepository
 from channel.usecase.models import (
     ChannelListInDsDto,
+    DeviceListChannelDataOutDto,
     DeviceListDataOutDto,
     DeviceListInDsDto
 )
@@ -69,17 +70,18 @@ class DeviceListInteractor(DeviceListInputPort):
                 if ds_dto.id not in channel_map:
                     continue
 
-                channel_ids = []
-                channel_names = []
+                channels = []
                 for channel in channel_map[ds_dto.id]:
-                    channel_ids.append(channel.id)
-                    channel_names.append(channel.name)
+                    channels.append(
+                        DeviceListChannelDataOutDto(
+                            **channel.model_dump()
+                        )
+                    )
 
                 values.append(
                     DeviceListDataOutDto(
                         id=ds_dto.id,
-                        channel_ids=channel_ids,
-                        channel_names=channel_names
+                        channels=channels
                     )
                 )
 

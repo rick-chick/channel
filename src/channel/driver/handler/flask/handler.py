@@ -115,6 +115,7 @@ def device_list():
     controller = DeviceListController(
         device_list_input_parser=FlaskDeviceListInputParser(memory),
         user_session=MemoryUserRepository(memory),
+        channel_repository=SqlalchemyChannelRepository(session),
         device_repository=SqlalchemyDeviceRepository(session),
         device_list_view=view,
     )
