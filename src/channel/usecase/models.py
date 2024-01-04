@@ -205,11 +205,23 @@ class DeviceListOutDsDto(BaseModel):
     id: int
 
 
+class DeviceDeleteInDto(BaseModel):
+    ids: List[int] = []
+
+
+class DeviceDeleteOutDto(BaseModel):
+    ids: List[int] = []
+    undeleted_ids: List[int] = []
+    model_config = out_ds_config
+
+
 class DeviceDeleteInDsDto(BaseModel):
-    pass
+    user_id: str
+    ids: List[int] = []
 
 
 class DeviceDeleteOutDsDto(BaseModel):
+    id: int
     model_config = out_ds_config
 
 
@@ -313,6 +325,7 @@ class ChannelListOutDto(BaseModel):
 
 
 class ChannelListInDsDto(BaseModel):
+    user_id: Optional[str] = None
     device_id: Optional[int] = None
     device_ids: Optional[List[int]] = None
 
@@ -328,10 +341,12 @@ class ChannelListOutDsDto(BaseModel):
 
 
 class ChannelDeleteInDsDto(BaseModel):
-    pass
+    ids: Optional[List[int]] = None
+    device_ids: Optional[List[int]] = None
 
 
 class ChannelDeleteOutDsDto(BaseModel):
+    id: int
     model_config = out_ds_config
 
 
@@ -395,9 +410,9 @@ class RecordListOutDto(BaseModel):
 
 
 class RecordListInDsDto(BaseModel):
-    channel_ids: List[int]
-    date_from: datetime
-    date_to: datetime
+    channel_ids: Optional[List[int]] = None
+    date_from: Optional[datetime] = None
+    date_to: Optional[datetime] = None
 
 
 class RecordListOutDsDto(BaseModel):
@@ -409,8 +424,9 @@ class RecordListOutDsDto(BaseModel):
 
 
 class RecordDeleteInDsDto(BaseModel):
-    pass
+    channel_ids: Optional[List[int]] = None
 
 
 class RecordDeleteOutDsDto(BaseModel):
+    channel_id: int
     model_config = out_ds_config

@@ -101,15 +101,20 @@ class SqlalchemyChannelRepository(ChannelRepository):
 
     def delete(
         self,
-        channel_ds_dto: ChannelDeleteInDsDto
+        ds_dto: ChannelDeleteInDsDto
     ) -> List[ChannelDeleteOutDsDto]:
-        if channel_ds_dto.ids is None:
-            return []
+        filters = []
+        if ds_dto.ids:
+            filters.append(ChannelDataSource.id.in_(ds_dto.ids))
 
-        channel_ds = self.session.query(ChannelDataSource).filter(
-            ChannelDataSource.id.in_(channel_ds_dto.ids)).all()
-        if not channel_ds:
-            return []
+        if ds_dto.device_ids:
+            filters.append(ChannelDataSource.device_id.in_(ds_dto.device_ids))
+
+        channel_ds = self.session.query(
+            ChannelDataSource
+        ).filter(
+            and_(*filters)
+        ).all()
 
         ret = []
         for ds in channel_ds:

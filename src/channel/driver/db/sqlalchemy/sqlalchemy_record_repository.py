@@ -41,14 +41,21 @@ class SqlalchemyRecordRepository(RecordRepository):
         ds_dto: RecordListInDsDto
     ) -> List[RecordListOutDsDto]:
 
+        filters = []
+
+        if ds_dto.channel_ids:
+            filters.append(RecordDataSource.channel_id.in_(ds_dto.channel_ids))
+
+        if ds_dto.date_from:
+            filters.append(RecordDataSource.time.__ge__(ds_dto.date_from))
+
+        if ds_dto.date_to:
+            filters.append(RecordDataSource.time.__le__(ds_dto.date_to))
+
         record_ds = self.session.query(
             RecordDataSource
         ).filter(
-            and_(
-                RecordDataSource.channel_id.in_(ds_dto.channel_ids),
-                RecordDataSource.time.__ge__(ds_dto.date_from),
-                RecordDataSource.time.__le__(ds_dto.date_to),
-            )
+            and_(*filters)
         ).order_by(
             RecordDataSource.time
         ).all()
@@ -74,19 +81,21 @@ class SqlalchemyRecordRepository(RecordRepository):
     def delete(
         self,
         ds_dto: RecordDeleteInDsDto
-    ) -> List[RecordDeleteOutDsDto]:
-        if ds_dto.ids is None:
-            return []
+    ):
 
-        record_ds = self.session.query(RecordDataSource).filter(
-            RecordDataSource.id.in_(ds_dto.ids)).all()
-        if not record_ds:
-            return []
+        filters = []
+        if ds_dto.channel_ids:
+            filters.append(
+                RecordDataSource.channel_id.in_(ds_dto.channel_ids)
+            )
 
-        ret = []
-        for ds in record_ds:
-            ret.append(RecordDeleteOutDsDto.model_validate(ds))
-            self.session.delete(ds)
+        if len(filters) == 0:
+            return
+
+        self.session.query(
+            RecordDataSource
+        ).filter(
+            and_(*filters)
+        ).delete()
 
         self.session.commit()
-        return ret

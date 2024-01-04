@@ -18,4 +18,6 @@ class ResponseBuilder():
             )
         if (isinstance(self.result, BaseModel)):
             return self.result.model_dump_json()
+        if (isinstance(self.result, List)):
+            return json.dumps(self.result)
         raise Exception('cant_parse_body')

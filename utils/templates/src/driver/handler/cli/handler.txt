@@ -12,13 +12,13 @@ from channel.adapter.controller.{model_lower}.{model_lower}_{action_lower}_contr
     {model}{action}Controller
 )
 from channel.driver.handler.cli.handler_buss import (
-    {model}TokenAuthenticateHandlerBuss
+    UserTokenAuthenticateHandlerBuss
 )
 
 session = Session()
 memory = {{}}
 
-buss = {model}TokenAuthenticateHandlerBuss(memory, session)
+buss = UserTokenAuthenticateHandlerBuss(memory, session)
 
 controller = {model}{action}Controller(
     {model_lower}_{action_lower}_input_parser={device}{model}{action}InputParser(memory),

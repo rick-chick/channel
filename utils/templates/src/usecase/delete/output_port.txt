@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from channel.usecase.models import {model}{action}OutDto
 
 from typing import List
 
@@ -6,7 +7,7 @@ from typing import List
 class {model}DeleteOututPort(ABC):
 
     @abstractmethod
-    def prepare_success_view(self, {model_lower}_ids: List[int]) -> List[int]:
+    def prepare_success_view(self, {model_lower}_dto: {model}{action}OutDto) -> {model}{action}OutDto:
         pass
 
     @abstractmethod

@@ -23,7 +23,7 @@ class RecordRepository(ABC):
         pass
 
     @abstractmethod
-    def delete(self, ds_dto: RecordDeleteInDsDto) -> List[RecordDeleteOutDsDto]:
+    def delete(self, ds_dto: RecordDeleteInDsDto):
         pass
 
     @abstractmethod

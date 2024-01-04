@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from channel.driver.db.sqlalchemy import SqlalchemyRecordRepository
 from channel.driver.db.sqlalchemy.models import Base, RecordDataSource
 from channel.usecase.models import RecordCreateInDsDto
-from tests.channel.factories import RecordCreateInDsDtoFactory, RecordListInDsDtoFactory
+from tests.channel.factories import RecordCreateInDsDtoFactory, RecordDeleteInDsDtoFactory, RecordListInDsDtoFactory
 from tests.conftest import DATABASE_URL
 
 engine = create_engine(url=DATABASE_URL, echo=True)
@@ -161,5 +161,49 @@ def test_list_success():
         ))
 
         assert len(ret) == 3
+    finally:
+        session.rollback()
+
+
+def test_delete_success():
+    session = sessionmaker(engine)()
+    try:
+        target = SqlalchemyRecordRepository(session)
+
+        # あらかじめデータを登録する
+        target.create(RecordCreateInDsDtoFactory.build(
+            channel_id=5,
+            time=datetime(2023, 12, 23)
+        ))
+        target.create(RecordCreateInDsDtoFactory.build(
+            channel_id=5,
+            time=datetime(2023, 12, 24)
+        ))
+        target.create(RecordCreateInDsDtoFactory.build(
+            channel_id=6,
+            time=datetime(2023, 12, 25)
+        ))
+        target.create(RecordCreateInDsDtoFactory.build(
+            channel_id=7,
+            time=datetime(2023, 12, 26)
+        ))
+
+        ret = target.list(RecordListInDsDtoFactory.build(
+            channel_ids=[5, 6, 7],
+        ))
+
+        assert len(ret) == 4
+
+        target.delete(RecordDeleteInDsDtoFactory.build(
+            channel_ids=[5, 6],
+        ))
+
+        ret = target.list(RecordListInDsDtoFactory.build(
+            channel_ids=[5, 6, 7],
+        ))
+
+        assert len(ret) == 1
+        assert ret[0].channel_id == 7
+
     finally:
         session.rollback()

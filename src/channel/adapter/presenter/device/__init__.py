@@ -5,3 +5,5 @@ from .device_authenticate_view import *
 
 from .device_list_presenter import *
 from .device_list_view import *
+from .device_delete_presenter import *
+from .device_delete_view import *

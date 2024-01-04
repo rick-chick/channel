@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 from channel.driver.db.sqlalchemy import SqlalchemyChannelRepository
 from channel.driver.db.sqlalchemy.models import Base, ChannelDataSource
-from tests.channel.factories import ChannelCreateInDsDtoFactory, ChannelListInDsDtoFactory
+from tests.channel.factories import ChannelCreateInDsDtoFactory, ChannelDeleteInDsDtoFactory, ChannelListInDsDtoFactory
 from tests.conftest import DATABASE_URL
 
 engine = create_engine(url=DATABASE_URL, echo=True)
@@ -101,6 +101,34 @@ def test_list_success():
         ret = target.list(ChannelListInDsDtoFactory.build(
             device_id=None,
             device_ids=[1, 2]
+        ))
+
+        assert len(ret) == 2
+        assert channel1.id in [ds_dto.id for ds_dto in ret]
+        assert channel3.id in [ds_dto.id for ds_dto in ret]
+
+    finally:
+        session.rollback()
+
+
+def test_delete_success():
+    session = sessionmaker(engine)()
+    try:
+        target = SqlalchemyChannelRepository(session)
+
+        # 登録
+        channel1 = target.create(ChannelCreateInDsDtoFactory.build(
+            device_id=4
+        ))
+        channel2 = target.create(ChannelCreateInDsDtoFactory.build(
+            device_id=6
+        ))
+        channel3 = target.create(ChannelCreateInDsDtoFactory.build(
+            device_id=5
+        ))
+
+        ret = target.delete(ChannelDeleteInDsDtoFactory.build(
+            device_ids=[4, 5]
         ))
 
         assert len(ret) == 2

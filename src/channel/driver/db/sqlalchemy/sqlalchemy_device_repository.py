@@ -103,13 +103,18 @@ class SqlalchemyDeviceRepository(DeviceRepository):
 
     def delete(
         self,
-        device_ds_dto: DeviceDeleteInDsDto
+        ds_dto: DeviceDeleteInDsDto
     ) -> List[DeviceDeleteOutDsDto]:
-        if device_ds_dto.ids is None:
+        if ds_dto.ids is None:
             return []
 
-        device_ds = self.session.query(DeviceDataSource).filter(
-            DeviceDataSource.id.in_(device_ds_dto.ids)).all()
+        device_ds = self.session.query(
+            DeviceDataSource
+        ).filter(
+            DeviceDataSource.id.in_(ds_dto.ids),
+            DeviceDataSource.user_id == ds_dto.user_id
+        ).all()
+
         if not device_ds:
             return []
 

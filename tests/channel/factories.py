@@ -6,6 +6,8 @@ from channel.usecase.models import (
     ChannelCreateInDto,
     ChannelCreateOutDsDto,
     ChannelCreateOutDto,
+    ChannelDeleteInDsDto,
+    ChannelDeleteOutDsDto,
     ChannelListInDsDto,
     ChannelListInDto,
     ChannelListOutDsDto,
@@ -16,6 +18,9 @@ from channel.usecase.models import (
     DeviceCreateInDto,
     DeviceCreateOutDsDto,
     DeviceCreateOutDto,
+    DeviceDeleteInDto,
+    DeviceDeleteOutDsDto,
+    DeviceDeleteOutDto,
     DeviceListInDsDto,
     DeviceListInDto,
     DeviceListOutDsDto,
@@ -26,6 +31,8 @@ from channel.usecase.models import (
     RecordCreateInDto,
     RecordCreateOutDsDto,
     RecordCreateOutDto,
+    RecordDeleteInDsDto,
+    RecordDeleteOutDsDto,
     RecordListDataOutDto,
     RecordListInDsDto,
     RecordListInDto,
@@ -222,6 +229,18 @@ class DeviceListInDtoFactory(ModelFactory[DeviceListInDto]):
     __model__ = DeviceListInDto
 
 
+class DeviceDeleteOutDtoFactory(ModelFactory[DeviceDeleteOutDto]):
+    __model__ = DeviceDeleteOutDto
+
+
+class DeviceDeleteInDtoFactory(ModelFactory[DeviceDeleteInDto]):
+    __model__ = DeviceDeleteInDto
+
+
+class DeviceDeleteOutDsDtoFactory(ModelFactory[DeviceDeleteOutDsDto]):
+    __model__ = DeviceDeleteOutDsDto
+
+
 #################################################
 # Channel
 #################################################
@@ -258,6 +277,14 @@ class ChannelListInDtoFactory(ModelFactory[ChannelListInDto]):
 
 class ChannelListOutDtoFactory(ModelFactory[ChannelListOutDto]):
     __model__ = ChannelListOutDto
+
+
+class ChannelDeleteOutDsDtoFactory(ModelFactory[ChannelDeleteOutDsDto]):
+    __model__ = ChannelDeleteOutDsDto
+
+
+class ChannelDeleteInDsDtoFactory(ModelFactory[ChannelDeleteInDsDto]):
+    __model__ = ChannelDeleteInDsDto
 
 #################################################
 # Record
@@ -303,3 +330,11 @@ class RecordListIDataOutDtoFactory(ModelFactory[RecordListDataOutDto]):
 
 class RecordListOutDtoFactory(ModelFactory[RecordListOutDto]):
     __model__ = RecordListOutDto
+
+
+class RecordDeleteOutDsDtoFactory(ModelFactory[RecordDeleteOutDsDto]):
+    __model__ = RecordDeleteOutDsDto
+
+
+class RecordDeleteInDsDtoFactory(ModelFactory[RecordDeleteInDsDto]):
+    __model__ = RecordDeleteInDsDto

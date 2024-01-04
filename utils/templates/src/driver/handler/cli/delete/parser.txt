@@ -1,0 +1,17 @@
+from typing import Any, Dict
+from channel.adapter.controller.input_parser import InputParser
+from channel.usecase.models import {model}{action}InDto
+from channel.driver.handler.cli.parser import ArgsDto
+
+
+class Cli{model}{action}InputParser(InputParser):
+
+    def __init__(self, memory: Dict[str, Any]):
+        self.memory = memory
+
+    def parse(self, in_dto: ArgsDto) -> {model}{action}InDto:
+        if ('args' in self.memory):
+            return {model}{action}InDto(**in_dto.body)
+
+        self.memory['args'] = in_dto
+        return {model}{action}InDto(**in_dto.body)

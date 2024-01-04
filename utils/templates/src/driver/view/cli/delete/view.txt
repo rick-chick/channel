@@ -1,0 +1,23 @@
+from typing import Any
+from channel.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_view import {model}{action}View
+from channel.usecase.models import {model}{action}OutDto
+
+
+class Cli{model}{action}View({model}{action}View):
+
+    def __init__(self):
+        self.exceptions = []
+        self.{model_lower}: Any = None
+
+    def add_result(self, {model_lower}_{action_lower}_out_dto: {model}{action}OutDto):
+        self.{model_lower} = {model_lower}_{action_lower}_out_dto
+
+    def add_exception(self, exception: Exception):
+        self.exceptions.append(exception)
+
+    def render(self):
+        if len(self.exceptions) > 0:
+            for e in self.exceptions:
+                print(e)
+            return
+        print(self.{model_lower})

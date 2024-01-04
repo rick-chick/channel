@@ -43,10 +43,13 @@ class {model}DeleteInteractor({model}DeleteInputPort):
                 {model_lower}.id for {model_lower} in {model_lower}_ds_dtos\
                 if {model_lower}.id is not None]
 
-            self.presenter.prepare_success_view(
-                deleted_{model_lower}_ids)
+            result = {model}{action}OutDto(
+                ids=deleted_{model_lower}_ids
+            )
 
-            return deleted_{model_lower}_ids
+            self.presenter.prepare_success_view(result)
+
+            return result
 
         except ValidationError as e:
             ex = ValidationException(e)
