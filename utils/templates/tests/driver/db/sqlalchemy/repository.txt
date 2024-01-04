@@ -47,28 +47,46 @@ def scope_module():
 
 
 def test_find_by_id_success():
-    target = {device}{model}Repository(engine=engine)
+    session = sessionmaker(engine)()
+    try:
+        target = {device}{model}Repository(session)
 
-    res = target.find_by_id({model_lower}_ds.id)
-    assert res is not None
+        res = target.find_by_id({model_lower}_ds.id)
+        assert res is not None
+    finally:
+        session.rollback()
 
 
 def test_find_by_id_when_id_is_missing():
-    target = {device}{model}Repository(engine=engine)
-    res = target.find_by_id(-1)
-    assert res is None
+    session = sessionmaker(engine)()
+    try:
+        target = {device}{model}Repository(session)
+        res = target.find_by_id(-1)
+        assert res is None
+    finally:
+        session.rollback()
 
 
 def test_find_by_id_when_id_is_none():
-    target = {device}{model}Repository(engine=engine)
-    res = target.find_by_id(None)
-    assert res is None
+    session = sessionmaker(engine)()
+    try:
+        target = {device}{model}Repository(session)
+        res = target.find_by_id(None)
+        assert res is None
+
+    finally:
+        session.rollback()
 
 
 def test_create_success():
-    target = {device}{model}Repository(engine=engine)
-    {model_lower}_ds_dto = {model}CreateInDsDtoFactory.build()
-    {model_lower}_output_ds_dto = target.create({model_lower}_ds_dto)
+    session = sessionmaker(engine)()
+    try:
+        target = {device}{model}Repository(session)
+        {model_lower}_ds_dto = {model}CreateInDsDtoFactory.build()
+        {model_lower}_output_ds_dto = target.create({model_lower}_ds_dto)
 
-    assert {model_lower}_output_ds_dto is not None
-    assert {model_lower}_output_ds_dto.id is not None
+        assert {model_lower}_output_ds_dto is not None
+        assert {model_lower}_output_ds_dto.id is not None
+
+    finally:
+        session.rollback()

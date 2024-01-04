@@ -24,4 +24,8 @@ controller = UserAuthenticateController(
     user_authenticate_view=CliUserAuthenticateView(),
 )
 
-controller.handle(parse())
+try:
+    controller.handle(parse())
+    session.commit()
+except Exception:
+    session.rollback()

@@ -29,4 +29,9 @@ controller = {model}{action}Controller(
 )
 buss.add(controller)
 
-buss.handle(parse())
+try:
+    buss.handle(parse())
+    session.commit()
+
+expect:
+    session.rollback()

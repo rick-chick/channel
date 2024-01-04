@@ -22,4 +22,8 @@ controller = DeviceCreateController(
 
 buss = UserTokenAuthenticateHandlerBuss(memory, session)
 buss.add(controller)
-buss.handle(parse())
+try:
+    buss.handle(parse())
+    session.commit()
+except Exception:
+    session.rollback()

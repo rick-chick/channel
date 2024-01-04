@@ -66,7 +66,6 @@ class {device}{model}Repository({model}Repository):
 
         {model_lower}_ds = {device}{model}Translator.create({model_lower}_ds_dto)
         self.session.add({model_lower}_ds)
-        self.session.commit()
         return {model}CreateOutDsDto.model_validate({model_lower}_ds)
 
     def update(
@@ -78,7 +77,6 @@ class {device}{model}Repository({model}Repository):
         if {model_lower}_ds is None:
             return None
         {model_lower}_ds = {device}{model}Translator.update({model_lower}_ds, {model_lower}_ds_dto)
-        self.session.commit()
         return {model}UpdateOutDsDto.model_validate({model_lower}_ds)
 
     def delete(
@@ -98,5 +96,4 @@ class {device}{model}Repository({model}Repository):
             ret.append({model}DeleteOutDsDto.model_validate(ds))
             self.session.delete(ds)
 
-        self.session.commit()
         return ret

@@ -83,7 +83,11 @@ def user_update():
         user_update_view=view,
     )
     buss.add(controller)
-    buss.handle(request)
+    try:
+        buss.handle(request)
+        session.commit()
+    except Exception:
+        session.rollback()
     return view.render()
 
 
@@ -103,7 +107,11 @@ def device_create():
     )
     buss.add(controller)
 
-    buss.handle(request)
+    try:
+        buss.handle(request)
+        session.commit()
+    except Exception:
+        session.rollback()
     return view.render()
 
 
@@ -119,11 +127,17 @@ def device_delete():
         device_delete_input_parser=FlaskDeviceDeleteInputParser(memory),
         user_session=MemoryUserRepository(memory),
         device_repository=SqlalchemyDeviceRepository(session),
+        channel_repository=SqlalchemyChannelRepository(session),
+        record_repository=SqlalchemyRecordRepository(session),
         device_delete_view=view,
     )
     buss.add(controller)
 
-    buss.handle(request)
+    try:
+        buss.handle(request)
+        session.commit()
+    except Exception:
+        session.rollback()
     return view.render()
 
 
@@ -144,7 +158,11 @@ def device_list():
     )
     buss.add(controller)
 
-    buss.handle(request)
+    try:
+        buss.handle(request)
+        session.commit()
+    except Exception:
+        session.rollback()
     return view.render()
 
 
@@ -164,7 +182,11 @@ def channel_create():
     )
     buss.add(controller)
 
-    buss.handle(request)
+    try:
+        buss.handle(request)
+        session.commit()
+    except Exception:
+        session.rollback()
     return view.render()
 
 
@@ -185,7 +207,11 @@ def channel_list():
     )
     buss.add(controller)
 
-    buss.handle(request)
+    try:
+        buss.handle(request)
+        session.commit()
+    except Exception:
+        session.rollback()
     return view.render()
 
 
@@ -206,7 +232,11 @@ def record_create():
     )
     buss.add(controller)
 
-    buss.handle(request)
+    try:
+        buss.handle(request)
+        session.commit()
+    except Exception:
+        session.rollback()
     return view.render()
 
 
@@ -227,7 +257,11 @@ def record_list():
     )
     buss.add(controller)
 
-    buss.handle(request)
+    try:
+        buss.handle(request)
+        session.commit()
+    except Exception:
+        session.rollback()
     return view.render()
 
 

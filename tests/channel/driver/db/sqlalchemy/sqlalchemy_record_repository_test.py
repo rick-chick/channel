@@ -189,6 +189,8 @@ def test_delete_success():
         ))
 
         ret = target.list(RecordListInDsDtoFactory.build(
+            date_from=None,
+            date_to=None,
             channel_ids=[5, 6, 7],
         ))
 
@@ -199,6 +201,8 @@ def test_delete_success():
         ))
 
         ret = target.list(RecordListInDsDtoFactory.build(
+            date_from=None,
+            date_to=None,
             channel_ids=[5, 6, 7],
         ))
 

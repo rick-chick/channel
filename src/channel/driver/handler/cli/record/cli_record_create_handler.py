@@ -12,7 +12,7 @@ from channel.adapter.controller.record.record_create_controller import RecordCre
 memory = {}
 session = Session()
 
-buss = DeviceKeyAuthenticateHandlerBuss( memory, session)
+buss = DeviceKeyAuthenticateHandlerBuss(memory, session)
 
 controller = RecordCreateController(
     user_session=MemoryUserRepository(memory),
@@ -23,4 +23,8 @@ controller = RecordCreateController(
 )
 buss.add(controller)
 
-buss.handle(parse())
+try:
+    buss.handle(parse())
+    session.commit()
+except Exception:
+    session.rollback()
