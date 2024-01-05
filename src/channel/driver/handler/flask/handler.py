@@ -115,7 +115,7 @@ def device_create():
     return view.render()
 
 
-@app.route('/device', methods=["DELETE"])
+@app.route('/device/delete', methods=["POST"])
 def device_delete():
     memory = {}
     session = Session()
