@@ -81,11 +81,14 @@ class DeviceListInteractor(DeviceListInputPort):
                 values.append(
                     DeviceListDataOutDto(
                         id=ds_dto.id,
-                        channels=channels
+                        channels=channels,
+                        api_key=ds_dto.api_key
                     )
                 )
 
-            out_dto = DeviceListOutDto(values=values)
+            out_dto = DeviceListOutDto(
+                values=values,
+            )
 
             self.presenter.prepare_success_view(out_dto)
 

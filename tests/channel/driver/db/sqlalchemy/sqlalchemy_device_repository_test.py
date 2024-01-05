@@ -107,6 +107,8 @@ def test_list_success():
 
         assert device1.id in [ds_dto.id for ds_dto in device_output_ds_dto]
         assert device2.id in [ds_dto.id for ds_dto in device_output_ds_dto]
+        assert device1.api_key in [
+            ds_dto.api_key for ds_dto in device_output_ds_dto]
 
     finally:
         session.rollback()

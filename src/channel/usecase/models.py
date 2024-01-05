@@ -190,6 +190,7 @@ class DeviceListChannelDataOutDto(BaseModel):
 class DeviceListDataOutDto(BaseModel):
     id: int
     channels: List[DeviceListChannelDataOutDto]
+    api_key: str
 
 
 class DeviceListOutDto(BaseModel):
@@ -203,6 +204,7 @@ class DeviceListInDsDto(BaseModel):
 class DeviceListOutDsDto(BaseModel):
     model_config = out_ds_config
     id: int
+    api_key: str
 
 
 class DeviceDeleteInDto(BaseModel):
