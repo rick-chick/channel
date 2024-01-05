@@ -5,6 +5,7 @@ from channel.usecase.models import (
     ChannelListOutDto,
     DeviceListInDsDto,
     DeviceListOutDsDto,
+    RecordOutDsDto,
     UserSessionDsDto
 )
 
@@ -29,4 +30,11 @@ class DeviceListRepository(ABC):
         self,
         channel_dto: ChannelListInDsDto
     ) -> List[ChannelListOutDsDto]:
+        pass
+
+    @abstractmethod
+    def find_latest_record_by_channel_id(
+        self,
+        channel_id: int
+    ) -> Optional[RecordOutDsDto]:
         pass

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from sqlalchemy import and_
 
 from sqlalchemy.orm import Session
@@ -11,6 +11,7 @@ from channel.usecase.models import (
     RecordDeleteOutDsDto,
     RecordListInDsDto,
     RecordListOutDsDto,
+    RecordOutDsDto,
 )
 
 from .models import RecordDataSource
@@ -22,6 +23,24 @@ class SqlalchemyRecordRepository(RecordRepository):
 
     def __init__(self, session: Session):
         self.session = session
+
+    def find_latest_by_channel_id(
+        self,
+        channel_id: int
+    ) -> Optional[RecordOutDsDto]:
+        result = self.session.query(
+            RecordDataSource
+        ).filter(
+            RecordDataSource.channel_id == channel_id
+        ).order_by(
+            RecordDataSource.time.desc()
+        ).limit(
+            1
+        ).first()
+
+        if not result:
+            return None
+        return RecordOutDsDto.model_validate(result)
 
     def exists_by_channel_ids_time(
         self,

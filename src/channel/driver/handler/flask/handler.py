@@ -154,6 +154,7 @@ def device_list():
         user_session=MemoryUserRepository(memory),
         channel_repository=SqlalchemyChannelRepository(session),
         device_repository=SqlalchemyDeviceRepository(session),
+        record_repository=SqlalchemyRecordRepository(session),
         device_list_view=view,
     )
     buss.add(controller)

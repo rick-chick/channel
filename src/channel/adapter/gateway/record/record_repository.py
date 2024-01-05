@@ -6,10 +6,11 @@ from channel.usecase.models import (
     RecordDeleteOutDsDto,
     RecordListInDsDto,
     RecordListOutDsDto,
+    RecordOutDsDto,
 )
 
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
 
 
 class RecordRepository(ABC):
@@ -32,4 +33,11 @@ class RecordRepository(ABC):
         channel_ids: List[int],
         time: datetime
     ) -> bool:
+        pass
+
+    @abstractmethod
+    def find_latest_by_channel_id(
+        self,
+        channel_id: int
+    ) -> Optional[RecordOutDsDto]:
         pass

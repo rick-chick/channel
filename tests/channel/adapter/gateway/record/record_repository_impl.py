@@ -9,9 +9,10 @@ from channel.usecase.models import (
     RecordDeleteOutDsDto,
     RecordListInDsDto,
     RecordListOutDsDto,
+    RecordOutDsDto,
 )
 
-from typing import List
+from typing import List, Optional
 
 
 class RecordRepositoryImpl(RecordRepository):
@@ -25,8 +26,8 @@ class RecordRepositoryImpl(RecordRepository):
         self.create_in = ds_dto
         return self.create_out
 
-    def delete(self, ds_dto: RecordDeleteInDsDto) -> List[RecordDeleteOutDsDto]:
-        return []
+    def delete(self, ds_dto: RecordDeleteInDsDto):
+        pass
 
     def exists_by_channel_ids_time(
         self,
@@ -34,3 +35,9 @@ class RecordRepositoryImpl(RecordRepository):
         time: datetime
     ) -> bool:
         return False
+
+    def find_latest_by_channel_id(
+        self,
+        channel_id: int
+    ) -> Optional[RecordOutDsDto]:
+        return None

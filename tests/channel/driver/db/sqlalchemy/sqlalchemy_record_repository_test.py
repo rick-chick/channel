@@ -211,3 +211,38 @@ def test_delete_success():
 
     finally:
         session.rollback()
+
+
+def test_find_latest_by_channel_id_success():
+    session = sessionmaker(engine)()
+    try:
+        target = SqlalchemyRecordRepository(session)
+
+        # あらかじめデータを登録する
+        target.create(RecordCreateInDsDtoFactory.build(
+            channel_id=8,
+            time=datetime(2023, 12, 23)
+        ))
+        target.create(RecordCreateInDsDtoFactory.build(
+            channel_id=8,
+            time=datetime(2023, 12, 24)
+        ))
+        target.create(RecordCreateInDsDtoFactory.build(
+            channel_id=9,
+            time=datetime(2023, 12, 25)
+        ))
+        target.create(RecordCreateInDsDtoFactory.build(
+            channel_id=10,
+            time=datetime(2023, 12, 26)
+        ))
+
+        ret = target.find_latest_by_channel_id(8)
+
+        assert ret
+        assert ret.time == datetime(2023, 12, 24)
+
+        ret = target.find_latest_by_channel_id(11)
+
+        assert not ret
+    finally:
+        session.rollback()

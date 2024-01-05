@@ -185,12 +185,15 @@ class DeviceListInDto(BaseModel):
 class DeviceListChannelDataOutDto(BaseModel):
     name: str
     id: int
+    unit: str
+    record: Optional[float] = None
 
 
 class DeviceListDataOutDto(BaseModel):
     id: int
     channels: List[DeviceListChannelDataOutDto]
     api_key: str
+    latest_time: Optional[datetime]
 
 
 class DeviceListOutDto(BaseModel):
@@ -378,6 +381,13 @@ class RecordCreateInDsDto(BaseModel):
 
 
 class RecordCreateOutDsDto(BaseModel):
+    channel_id: int
+    time: datetime
+    value: float
+    model_config = out_ds_config
+
+
+class RecordOutDsDto(BaseModel):
     channel_id: int
     time: datetime
     value: float

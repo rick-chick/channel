@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from channel.usecase.models import (
-        DeviceListInDto, DeviceListOutDto)
+    DeviceListInDto, DeviceListOutDto)
 
 
 class DeviceListInputPort(ABC):

@@ -4,6 +4,7 @@ from channel.adapter.gateway.device import (
     UserSession,
     DeviceRepository
 )
+from channel.adapter.gateway.record.record_repository import RecordRepository
 from channel.adapter.presenter.device.device_list_presenter import DeviceListPresenter
 from channel.adapter.presenter.device.device_list_view import DeviceListView
 from channel.adapter.controller.handler import Handler
@@ -22,12 +23,14 @@ class DeviceListController(Handler):
         user_session: UserSession,
         device_repository: DeviceRepository,
         channel_repository: ChannelRepository,
+        record_repository: RecordRepository,
         device_list_view: DeviceListView,
         device_list_input_parser: InputParser,
     ):
         self.gateway = DeviceListGateway(
             device_repository=device_repository,
             channel_repository=channel_repository,
+            record_repository=record_repository,
             user_session=user_session,
         )
 

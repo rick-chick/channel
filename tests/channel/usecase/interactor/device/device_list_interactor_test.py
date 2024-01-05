@@ -6,6 +6,7 @@ from channel.usecase.models import (
     DeviceListOutDsDto,
     DeviceListInDto,
     DeviceListOutDto,
+    RecordOutDsDto,
     UserSessionDsDto
 )
 from channel.usecase.output_port.device import DeviceListOututPort
@@ -17,6 +18,7 @@ from tests.channel.factories import (
     DeviceListOutDsDtoFactory,
     DeviceListInDtoFactory,
     DeviceListOutDtoFactory,
+    RecordOutDsDtoFactory,
     UserSessionDsDtoFactory
 )
 
@@ -26,7 +28,11 @@ from typing import Optional, List
 valid_device_in_dto = DeviceListInDtoFactory.build()
 valid_device_ds_dto = DeviceListOutDsDtoFactory.batch(3)
 valid_session_user_ds_dto = UserSessionDsDtoFactory.build()
-valid_channel_ds_dto = ChannelListOutDsDtoFactory.batch(3)
+valid_channel_ds_dto = ChannelListOutDsDtoFactory.batch(
+    3,
+    device_id=valid_device_ds_dto[0].id
+)
+valid_find_latest_record_by_channel_id = RecordOutDsDtoFactory.build()
 
 
 class DeviceListOututPortImpl(DeviceListOututPort):
@@ -49,6 +55,9 @@ class DeviceListRepositoryImpl(DeviceListRepository):
     list_output: List[DeviceListOutDsDto] = valid_device_ds_dto
     load_session_user_output: Optional[UserSessionDsDto] = valid_session_user_ds_dto
     list_channel_out: List[ChannelListOutDsDto] = valid_channel_ds_dto
+    find_latest_record_by_channel_id_output: Optional[
+        RecordOutDsDto] = valid_find_latest_record_by_channel_id
+    find_latest_record_by_channel_id_input = []
 
     def list(
         self,
@@ -66,6 +75,13 @@ class DeviceListRepositoryImpl(DeviceListRepository):
     ) -> List[ChannelListOutDsDto]:
         self.list_channel_in = channel_dto
         return self.list_channel_out
+
+    def find_latest_record_by_channel_id(
+        self,
+        channel_id: int
+    ) -> Optional[RecordOutDsDto]:
+        self.find_latest_record_by_channel_id_input.append(channel_id)
+        return self.find_latest_record_by_channel_id_output
 
 
 def create_interactor(
@@ -86,6 +102,14 @@ def test_list_success():
     target.list(valid_device_in_dto)
 
     assert presenter.device is not None
+    assert len(presenter.device.values) > 0
+    assert len(presenter.device.values[0].channels) > 0
+    assert presenter.device.values[0].channels[0].record == valid_find_latest_record_by_channel_id.value
+    assert presenter.device.values[0].latest_time == valid_find_latest_record_by_channel_id.time
+    assert gateway.find_latest_record_by_channel_id_input[0] in [
+        dto.id for dto in valid_channel_ds_dto
+    ]
+    assert presenter.device.values[0].channels[0].unit == valid_channel_ds_dto[0].unit
 
 
 def test_list_fail():

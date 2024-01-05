@@ -38,6 +38,7 @@ from channel.usecase.models import (
     RecordListInDto,
     RecordListOutDsDto,
     RecordListOutDto,
+    RecordOutDsDto,
     UserAuthenticateInDto,
     UserAuthenticateOutDsDto,
     UserAuthenticateOutDto,
@@ -338,3 +339,7 @@ class RecordDeleteOutDsDtoFactory(ModelFactory[RecordDeleteOutDsDto]):
 
 class RecordDeleteInDsDtoFactory(ModelFactory[RecordDeleteInDsDto]):
     __model__ = RecordDeleteInDsDto
+
+
+class RecordOutDsDtoFactory(ModelFactory[RecordOutDsDto]):
+    __model__ = RecordOutDsDto
