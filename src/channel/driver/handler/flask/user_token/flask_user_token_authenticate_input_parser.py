@@ -18,4 +18,6 @@ class FlaskUserTokenAuthenticateInputParser(InputParser):
         if "Authorization" in in_dto.headers:
             token = in_dto.headers["Authorization"].split(" ")[1]
             self.memory['token'] = token
+        else:
+            self.memory['token'] = ''
         return UserTokenAuthenticateInDto(token=self.memory['token'])

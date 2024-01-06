@@ -50,6 +50,10 @@ from channel.usecase.models import (
     UserSessionDsDto,
     UserTokenAuthenticateInDto,
     UserTokenAuthenticateOutDto,
+    UserTokenCreateInDsDto,
+    UserTokenCreateOutDsDto,
+    UserTokenRefreshInDto,
+    UserTokenRefreshOutDto,
     UserUpdateInDsDto,
     UserUpdateInDto,
     UserUpdateOutDsDto,
@@ -175,6 +179,23 @@ class UserTokenAuthenticateInDtoFactory(ModelFactory[UserTokenAuthenticateInDto]
 
 class UserTokenAuthenticateOutDtoFactory(ModelFactory[UserTokenAuthenticateOutDto]):
     __model__ = UserTokenAuthenticateOutDto
+
+
+class UserTokenRefreshInDtoFactory(ModelFactory[UserTokenRefreshInDto]):
+    __model__ = UserTokenRefreshInDto
+
+
+class UserTokenRefreshOutDtoFactory(ModelFactory[UserTokenRefreshOutDto]):
+    __model__ = UserTokenRefreshOutDto
+
+
+class UserTokenCreateInDsDtoFactory(ModelFactory[UserTokenCreateInDsDto]):
+    __model__ = UserTokenCreateInDsDto
+
+
+class UserTokenCreateOutDsDtoFactory(ModelFactory[UserTokenCreateOutDsDto]):
+    __model__ = UserTokenCreateOutDsDto
+
 
 #################################################
 # Device

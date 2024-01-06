@@ -127,7 +127,15 @@ def test_delete_success():
             device_id=5
         ))
 
+        ret = target.list(ChannelListInDsDtoFactory.build(
+            device_id=None,
+            device_ids=[4, 5, 6]
+        ))
+
+        assert len(ret) == 3
+
         ret = target.delete(ChannelDeleteInDsDtoFactory.build(
+            ids=None,
             device_ids=[4, 5]
         ))
 

@@ -8,5 +8,5 @@ ret=`python "$file" --json '
     "password": "test@admin.pass"
   }
 '`
-export token=`python "$RELATIVE_DIR/take_token.py" $ret`
-echo $token
+python "$RELATIVE_DIR/take_token.py" $ret
+source ./output_script.sh

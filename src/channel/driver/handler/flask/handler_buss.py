@@ -16,8 +16,6 @@ from channel.driver.db.sqlalchemy.sqlalchemy_user_repository import (
 from channel.driver.handler.flask.device.flask_device_authenticate_input_parser import FlaskDeviceAuthenticateInputParser
 from channel.driver.handler.flask.user_token.flask_user_token_authenticate_input_parser import FlaskUserTokenAuthenticateInputParser
 from channel.driver.view.flask.device.flask_device_authenticate_view import FlaskDeviceAuthenticateView
-# from channel.driver.handler.flask.device.flask_device_authenticate_input_parser import FlaskDeviceAuthenticateInputParser
-# from channel.driver.view.flask.device.flask_device_authenticate_view import FlaskDeviceAuthenticateView
 from channel.driver.view.flask.user_token import FlaskUserTokenAuthenticateView
 
 
@@ -41,9 +39,8 @@ class FlaskHandlerBuss():
             try:
                 handler.handle(input_dto)
             except Exception as ex:
-                print(ex)
                 self.session.rollback()
-                return
+                raise ex
         self.session.commit()
 
 

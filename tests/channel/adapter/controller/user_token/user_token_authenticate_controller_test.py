@@ -25,7 +25,6 @@ def test_success():
     # ユーザがセッションに保存されることを確認する用
     user_session = UserSessionImpl()
 
-
     # トークン認証用の入力
     input_parser = UserTokenAuthenticateInputParserImpl()
     input_parser.parse_out = UserTokenAuthenticateInDtoFactory.build(

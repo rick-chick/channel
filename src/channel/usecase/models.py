@@ -101,6 +101,7 @@ class UserAuthenticateInDto(BaseModel):
 
 class UserAuthenticateOutDto(BaseModel):
     token: str
+    refresh_token: str
 
 
 class UserAuthenticateInDsDto(BaseModel):
@@ -124,6 +125,38 @@ class UserTokenAuthenticateInDto(BaseModel):
 
 class UserTokenAuthenticateOutDto(BaseModel):
     id: str
+
+
+class UserTokenRefreshInDto(BaseModel):
+    user_id: str
+    refresh_token: str
+
+
+class UserTokenRefreshOutDto(BaseModel):
+    token: str
+    refresh_token: str
+
+
+class UserTokenCreateInDsDto(BaseModel):
+    user_id: str
+    token: str
+    created_by: str
+    updated_by: str
+
+
+class UserTokenCreateOutDsDto(BaseModel):
+    user_id: str
+    token: str
+    model_config = out_ds_config
+
+
+class UserTokenDeleteInDsDto(BaseModel):
+    user_id: str
+    date_before: datetime
+
+
+class UserTokenDeleteOutDsDto(BaseModel):
+    pass
 
 
 ###################################################

@@ -77,4 +77,12 @@ class RecordDataSource(Base):
     channel_id: Mapped[int] = mapped_column(Integer, primary_key=True)
     time: Mapped[datetime] = mapped_column(DateTime, primary_key=True)
     value: Mapped[float] = mapped_column(Float, nullable=False)
-    created_at: Mapped[DateTime] = mapped_column(DateTime, default=datetime.now(), nullable=False)
+    created_at: Mapped[DateTime] = mapped_column(
+        DateTime, default=datetime.now(), nullable=False)
+
+
+class UserTokenDataSource(Base, TimestampMixin):
+    __tablename__ = 'user_tokens'
+
+    user_id: Mapped[str] = mapped_column(String, primary_key=True)
+    token: Mapped[str] = mapped_column(String, primary_key=True)

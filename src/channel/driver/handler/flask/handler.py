@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, jsonify, redirect, request, url_for
 from channel.adapter.controller.channel.channel_create_controller import ChannelCreateController
 from channel.adapter.controller.channel.channel_list_controller import ChannelListController
 from channel.adapter.controller.device.device_create_controller import DeviceCreateController
@@ -11,17 +11,19 @@ from channel.adapter.controller.user.user_authenticate_controller import (
     UserAuthenticateController,
 )
 from channel.adapter.controller.user.user_update_controller import UserUpdateController
+from channel.adapter.controller.user_token.user_token_refresh_controller import UserTokenRefreshController
 from channel.driver.db.memory.memory_device_repository import MemoryDeviceRepository
 from channel.driver.db.memory.memory_user_repository import MemoryUserRepository
 from channel.driver.db.sqlalchemy.conf import Session
 from channel.driver.db.sqlalchemy.sqlalchemy_channel_repository import SqlalchemyChannelRepository
 from channel.driver.db.sqlalchemy.sqlalchemy_device_repository import SqlalchemyDeviceRepository
 from channel.driver.db.sqlalchemy.sqlalchemy_record_repository import SqlalchemyRecordRepository
+from channel.driver.db.sqlalchemy.sqlalchemy_user_token_repository import SqlalchemyUserTokenRepository
 from channel.driver.db.sqlalchemy.sqlalchemy_user_repository import (
     SqlalchemyUserRepository,
 )
 from channel.driver.env import ALLOWD_ORIGINS
-from channel.driver.handler.cli.handler_buss import UserTokenAuthenticateHandlerBuss
+from channel.driver.handler.cli.handler_buss import HandlerBuss, UserTokenAuthenticateHandlerBuss
 from channel.driver.handler.flask.channel.flask_channel_create_input_parser import FlaskChannelCreateInputParser
 from channel.driver.handler.flask.channel.flask_channel_list_input_parser import FlaskChannelListInputParser
 from channel.driver.handler.flask.device.flask_device_create_input_parser import FlaskDeviceCreateInputParser
@@ -34,6 +36,7 @@ from channel.driver.handler.flask.user.flask_user_authenticate_input_parser impo
     FlaskUserAuthenticateInputParser,
 )
 from channel.driver.handler.flask.user.flask_user_update_input_parser import FlaskUserUpdateInputParser
+from channel.driver.handler.flask.user_token.flask_user_token_refresh_input_parser import FlaskUserTokenRefreshInputParser
 from channel.driver.view.flask.channel.flask_channel_create_view import FlaskChannelCreateView
 from channel.driver.view.flask.channel.flask_channel_list_view import FlaskChannelListView
 from channel.driver.view.flask.device.flask_device_create_view import FlaskDeviceCreateView
@@ -46,6 +49,9 @@ from channel.driver.view.flask.user.flask_user_authenticate_view import (
 )
 from channel.driver.view.flask.user.flask_user_update_view import FlaskUserUpdateView
 from flask_cors import CORS
+from channel.driver.view.flask.user_token.flask_user_token_refresh_view import FlaskUserTokenRefreshView
+
+from channel.usecase.exception import UnauthenticateException
 
 app = Flask(__name__)
 CORS(app, origins=ALLOWD_ORIGINS)
@@ -68,6 +74,26 @@ def user_authenticate():
     return view.render()
 
 
+@app.route('/user_token/refresh', methods=["POST"])
+def user_token_refresh():
+    memory = {}
+    session = Session()
+
+    buss = HandlerBuss(memory, session)
+
+    view = FlaskUserTokenRefreshView()
+    controller = UserTokenRefreshController(
+        user_token_refresh_input_parser=FlaskUserTokenRefreshInputParser(
+            memory),
+        user_token_repository=SqlalchemyUserTokenRepository(session),
+        user_repository=SqlalchemyUserRepository(session),
+        user_token_refresh_view=view,
+    )
+    buss.add(controller)
+    buss.handle(request)
+    return view.render()
+
+
 @app.route('/user', methods=["PUT"])
 def user_update():
     memory = {}
@@ -83,11 +109,7 @@ def user_update():
         user_update_view=view,
     )
     buss.add(controller)
-    try:
-        buss.handle(request)
-        session.commit()
-    except Exception:
-        session.rollback()
+    buss.handle(request)
     return view.render()
 
 
@@ -107,11 +129,7 @@ def device_create():
     )
     buss.add(controller)
 
-    try:
-        buss.handle(request)
-        session.commit()
-    except Exception:
-        session.rollback()
+    buss.handle(request)
     return view.render()
 
 
@@ -133,11 +151,7 @@ def device_delete():
     )
     buss.add(controller)
 
-    try:
-        buss.handle(request)
-        session.commit()
-    except Exception:
-        session.rollback()
+    buss.handle(request)
     return view.render()
 
 
@@ -159,11 +173,7 @@ def device_list():
     )
     buss.add(controller)
 
-    try:
-        buss.handle(request)
-        session.commit()
-    except Exception:
-        session.rollback()
+    buss.handle(request)
     return view.render()
 
 
@@ -183,11 +193,7 @@ def channel_create():
     )
     buss.add(controller)
 
-    try:
-        buss.handle(request)
-        session.commit()
-    except Exception:
-        session.rollback()
+    buss.handle(request)
     return view.render()
 
 
@@ -208,11 +214,7 @@ def channel_list():
     )
     buss.add(controller)
 
-    try:
-        buss.handle(request)
-        session.commit()
-    except Exception:
-        session.rollback()
+    buss.handle(request)
     return view.render()
 
 
@@ -233,11 +235,7 @@ def record_create():
     )
     buss.add(controller)
 
-    try:
-        buss.handle(request)
-        session.commit()
-    except Exception:
-        session.rollback()
+    buss.handle(request)
     return view.render()
 
 
@@ -258,12 +256,25 @@ def record_list():
     )
     buss.add(controller)
 
-    try:
-        buss.handle(request)
-        session.commit()
-    except Exception:
-        session.rollback()
+    buss.handle(request)
     return view.render()
+
+
+@app.errorhandler(UnauthenticateException)
+def handle_unauthenticate_exception(error):
+    response = jsonify({'error': 'Unauthenticated'})
+    response.status_code = 401
+    return response
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return redirect('/')
+
+
+@app.errorhandler(405)
+def page_method_not_allowed(e):
+    return redirect('/')
 
 
 if __name__ == "__main__":

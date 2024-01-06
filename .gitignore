@@ -18,3 +18,4 @@ dist/
 tags
 .tags
 channel.egg-info/
+output_script.sh

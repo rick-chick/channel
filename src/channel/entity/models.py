@@ -24,8 +24,10 @@ class User(BaseModel):
             return False
         return pwd_context.verify(self.password, self.password_hash)
 
-    def create_jwt(self) -> str:
-        expiration_minutes = 10
+    def create_jwt(
+        self,
+        expiration_minutes: int = 10
+    ) -> str:
         expiration_time = datetime.utcnow() + timedelta(minutes=expiration_minutes)
         return jwt.encode(
             {

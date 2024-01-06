@@ -5,6 +5,7 @@ from channel.entity.models import User
 from tests.channel.adapter.controller.user.user_authenticate_input_parser_impl import (
     UserAuthenticateInputParserImpl,
 )
+from tests.channel.adapter.gateway.user_token.user_token_repository_impl import UserTokenRepositoryImpl
 from tests.channel.adapter.gateway.user.user_repository_impl import UserRepositoryImpl
 from tests.channel.adapter.gateway.user.user_session_impl import UserSessionImpl
 from tests.channel.adapter.presenter.user.user_authenticate_view_impl import (

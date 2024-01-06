@@ -3,6 +3,7 @@ from channel.usecase.repository.user import UserAuthenticateRepository
 from channel.usecase.output_port.user import UserAuthenticateOututPort
 
 from channel.usecase.models import (
+    UserTokenCreateInDsDto,
     UserAuthenticateInDto,
     UserAuthenticateOutDto,
     UserSessionDsDto,
@@ -53,7 +54,8 @@ class UserAuthenticateInteractor(UserAuthenticateInputPort):
             ))
 
             user_out_dto = UserAuthenticateOutDto(
-                token=user.create_jwt()
+                token=user.create_jwt(10),
+                refresh_token=user.create_jwt(30),
             )
 
             self.presenter.prepare_success_view(

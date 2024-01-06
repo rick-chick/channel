@@ -82,7 +82,7 @@ class SqlalchemyChannelRepository(ChannelRepository):
 
         channel_ds = SqlalchemyChannelTranslator.create(ds_dto)
         self.session.add(channel_ds)
-        self.session.commit()
+        self.session.flush()
         return ChannelCreateOutDsDto.model_validate(channel_ds)
 
     def update(
@@ -96,7 +96,6 @@ class SqlalchemyChannelRepository(ChannelRepository):
             return None
         channel_ds = SqlalchemyChannelTranslator.update(
             channel_ds, ds_dto)
-        self.session.commit()
         return ChannelUpdateOutDsDto.model_validate(channel_ds)
 
     def delete(
@@ -121,5 +120,4 @@ class SqlalchemyChannelRepository(ChannelRepository):
             ret.append(ChannelDeleteOutDsDto.model_validate(ds))
             self.session.delete(ds)
 
-        self.session.commit()
         return ret

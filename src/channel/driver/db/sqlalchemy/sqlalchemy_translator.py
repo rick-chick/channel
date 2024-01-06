@@ -1,4 +1,5 @@
 from channel.usecase.models import (
+    UserTokenCreateInDsDto,
     UserCreateInDsDto,
     DeviceCreateInDsDto,
     ChannelCreateInDsDto,
@@ -7,6 +8,7 @@ from channel.usecase.models import (
 )
 
 from channel.driver.db.sqlalchemy.models import (
+    UserTokenDataSource,
     UserDataSource,
     DeviceDataSource,
     ChannelDataSource,
@@ -54,5 +56,13 @@ class SqlalchemyRecordTranslator():
     @classmethod
     def create(cls, record_ds_dto: RecordCreateInDsDto) -> RecordDataSource:
         return RecordDataSource(
+            ** record_ds_dto.model_dump()
+        )
+
+
+class SqlalchemyUserTokenTranslator():
+    @classmethod
+    def create(cls, record_ds_dto: UserTokenCreateInDsDto) -> UserTokenDataSource:
+        return UserTokenDataSource(
             ** record_ds_dto.model_dump()
         )

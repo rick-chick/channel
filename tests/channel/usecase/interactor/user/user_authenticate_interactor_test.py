@@ -9,10 +9,12 @@ from channel.usecase.models import (
     UserAuthenticateOutDto,
     UserOutDsDto,
     UserSessionDsDto,
+    UserTokenCreateInDsDto,
+    UserTokenCreateOutDsDto,
 )
 from channel.usecase.output_port.user import UserAuthenticateOututPort
 from channel.usecase.repository.user import UserAuthenticateRepository
-from tests.channel.factories import UserAuthenticateInDtoFactory, UserOutDsDtoFactory
+from tests.channel.factories import UserAuthenticateInDtoFactory, UserOutDsDtoFactory, UserTokenCreateOutDsDtoFactory
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
@@ -28,8 +30,8 @@ class UserAuthenticateOututPortImpl(UserAuthenticateOututPort):
         self.exceptions = []
         self.user: Optional[UserAuthenticateOutDto] = None
 
-    def prepare_fail_view(self, error: Exception):
-        self.exceptions.append(error)
+    def prepare_fail_view(self, exception: Exception):
+        self.exceptions.append(exception)
 
     def prepare_success_view(self, user: UserAuthenticateOutDto):
         self.user = user

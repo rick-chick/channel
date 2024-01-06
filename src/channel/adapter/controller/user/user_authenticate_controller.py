@@ -2,6 +2,7 @@ from typing import Any
 
 from channel.adapter.controller.handler import Handler
 from channel.adapter.controller.input_parser import InputParser
+from channel.adapter.gateway.user_token.user_token_repository import UserTokenRepository
 from channel.adapter.gateway.user import (
     UserAuthenticateGateway,
     UserRepository,

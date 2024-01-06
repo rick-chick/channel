@@ -3,6 +3,7 @@ from channel.adapter.controller.user.user_authenticate_controller import (
 )
 from channel.driver.db.memory.memory_user_repository import MemoryUserRepository
 from channel.driver.db.sqlalchemy.conf import engine, Session
+from channel.driver.db.sqlalchemy.sqlalchemy_user_token_repository import SqlalchemyUserTokenRepository
 from channel.driver.db.sqlalchemy.sqlalchemy_user_repository import (
     SqlalchemyUserRepository,
 )
