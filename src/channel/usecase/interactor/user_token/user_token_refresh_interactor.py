@@ -42,13 +42,13 @@ class UserTokenRefreshInteractor(UserTokenRefreshInputPort):
             if not user_token.is_authenticated():
                 raise UnauthenticateException
 
-            # トークンのユーザとユーザが異なるならばエラー
-            if not user_token_dto.user_id == user_token.id:
+            # ユーザIDが得られなければエラー
+            if not user_token.id:
                 raise UnauthenticateException
 
             # ユーザの取得
             user_ds_dto = self.gateway.find_user_by_id(
-                user_token_dto.user_id
+                user_token.id
             )
 
             # ユーザがいなければエラー
@@ -58,7 +58,7 @@ class UserTokenRefreshInteractor(UserTokenRefreshInputPort):
             # リフレッシュトークンの存在チェック
             exist_token = self.gateway.exists_user_token_by_user_id_and_token(
                 token=user_token_dto.refresh_token,
-                user_id=user_token_dto.user_id
+                user_id=user_token.id
             )
 
             if exist_token:

@@ -128,7 +128,6 @@ class UserTokenAuthenticateOutDto(BaseModel):
 
 
 class UserTokenRefreshInDto(BaseModel):
-    user_id: str
     refresh_token: str
 
 

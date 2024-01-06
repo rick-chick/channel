@@ -56,7 +56,7 @@ class UserTokenRefreshRepositoryImpl(UserTokenRefreshRepository):
 
     create_input: Optional[UserTokenCreateInDsDto] = None
     create_output: UserTokenCreateOutDsDto = valid_user_token_ds_dto
-    find_user_by_id_output: UserOutDsDto = valid_user_ds_dto
+    find_user_by_id_output: Optional[UserOutDsDto] = valid_user_ds_dto
     exists_user_token_by_user_id_and_token_output: bool = False
 
     def create(self, user_token_dto: UserTokenCreateInDsDto) -> UserTokenCreateOutDsDto:
@@ -111,20 +111,6 @@ def test_refresh_fail_when_refresh_token_is_invalid():
 
     user_token_in_dto = valid_user_token_in_dto.model_copy()
     user_token_in_dto.refresh_token = 'hogehuga'
-
-    with pytest.raises(BusinessException):
-        target.refresh(user_token_in_dto)
-
-
-def test_refresh_fail_when_user_id_is_incorrect():
-
-    presenter = UserTokenRefreshOututPortImpl()
-    gateway = UserTokenRefreshRepositoryImpl()
-
-    target = create_interactor(gateway, presenter)
-
-    user_token_in_dto = valid_user_token_in_dto.model_copy()
-    user_token_in_dto.user_id = str(uuid4())
 
     with pytest.raises(BusinessException):
         target.refresh(user_token_in_dto)
