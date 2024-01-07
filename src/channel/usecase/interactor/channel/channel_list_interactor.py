@@ -45,14 +45,15 @@ class ChannelListInteractor(ChannelListInputPort):
             # Device検索
             devices = self.gateway.list_device(
                 DeviceListInDsDto(
-                    user_id=session_user_ds_dto.id
+                    user_id=session_user_ds_dto.id,
                 )
             )
 
             # Channel検索
             channel_out_ds_dtos = self.gateway.list(
                 ChannelListInDsDto(
-                    device_ids=[device.id for device in devices]
+                    device_ids=[device.id for device in devices],
+                    device_id=channel_dto.device_id
                 )
             )
 

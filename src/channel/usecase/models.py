@@ -234,6 +234,7 @@ class DeviceListOutDto(BaseModel):
 
 class DeviceListInDsDto(BaseModel):
     user_id: str
+    device_id: Optional[int] = None
 
 
 class DeviceListOutDsDto(BaseModel):
@@ -345,7 +346,7 @@ class ChannelUpdateOutDsDto(BaseModel):
 
 
 class ChannelListInDto(BaseModel):
-    pass
+    device_id: Optional[int] = None
 
 
 class ChannelListDataOutDto(BaseModel):
