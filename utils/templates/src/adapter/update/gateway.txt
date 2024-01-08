@@ -1,12 +1,13 @@
 from .{model_lower}_repository import {model}Repository
-from channel.adapter.gateway.user import UserSession
+from {model_lower}.adapter.gateway.user import UserSession
 
-from channel.usecase.models import (
+from {model_lower}.usecase.models import (
+    {model}GetOutDsDto,
     {model}{action}InDsDto,
     {model}{action}OutDsDto,
     UserSessionDsDto,
 )
-from channel.usecase.repository.{model_lower} import {model}{action}Repository
+from {model_lower}.usecase.repository.{model_lower} import {model}{action}Repository
 
 from typing import Optional
 
@@ -22,15 +23,15 @@ class {model}{action}Gateway({model}{action}Repository):
 
     def {action_lower}(
         self,
-        {model_lower}_dto: {model}{action}InDsDto
-    ) -> {model}{action}OutDsDto:
-        return self.{model_lower}_repository.{action_lower}({model_lower}_dto)
+        {model_lower}: {model}{action}InDsDto
+    ) -> Optional[{model}{action}OutDsDto]:
+        return self.{model_lower}_repository.{action_lower}({model_lower})
 
     def load_session_user(self) -> Optional[UserSessionDsDto]:
         return self.user_session.load()
 
-    def gateway.exists_{model_lower}_by_id(
+    def find_{model_lower}_by_id(
         self,
         id: int
-    ) -> bool:
-        return self.{model_lower}_repository.exists_by_id(id)
+    ) -> Optional[{model}GetOutDsDto]:
+        return self.{model_lower}_repository.find_by_id(id)

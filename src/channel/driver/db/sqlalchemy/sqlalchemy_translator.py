@@ -1,4 +1,5 @@
 from channel.usecase.models import (
+    ChannelUpdateInDsDto,
     UserTokenCreateInDsDto,
     UserCreateInDsDto,
     DeviceCreateInDsDto,
@@ -49,6 +50,17 @@ class SqlalchemyChannelTranslator():
         return ChannelDataSource(
             ** channel_ds_dto.model_dump(exclude={'tags'})
         )
+
+    @classmethod
+    def update(
+        cls,
+        channel_ds_dto: ChannelUpdateInDsDto,
+        channel_ds: ChannelDataSource
+    ) -> ChannelDataSource:
+        channel_ds.name = channel_ds_dto.name
+        channel_ds.unit = channel_ds_dto.unit
+        channel_ds.updated_by = channel_ds_dto.updated_by
+        return channel_ds
 
 
 class SqlalchemyRecordTranslator():

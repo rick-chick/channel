@@ -1,17 +1,19 @@
-from channel.usecase.interactor.{model_lower} import {model}{action}Interactor
-from channel.usecase.models import (
+from {model_lower}.usecase.interactor.{model_lower} import {model}{action}Interactor
+from {model_lower}.usecase.models import (
+    {model}GetOutDsDto,
     {model}{action}InDsDto,
     {model}{action}OutDsDto,
     {model}{action}InDto,
     {model}{action}OutDto,
     UserSessionDsDto
 )
-from channel.usecase.output_port.{model_lower} import {model}{action}OututPort
-from channel.usecase.exception import BusinessException
-from channel.usecase.repository.{model_lower} import {model}{action}Repository
+from {model_lower}.usecase.output_port.{model_lower} import {model}{action}OututPort
+from {model_lower}.usecase.exception import BusinessException
+from {model_lower}.usecase.repository.{model_lower} import {model}{action}Repository
 
-from tests.channel.factories import (
-    {model}{action}DsDtoFactory,
+from tests.{model_lower}.factories import (
+    {model}GetOutDsDtoFactory,
+    {model}{action}OutDsDtoFactory,
     {model}{action}InDtoFactory,
     {model}{action}OutDtoFactory,
     UserSessionDsDtoFactory
@@ -21,8 +23,10 @@ import pytest
 from typing import Optional, List
 
 valid_{model_lower}_in_dto = {model}{action}InDtoFactory.build()
-valid_{model_lower}_ds_dto = {model}{action}DsDtoFactory.build()
+valid_{model_lower}_ds_dto = {model}{action}OutDsDtoFactory.build()
 valid_session_user_ds_dto = UserSessionDsDtoFactory.build()
+valid_{model_lower}_get_ds_dto = {model}GetOutDsDtoFactory.build()
+
 
 class {model}{action}OututPortImpl({model}{action}OututPort):
 
@@ -38,28 +42,28 @@ class {model}{action}OututPortImpl({model}{action}OututPort):
         return {model_lower}
 
 
-
 class {model}{action}RepositoryImpl({model}{action}Repository):
 
-    {action_lower}_input: Optional[{model}{action}InDsDto] = None
-    {action_lower}_output: Optional[{model}{action}OutDsDto] = valid_{model_lower}_ds_dto 
+    {action_lower}_output: Optional[{model}{action}OutDsDto] = valid_{model_lower}_ds_dto
     load_session_user_output: Optional[UserSessionDsDto] = valid_session_user_ds_dto
+    find_{model_lower}_by_id_output: Optional[{model}GetOutDsDto] = valid_{model_lower}_get_ds_dto
 
-
-    exists_{model_lower}_by_id_input: Optional[int] = None
-    exists_{model_lower}_by_id_output: bool = True
-
-
-    def {action_lower}(self, {model_lower}: {model}{action}InDsDto):
+    def {action_lower}(
+        self,
+        {model_lower}: {model}{action}InDsDto
+    ) -> Optional[{model}{action}OutDsDto]:
         self.{action_lower}_input = {model_lower}
         return self.{action_lower}_output
 
-    def exists_{model_lower}_by_id(self, id: Optional[int]) -> bool:
-        self.exists_{model_lower}_by_id_input = id
-        return self.exists_{model_lower}_by_id_output
-
     def load_session_user(self) -> Optional[UserSessionDsDto]:
         return self.load_session_user_output
+
+    def find_{model_lower}_by_id(
+        self,
+        id: int
+    ) -> Optional[{model}GetOutDsDto]:
+        self.find_{model_lower}_by_id_input = id
+        return self.find_{model_lower}_by_id_output
 
 
 def create_interactor(
@@ -79,13 +83,23 @@ def test_{action_lower}_success():
 
     target.{action_lower}(valid_{model_lower}_in_dto)
 
-    assert presenter.{model_lower} is not None 
+    assert presenter.{model_lower} is not None
+
+    if valid_{model_lower}_in_dto.name:
+        assert valid_{model_lower}_in_dto.name == gateway.{action_lower}_input.name
+    else:
+        assert valid_{model_lower}_get_ds_dto.name == gateway.{action_lower}_input.name
+    if valid_{model_lower}_in_dto.unit:
+        assert valid_{model_lower}_in_dto.unit == gateway.{action_lower}_input.unit
+    else:
+        assert valid_{model_lower}_get_ds_dto.unit == gateway.{action_lower}_input.unit
 
 
 def test_{action_lower}_fail():
 
     presenter = {model}{action}OututPortImpl()
     gateway = {model}{action}RepositoryImpl()
+    gateway.load_session_user_output = None
 
     target = create_interactor(gateway, presenter)
 

@@ -323,13 +323,27 @@ class ChannelCreateOutDsDto(BaseModel):
     model_config = out_ds_config
 
 
+class ChannelUpdateInDto(BaseModel):
+    id: int
+    name: Optional[str] = None
+    unit: Optional[str] = None
+    tags: Optional[List[str]] = None
+
+
+class ChannelUpdateOutDto(BaseModel):
+    device_id: int
+    id: int
+    name: str
+    unit: str
+    tags: List[str] = []
+
+
 class ChannelUpdateInDsDto(BaseModel):
     device_id: int
     id: int
     name: str
     unit: str
     tags: List[str] = []
-    created_by: str
     updated_by: str
 
 
@@ -339,7 +353,6 @@ class ChannelUpdateOutDsDto(BaseModel):
     name: str
     unit: str
     tags: List[str] = []
-    created_by: str
     updated_by: str
 
     model_config = out_ds_config
@@ -398,6 +411,12 @@ class ChannelDeleteOutDsDto(BaseModel):
 
 
 class ChannelGetOutDsDto(BaseModel):
+    device_id: int
+    id: int
+    name: str
+    unit: str
+    tags: List[str] = []
+
     model_config = out_ds_config
 
 ###################################################

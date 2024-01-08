@@ -10,10 +10,15 @@ from channel.usecase.models import (
     ChannelDeleteInDto,
     ChannelDeleteOutDsDto,
     ChannelDeleteOutDto,
+    ChannelGetOutDsDto,
     ChannelListInDsDto,
     ChannelListInDto,
     ChannelListOutDsDto,
     ChannelListOutDto,
+    ChannelUpdateInDsDto,
+    ChannelUpdateInDto,
+    ChannelUpdateOutDsDto,
+    ChannelUpdateOutDto,
     DeviceAuthenticateInDto,
     DeviceAuthenticateOutDto,
     DeviceCreateInDsDto,
@@ -269,6 +274,10 @@ class DeviceDeleteOutDsDtoFactory(ModelFactory[DeviceDeleteOutDsDto]):
 # Channel
 #################################################
 
+class ChannelGetOutDsDtoFactory(ModelFactory[ChannelGetOutDsDto]):
+    __model__ = ChannelGetOutDsDto
+
+
 class ChannelCreateInDsDtoFactory(ModelFactory[ChannelCreateInDsDto]):
     __model__ = ChannelCreateInDsDto
     __faker__ = faker
@@ -289,6 +298,22 @@ class ChannelCreateOutDtoFactory(ModelFactory[ChannelCreateOutDto]):
 
 class ChannelListOutDsDtoFactory(ModelFactory[ChannelListOutDsDto]):
     __model__ = ChannelListOutDsDto
+
+
+class ChannelUpdateInDtoFactory(ModelFactory[ChannelUpdateInDto]):
+    __model__ = ChannelUpdateInDto
+
+
+class ChannelUpdateOutDtoFactory(ModelFactory[ChannelUpdateOutDto]):
+    __model__ = ChannelUpdateOutDto
+
+
+class ChannelUpdateInDsDtoFactory(ModelFactory[ChannelUpdateInDsDto]):
+    __model__ = ChannelUpdateInDsDto
+
+
+class ChannelUpdateOutDsDtoFactory(ModelFactory[ChannelUpdateOutDsDto]):
+    __model__ = ChannelUpdateOutDsDto
 
 
 class ChannelListInDsDtoFactory(ModelFactory[ChannelListInDsDto]):

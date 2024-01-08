@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
-from channel.usecase.models import (
+from {model_lower}.usecase.models import (
+    {model}GetOutDsDto,
     {model}{action}InDsDto,
     {model}{action}OutDsDto,
     UserSessionDsDto,
 )
 
 from typing import Optional
+
 
 class {model}{action}Repository(ABC):
 
@@ -14,12 +16,15 @@ class {model}{action}Repository(ABC):
         pass
 
     @abstractmethod
-    def {action_lower}(
+    def find_{model_lower}_by_id(
         self,
-        {model_lower}: {model}{action}InDsDto
-    ) -> {model}{action}OutDsDto:
+        id: int
+    ) -> Optional[{model}GetOutDsDto]:
         pass
 
     @abstractmethod
-    def exists_{model_lower}_by_id(self, id: Optional[int]) -> bool:
+    def {action_lower}(
+        self,
+        {model_lower}: {model}{action}InDsDto
+    ) -> Optional[{model}{action}OutDsDto]:
         pass

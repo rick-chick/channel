@@ -20,14 +20,22 @@ class UserExistsException(BusinessException):
     def __init__(self):
         super().__init__("user_exists")
 
+
 class UserNotFoundException(BusinessException):
     def __init__(self):
         super().__init__("user_not_found")
+
 
 class UnauthenticateException(BusinessException):
     def __init__(self):
         super().__init__("unauthenticated")
 
+
 class RecordExistsException(BusinessException):
     def __init__(self):
         super().__init__("record_exists")
+
+
+class ChannelNotFoundException(BusinessException):
+    def __init__(self):
+        super().__init__("channel_not_found")

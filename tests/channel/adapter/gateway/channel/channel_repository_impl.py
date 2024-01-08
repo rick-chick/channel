@@ -15,6 +15,8 @@ from channel.usecase.models import (
 
 from typing import Optional, List
 
+from tests.channel.factories import ChannelGetOutDsDtoFactory, ChannelUpdateOutDsDtoFactory
+
 
 class ChannelRepositoryImpl(ChannelRepository):
 
@@ -28,7 +30,7 @@ class ChannelRepositoryImpl(ChannelRepository):
         return False
 
     def find_by_id(self, id: Optional[int]) -> Optional[ChannelGetOutDsDto]:
-        pass
+        return ChannelGetOutDsDtoFactory.build()
 
     def list(self, ds_dto: ChannelListInDsDto) -> List[ChannelListOutDsDto]:
         self.ds_dto_in = ds_dto
@@ -42,7 +44,7 @@ class ChannelRepositoryImpl(ChannelRepository):
         self,
         ds_dto: ChannelUpdateInDsDto
     ) -> Optional[ChannelUpdateOutDsDto]:
-        pass
+        return ChannelUpdateOutDsDtoFactory.build()
 
     def delete(self, ds_dto: ChannelDeleteInDsDto) -> List[ChannelDeleteOutDsDto]:
         return []

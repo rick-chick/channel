@@ -2,6 +2,7 @@ from flask import Flask, jsonify, redirect, request, url_for
 from channel.adapter.controller.channel.channel_create_controller import ChannelCreateController
 from channel.adapter.controller.channel.channel_delete_controller import ChannelDeleteController
 from channel.adapter.controller.channel.channel_list_controller import ChannelListController
+from channel.adapter.controller.channel.channel_update_controller import ChannelUpdateController
 from channel.adapter.controller.device.device_create_controller import DeviceCreateController
 from channel.adapter.controller.device.device_delete_controller import DeviceDeleteController
 from channel.adapter.controller.device.device_list_controller import DeviceListController
@@ -28,6 +29,7 @@ from channel.driver.handler.cli.handler_buss import HandlerBuss, UserTokenAuthen
 from channel.driver.handler.flask.channel.flask_channel_create_input_parser import FlaskChannelCreateInputParser
 from channel.driver.handler.flask.channel.flask_channel_delete_input_parser import FlaskChannelDeleteInputParser
 from channel.driver.handler.flask.channel.flask_channel_list_input_parser import FlaskChannelListInputParser
+from channel.driver.handler.flask.channel.flask_channel_update_input_parser import FlaskChannelUpdateInputParser
 from channel.driver.handler.flask.device.flask_device_create_input_parser import FlaskDeviceCreateInputParser
 from channel.driver.handler.flask.device.flask_device_delete_input_parser import FlaskDeviceDeleteInputParser
 from channel.driver.handler.flask.device.flask_device_list_input_parser import FlaskDeviceListInputParser
@@ -42,6 +44,7 @@ from channel.driver.handler.flask.user_token.flask_user_token_refresh_input_pars
 from channel.driver.view.flask.channel.flask_channel_create_view import FlaskChannelCreateView
 from channel.driver.view.flask.channel.flask_channel_delete_view import FlaskChannelDeleteView
 from channel.driver.view.flask.channel.flask_channel_list_view import FlaskChannelListView
+from channel.driver.view.flask.channel.flask_channel_update_view import FlaskChannelUpdateView
 from channel.driver.view.flask.device.flask_device_create_view import FlaskDeviceCreateView
 from channel.driver.view.flask.device.flask_device_delete_view import FlaskDeviceDeleteView
 from channel.driver.view.flask.device.flask_device_list_view import FlaskDeviceListView
@@ -193,6 +196,26 @@ def channel_create():
         user_session=MemoryUserRepository(memory),
         channel_repository=SqlalchemyChannelRepository(session),
         channel_view=view,
+    )
+    buss.add(controller)
+
+    buss.handle(request)
+    return view.render()
+
+
+@app.route('/channel', methods=["PUT"])
+def channel_update():
+    memory = {}
+    session = Session()
+
+    buss = FlaskUserTokenAuthenticateHandlerBuss(memory, session)
+
+    view = FlaskChannelUpdateView()
+    controller = ChannelUpdateController(
+        channel_update_input_parser=FlaskChannelUpdateInputParser(memory),
+        user_session=MemoryUserRepository(memory),
+        channel_repository=SqlalchemyChannelRepository(session),
+        channel_update_view=view,
     )
     buss.add(controller)
 

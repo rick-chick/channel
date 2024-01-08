@@ -1,21 +1,24 @@
-from channel.usecase.output_port.{model_lower} import {model}{action}OututPort
-from channel.usecase.models import {model}{action}OutDto
-from channel.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_view import {model}{action}View
+from {model_lower}.usecase.output_port.{model_lower} import {model}{action_lower}OututPort
+from {model_lower}.usecase.models import {model}{action_lower}OutDto
+from {model_lower}.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_view import {model}{action_lower}View
 
 
-class {model}{action}Presenter({model}{action}OututPort):
+class {model}{action_lower}Presenter({model}{action_lower}OututPort):
 
     def __init__(
         self,
-        {model_lower}_{action_lower}_view: {model}{action}View
+        {model_lower}_{action_lower}_view: {model}{action_lower}View
     ):
         self.{model_lower}_{action_lower}_view = {model_lower}_{action_lower}_view
 
     def prepare_success_view(
-        self, {model_lower}_{action_lower}_out_dto: {model}{action}OutDto
-    ):
-        self.{model_lower}_{action_lower}_view.add_result({model_lower}_{action_lower}_out_dto)
-        return {model_lower}_{action_lower}_out_dto
+        self, {model_lower}: {model}{action_lower}OutDto
+    ) -> {model}{action_lower}OutDto:
+        self.{model_lower}_{action_lower}_view.add_result({model_lower})
+        return {model_lower}
 
-    def prepare_fail_view(self, exception: Exception):
+    def prepare_fail_view(
+        self,
+        exception: Exception
+    ):
         self.{model_lower}_{action_lower}_view.add_exception(exception)

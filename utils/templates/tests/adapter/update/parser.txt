@@ -1,0 +1,16 @@
+from {model_lower}.adapter.controller.{model_lower}.{model_lower}_{action_lower}_controller import {model}{action}Controller
+from tests.{model_lower}.adapter.controller.{model_lower}.{model_lower}_{action_lower}_input_parser_impl import {model}{action}InputParserImpl
+from tests.{model_lower}.adapter.gateway.user.user_session_impl import UserSessionImpl
+from tests.{model_lower}.adapter.gateway.{model_lower}.{model_lower}_repository_impl import {model}RepositoryImpl
+from tests.{model_lower}.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_view_impl import {model}{action}ViewImpl
+from tests.{model_lower}.factories import {model}{action}InDtoFactory
+
+
+def test_success():
+    target = {model}{action}Controller(
+        user_session=UserSessionImpl(),
+        {model_lower}_repository={model}RepositoryImpl(),
+        {model_lower}_{action_lower}_view={model}{action}ViewImpl(),
+        {model_lower}_{action_lower}_input_parser={model}{action}InputParserImpl(),
+    )
+    target.handle({model}{action}InDtoFactory.build())

@@ -90,12 +90,20 @@ class SqlalchemyChannelRepository(ChannelRepository):
         ds_dto: ChannelUpdateInDsDto
     ) -> Optional[ChannelUpdateOutDsDto]:
 
-        channel_ds = self.session.query(ChannelDataSource).filter_by(
-            id=ds_dto.id).first()
+        channel_ds = self.session.query(
+            ChannelDataSource
+        ).filter_by(
+            id=ds_dto.id
+        ).first()
+
         if channel_ds is None:
             return None
+
         channel_ds = SqlalchemyChannelTranslator.update(
-            channel_ds, ds_dto)
+            ds_dto,
+            channel_ds
+        )
+
         return ChannelUpdateOutDsDto.model_validate(channel_ds)
 
     def delete(

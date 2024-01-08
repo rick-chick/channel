@@ -1,8 +1,8 @@
-from channel.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_presenter import (
+from {model_lower}.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_presenter import (
     {model}{action}Presenter
 )
-from tests.channel.factories import {model}{action}OutDtoFactory
-from tests.channel.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_view_impl import (
+from tests.{model_lower}.factories import {model}{action}OutDtoFactory
+from tests.{model_lower}.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_view_impl import (
     {model}{action}ViewImpl
 )
 
@@ -13,7 +13,7 @@ def test_prepare_success_view():
     {model_lower} = {model}{action}OutDtoFactory.build()
     target.prepare_success_view({model_lower})
 
-    view.{model_lower}_{action_lower}_out_dto == {model_lower}
+    assert view.{model_lower}_{action_lower}_out_dto == {model_lower}
 
 
 def test_prepare_fail_view():
