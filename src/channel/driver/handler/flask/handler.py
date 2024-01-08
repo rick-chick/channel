@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, redirect, request, url_for
 from channel.adapter.controller.channel.channel_create_controller import ChannelCreateController
+from channel.adapter.controller.channel.channel_delete_controller import ChannelDeleteController
 from channel.adapter.controller.channel.channel_list_controller import ChannelListController
 from channel.adapter.controller.device.device_create_controller import DeviceCreateController
 from channel.adapter.controller.device.device_delete_controller import DeviceDeleteController
@@ -25,6 +26,7 @@ from channel.driver.db.sqlalchemy.sqlalchemy_user_repository import (
 from channel.driver.env import ALLOWD_ORIGINS
 from channel.driver.handler.cli.handler_buss import HandlerBuss, UserTokenAuthenticateHandlerBuss
 from channel.driver.handler.flask.channel.flask_channel_create_input_parser import FlaskChannelCreateInputParser
+from channel.driver.handler.flask.channel.flask_channel_delete_input_parser import FlaskChannelDeleteInputParser
 from channel.driver.handler.flask.channel.flask_channel_list_input_parser import FlaskChannelListInputParser
 from channel.driver.handler.flask.device.flask_device_create_input_parser import FlaskDeviceCreateInputParser
 from channel.driver.handler.flask.device.flask_device_delete_input_parser import FlaskDeviceDeleteInputParser
@@ -38,6 +40,7 @@ from channel.driver.handler.flask.user.flask_user_authenticate_input_parser impo
 from channel.driver.handler.flask.user.flask_user_update_input_parser import FlaskUserUpdateInputParser
 from channel.driver.handler.flask.user_token.flask_user_token_refresh_input_parser import FlaskUserTokenRefreshInputParser
 from channel.driver.view.flask.channel.flask_channel_create_view import FlaskChannelCreateView
+from channel.driver.view.flask.channel.flask_channel_delete_view import FlaskChannelDeleteView
 from channel.driver.view.flask.channel.flask_channel_list_view import FlaskChannelListView
 from channel.driver.view.flask.device.flask_device_create_view import FlaskDeviceCreateView
 from channel.driver.view.flask.device.flask_device_delete_view import FlaskDeviceDeleteView
@@ -190,6 +193,26 @@ def channel_create():
         user_session=MemoryUserRepository(memory),
         channel_repository=SqlalchemyChannelRepository(session),
         channel_view=view,
+    )
+    buss.add(controller)
+
+    buss.handle(request)
+    return view.render()
+
+
+@app.route('/channel/delete', methods=["POST"])
+def channel_delete():
+    memory = {}
+    session = Session()
+
+    buss = FlaskUserTokenAuthenticateHandlerBuss(memory, session)
+
+    view = FlaskChannelDeleteView()
+    controller = ChannelDeleteController(
+        channel_delete_input_parser=FlaskChannelDeleteInputParser(memory),
+        user_session=MemoryUserRepository(memory),
+        channel_repository=SqlalchemyChannelRepository(session),
+        channel_delete_view=view,
     )
     buss.add(controller)
 

@@ -1,50 +1,55 @@
-from channel.usecase.input_port.{model_lower} import {model}DeleteInputPort
-from channel.usecase.repository.{model_lower} import {model}DeleteRepository
-from channel.usecase.models import (
-    {model}{action}OutDsDto,
+from {model_lower}.usecase.input_port.{model_lower} import {model}{action}InputPort
+from {model_lower}.usecase.repository.{model_lower} import {model}{action}Repository
+from {model_lower}.usecase.models import (
     {model}{action}InDsDto,
-    UserSessionDsDto
+    {model}{action}OutDto,
 )
-from channel.usecase.output_port.{model_lower} import {model}DeleteOututPort
+from {model_lower}.usecase.output_port.{model_lower} import {model}{action}OututPort
 
-from channel.usecase.models import {model}DeleteInDto
-from channel.usecase.exception import (
+from {model_lower}.usecase.models import {model}{action}InDto
+from {model_lower}.usecase.exception import (
     BusinessException, ValidationException, UnauthorizedException)
 
 from pydantic import ValidationError
-from typing import List, Optional
 
 
-class {model}DeleteInteractor({model}DeleteInputPort):
+class {model}{action}Interactor({model}{action}InputPort):
 
     def __init__(
-            self,
-            gateway: {model}DeleteRepository,
-            presenter: {model}DeleteOututPort):
+        self,
+        gateway: {model}{action}Repository,
+        presenter: {model}{action}OututPort
+    ):
         self.gateway = gateway
         self.presenter = presenter
 
-    def delete(
-            self, {model_lower}_dto: {model}DeleteInDto) -> List[int]:
+    def {action_lower}(
+        self,
+        {model_lower}_dto: {model}{action}InDto
+    ) -> {model}{action}OutDto:
 
         try:
             if not {model_lower}_dto:
-                return []
+                return {model}{action}OutDto()
 
             session_user_ds_dto = self.gateway.load_session_user()
+            if not session_user_ds_dto:
+                raise UnauthorizedException
 
             {model_lower}_ds_in_dto = {model}{action}InDsDto(
                 **{model_lower}_dto.model_dump())
 
-            {model_lower}_ds_dtos: List[{model}{action}OutDsDto] = self.gateway.delete(
-                {model_lower}_ds_in_dto)
+            {model_lower}_ds_dtos = self.gateway.{action_lower}(
+                {model_lower}_ds_in_dto
+            )
 
-            deleted_{model_lower}_ids = [
-                {model_lower}.id for {model_lower} in {model_lower}_ds_dtos\
-                if {model_lower}.id is not None]
+            {action_lower}d_{model_lower}_ids = [
+                {model_lower}.id for {model_lower} in {model_lower}_ds_dtos
+                if {model_lower}.id is not None
+            ]
 
             result = {model}{action}OutDto(
-                ids=deleted_{model_lower}_ids
+                ids={action_lower}d_{model_lower}_ids
             )
 
             self.presenter.prepare_success_view(result)

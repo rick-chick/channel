@@ -1,35 +1,36 @@
-from channel.usecase.interactor.{model_lower} import {model}DeleteInteractor
-from channel.usecase.models import (
-    {model}DeleteInDto,
-    {model}DeleteInDsDto,
-    {model}DeleteOutDsDto,
+from {model_lower}.usecase.interactor.{model_lower} import {model}{action}Interactor
+from {model_lower}.usecase.models import (
+    {model}{action}InDto,
+    {model}{action}InDsDto,
+    {model}{action}OutDsDto,
+    {model}{action}OutDto,
     UserSessionDsDto
 )
-from channel.usecase.output_port.{model_lower} import {model}DeleteOututPort
-from channel.usecase.exception import BusinessException
-from channel.usecase.repository.{model_lower} import {model}DeleteRepository
+from {model_lower}.usecase.output_port.{model_lower} import {model}{action}OututPort
+from {model_lower}.usecase.exception import BusinessException
+from {model_lower}.usecase.repository.{model_lower} import {model}{action}Repository
 
-from tests.channel.factories import (
-  {model}DeleteOutDsDtoFactory,
-  {model}DeleteInDtoFactory,
-  UserSessionDsDtoFactory
+from tests.{model_lower}.factories import (
+    {model}{action}OutDsDtoFactory,
+    {model}{action}InDtoFactory,
+    UserSessionDsDtoFactory
 )
 
 from typing import Optional, List
+import pytest
 
-valid_{model_lower}_ds_dto = {model}DeleteOutDsDtoFactory.batch(3)
+valid_{model_lower}_ds_dto = {model}{action}OutDsDtoFactory.batch(3)
 
-valid_{model_lower}_in_dto = {model}DeleteInDto(
+valid_{model_lower}_in_dto = {model}{action}InDto(
     ids=[{model_lower}.id for {model_lower} in valid_{model_lower}_ds_dto]
 )
 valid_session_user_ds_dto = UserSessionDsDtoFactory.build()
 
 
-class {model}DeleteOututPortImpl({model}DeleteOututPort):
+class {model}{action}OututPortImpl({model}{action}OututPort):
 
     def __init__(self):
         self.exceptions = []
-        self.{model_lower}_dto: Optional[List[int]] = None
 
     def prepare_fail_view(self, exception: Exception):
         self.exceptions.append(exception)
@@ -41,51 +42,52 @@ class {model}DeleteOututPortImpl({model}DeleteOututPort):
         self.{model_lower}_dto = {model_lower}_dto
         return {model_lower}_dto
 
-class {model}DeleteRepositoryImpl({model}DeleteRepository):
 
-    delete_input: Optional[{model}DeleteInDsDto] = None
-    delete_output: List[{model}DeleteOutDsDto] = valid_{model_lower}_ds_dto
+class {model}{action}RepositoryImpl({model}{action}Repository):
+
+    {action_lower}_input: Optional[{model}{action}InDsDto] = None
+    {action_lower}_output: List[{model}{action}OutDsDto] = valid_{model_lower}_ds_dto
     load_session_user_output: Optional[UserSessionDsDto] = valid_session_user_ds_dto
 
-    def delete(
+    def {action_lower}(
         self,
-        {model_lower}: {model}DeleteInDsDto
-    ) -> List[{model}DeleteOutDsDto]:
-        self.delete_input = {model_lower}
-        return self.delete_output
+        {model_lower}_dto: {model}{action}InDsDto
+    ) -> List[{model}{action}OutDsDto]:
+        self.{action_lower}_input = {model_lower}_dto
+        return self.{action_lower}_output
 
     def load_session_user(self) -> Optional[UserSessionDsDto]:
         return self.load_session_user_output
 
 
 def create_interactor(
-        gateway={model}DeleteRepositoryImpl(),
-        presenter={model}DeleteOututPortImpl()) -> {model}DeleteInteractor:
-    return {model}DeleteInteractor(gateway, presenter)
+        gateway={model}{action}RepositoryImpl(),
+        presenter={model}{action}OututPortImpl()) -> {model}{action}Interactor:
+    return {model}{action}Interactor(gateway, presenter)
 
 
-def test_delete_success():
+def test_{action_lower}_success():
 
-    presenter = {model}DeleteOututPortImpl()
-    gateway = {model}DeleteRepositoryImpl()
+    presenter = {model}{action}OututPortImpl()
+    gateway = {model}{action}RepositoryImpl()
 
-    gateway.delete_output = valid_{model_lower}_ds_dto
+    gateway.{action_lower}_output = valid_{model_lower}_ds_dto
 
     target = create_interactor(gateway, presenter)
 
-    target.delete(valid_{model_lower}_in_dto)
+    target.{action_lower}(valid_{model_lower}_in_dto)
 
     assert presenter.{model_lower}_dto is not None
     assert len(presenter.{model_lower}_dto.ids) == 3
 
 
-def test_delete_fail():
+def test_{action_lower}_fail():
 
-    presenter = {model}DeleteOututPortImpl()
-    gateway = {model}DeleteRepositoryImpl()
+    presenter = {model}{action}OututPortImpl()
+    gateway = {model}{action}RepositoryImpl()
 
     gateway.load_session_user_output = None
 
     target = create_interactor(gateway, presenter)
-    with pytests.raises(BusinessException):
-        target.delete(valid_device_in_dto)
+    with pytest.raises(BusinessException):
+        target.{action_lower}(valid_{model_lower}_in_dto)

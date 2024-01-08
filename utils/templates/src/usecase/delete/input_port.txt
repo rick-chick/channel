@@ -1,11 +1,14 @@
 from abc import ABC, abstractmethod
-from channel.usecase.models import ({model}DeleteInDto)
+from {model_lower}.usecase.models import ({model}{action}InDto, {model}{action}OutDto)
 
 from typing import List
 
 
-class {model}DeleteInputPort(ABC):
+class {model}{action}InputPort(ABC):
 
     @abstractmethod
-    def delete(self, {model_lower}_dto: {model}DeleteInDto) -> List[int]:
+    def {action_lower}(
+        self,
+        {model_lower}_dto: {model}{action}InDto
+    ) -> {model}{action}OutDto:
         pass

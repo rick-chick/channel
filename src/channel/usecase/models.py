@@ -378,6 +378,15 @@ class ChannelListOutDsDto(BaseModel):
     tags: List[str] = []
 
 
+class ChannelDeleteInDto(BaseModel):
+    ids: List[int] = []
+
+
+class ChannelDeleteOutDto(BaseModel):
+    ids: List[int] = []
+    model_config = out_ds_config
+
+
 class ChannelDeleteInDsDto(BaseModel):
     ids: Optional[List[int]] = None
     device_ids: Optional[List[int]] = None

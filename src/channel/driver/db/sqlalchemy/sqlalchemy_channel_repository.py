@@ -109,6 +109,9 @@ class SqlalchemyChannelRepository(ChannelRepository):
         if ds_dto.device_ids:
             filters.append(ChannelDataSource.device_id.in_(ds_dto.device_ids))
 
+        if len(filters) == 0:
+            return []
+
         channel_ds = self.session.query(
             ChannelDataSource
         ).filter(

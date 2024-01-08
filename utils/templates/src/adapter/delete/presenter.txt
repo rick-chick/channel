@@ -12,10 +12,10 @@ class {model}{action}Presenter({model}{action}OututPort):
         self.{model_lower}_{action_lower}_view = {model_lower}_{action_lower}_view
 
     def prepare_success_view(
-        self, {model_lower}_{action_lower}_out_dto: {model}{action}OutDto
+        self, {model_lower}_dto: {model}{action}OutDto
     ):
-        self.{model_lower}_{action_lower}_view.add_result({model_lower}_{action_lower}_out_dto)
-        return {model_lower}_{action_lower}_out_dto
+        self.{model_lower}_{action_lower}_view.add_result({model_lower}_dto)
+        return {model_lower}_out_dto
 
     def prepare_fail_view(self, exception: Exception):
         self.{model_lower}_{action_lower}_view.add_exception(exception)

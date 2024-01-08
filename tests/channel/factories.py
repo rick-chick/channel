@@ -7,7 +7,9 @@ from channel.usecase.models import (
     ChannelCreateOutDsDto,
     ChannelCreateOutDto,
     ChannelDeleteInDsDto,
+    ChannelDeleteInDto,
     ChannelDeleteOutDsDto,
+    ChannelDeleteOutDto,
     ChannelListInDsDto,
     ChannelListInDto,
     ChannelListOutDsDto,
@@ -299,6 +301,14 @@ class ChannelListInDtoFactory(ModelFactory[ChannelListInDto]):
 
 class ChannelListOutDtoFactory(ModelFactory[ChannelListOutDto]):
     __model__ = ChannelListOutDto
+
+
+class ChannelDeleteInDtoFactory(ModelFactory[ChannelDeleteInDto]):
+    __model__ = ChannelDeleteInDto
+
+
+class ChannelDeleteOutDtoFactory(ModelFactory[ChannelDeleteOutDto]):
+    __model__ = ChannelDeleteOutDto
 
 
 class ChannelDeleteOutDsDtoFactory(ModelFactory[ChannelDeleteOutDsDto]):
