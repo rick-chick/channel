@@ -1,3 +1,4 @@
+from datetime import datetime
 from faker import Faker
 from polyfactory.factories.pydantic_factory import ModelFactory
 
@@ -51,6 +52,7 @@ from channel.usecase.models import (
     SignupCreateInDsDto,
     SignupCreateOutDsDto,
     SignupDeleteOutDsDto,
+    SignupGetOutDsDto,
     UserAuthenticateInDto,
     UserAuthenticateOutDsDto,
     UserAuthenticateOutDto,
@@ -59,9 +61,12 @@ from channel.usecase.models import (
     UserCreateOutDsDto,
     UserCreateOutDto,
     UserOutDsDto,
+    UserResetPasswordInDsDto,
+    UserResetPasswordInDto,
+    UserResetPasswordOutDsDto,
+    UserResetPasswordOutDto,
     UserSessionDsDto,
     UserSignupInDto,
-    UserSignupOutDsDto,
     UserSignupOutDto,
     UserTokenAuthenticateInDto,
     UserTokenAuthenticateOutDto,
@@ -182,6 +187,11 @@ class UserAuthenticateOutDsDtoFactory(ModelFactory[UserAuthenticateOutDsDto]):
 
 class UserOutDsDtoFactory(ModelFactory[UserOutDsDto]):
     __model__ = UserOutDsDto
+    __faker__ = faker
+
+    @classmethod
+    def email(cls) -> str:
+        return cls.__faker__.email()
 
 
 class UserSignupInDtoFactory(ModelFactory[UserSignupInDto]):
@@ -195,6 +205,21 @@ class UserSignupInDtoFactory(ModelFactory[UserSignupInDto]):
 class UserSignupOutDtoFactory(ModelFactory[UserSignupOutDto]):
     __model__ = UserSignupOutDto
 
+
+class UserResetPasswordInDtoFactory(ModelFactory[UserResetPasswordInDto]):
+    __model__ = UserResetPasswordInDto
+
+
+class UserResetPasswordOutDtoFactory(ModelFactory[UserResetPasswordOutDto]):
+    __model__ = UserResetPasswordOutDto
+
+
+class UserResetPasswordInDsDtoFactory(ModelFactory[UserResetPasswordInDsDto]):
+    __model__ = UserResetPasswordInDsDto
+
+
+class UserResetPasswordOutDsDtoFactory(ModelFactory[UserResetPasswordOutDsDto]):
+    __model__ = UserResetPasswordOutDsDto
 
 ################################################
 # UserToken
@@ -440,6 +465,19 @@ class SignupCreateOutDsDtoFactory(ModelFactory[SignupCreateOutDsDto]):
 
 class SignupDeleteOutDsDtoFactory(ModelFactory[SignupDeleteOutDsDto]):
     __model__ = SignupDeleteOutDsDto
+
+
+class SignupGetOutDsDtoFactory(ModelFactory[SignupGetOutDsDto]):
+    __faker__ = faker
+    __model__ = SignupGetOutDsDto
+
+    @classmethod
+    def email(cls) -> str:
+        return cls.__faker__.email()
+
+    @classmethod
+    def created_at(cls) -> datetime:
+        return datetime.now()
 
 #################################################
 # Mail

@@ -39,3 +39,8 @@ class RecordExistsException(BusinessException):
 class ChannelNotFoundException(BusinessException):
     def __init__(self):
         super().__init__("channel_not_found")
+
+
+class InvalidSignupTokenException(BusinessException):
+    def __init__(self):
+        super().__init__("invalid_signup_token")

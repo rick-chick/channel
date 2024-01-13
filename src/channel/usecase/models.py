@@ -123,11 +123,20 @@ class UserSignupOutDto(BaseModel):
     email: str
 
 
-class UserSignupInDsDto(BaseModel):
+class UserResetPasswordInDto(BaseModel):
+    token: str
+    password: str
+
+
+class UserResetPasswordOutDto(BaseModel):
+    success: bool
+
+
+class UserResetPasswordInDsDto(BaseModel):
     email: str
 
 
-class UserSignupOutDsDto(BaseModel):
+class UserResetPasswordOutDsDto(BaseModel):
     email: str
 
 
@@ -555,4 +564,15 @@ class SignupDeleteInDsDto(BaseModel):
 
 class SignupDeleteOutDsDto(BaseModel):
     emails: List[str] = []
+    model_config = out_ds_config
+
+
+class SignupGetInDsDto(BaseModel):
+    token: str
+
+
+class SignupGetOutDsDto(BaseModel):
+    email: str
+    token: str
+    created_at: datetime
     model_config = out_ds_config

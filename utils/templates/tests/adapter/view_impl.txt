@@ -1,5 +1,5 @@
 from channel.adapter.presenter.{model_lower}.{model_lower}_{action_lower}_view import (
-    {model}{action}View:
+    {model}{action}View
 )
 
 from channel.usecase.models import {model}{action}OutDto

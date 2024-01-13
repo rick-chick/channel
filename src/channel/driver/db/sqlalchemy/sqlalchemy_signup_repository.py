@@ -1,4 +1,5 @@
 from operator import and_
+from typing import Optional
 from channel.driver.db.sqlalchemy.models import SignupDataSource
 from .sqlalchemy_translator import SqlalchemySignupTranslator
 
@@ -9,6 +10,7 @@ from channel.usecase.models import (
     SignupCreateOutDsDto,
     SignupDeleteInDsDto,
     SignupDeleteOutDsDto,
+    SignupGetOutDsDto,
 )
 
 from sqlalchemy.orm import Session
@@ -18,6 +20,21 @@ class SqlalchemySignupRepository(SignupRepository):
 
     def __init__(self, session: Session):
         self.session = session
+
+    def find_by_token(
+        self,
+        token: str
+    ) -> Optional[SignupGetOutDsDto]:
+        ds = self.session.query(
+            SignupDataSource
+        ).filter(
+            SignupDataSource.token == token
+        ).first()
+
+        if not ds:
+            return None
+
+        return SignupGetOutDsDto.model_validate(ds)
 
     def create(
         self,

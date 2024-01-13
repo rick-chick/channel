@@ -1,8 +1,10 @@
+from typing import Optional
 from channel.usecase.models import (
     SignupCreateInDsDto,
     SignupCreateOutDsDto,
     SignupDeleteInDsDto,
     SignupDeleteOutDsDto,
+    SignupGetOutDsDto,
 )
 
 from abc import ABC, abstractmethod
@@ -22,4 +24,11 @@ class SignupRepository(ABC):
         self,
         signup_dto: SignupDeleteInDsDto
     ) -> SignupDeleteOutDsDto:
+        pass
+
+    @abstractmethod
+    def find_by_token(
+        self,
+        token: str
+    ) -> Optional[SignupGetOutDsDto]:
         pass

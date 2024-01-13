@@ -6,16 +6,19 @@ from channel.usecase.models import (
     SignupCreateOutDsDto,
     SignupDeleteInDsDto,
     SignupDeleteOutDsDto,
+    SignupGetOutDsDto,
 )
 from tests.channel.factories import (
     SignupCreateOutDsDtoFactory,
-    SignupDeleteOutDsDtoFactory
+    SignupDeleteOutDsDtoFactory,
+    SignupGetOutDsDtoFactory
 )
 
 
 class SignupRepositoryImpl(SignupRepository):
 
     create_in: Optional[SignupCreateInDsDto] = None
+    find_by_token_out = SignupGetOutDsDtoFactory.build()
 
     def create(
         self,
@@ -30,3 +33,10 @@ class SignupRepositoryImpl(SignupRepository):
     ) -> SignupDeleteOutDsDto:
         self.delete_in = signup_dto
         return SignupDeleteOutDsDtoFactory.build()
+
+    def find_by_token(
+        self,
+        token: str
+    ) -> Optional[SignupGetOutDsDto]:
+        self.find_by_token_in = token
+        return self.find_by_token_out

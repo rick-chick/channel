@@ -1,3 +1,4 @@
+from datetime import datetime
 from channel.usecase.input_port.user import UserSignupInputPort
 from channel.usecase.repository.user import UserSignupRepository
 from channel.usecase.output_port.user import UserSignupOututPort
@@ -39,7 +40,13 @@ class UserSignupInteractor(UserSignupInputPort):
             if self.gateway.exists_user_by_email(user_dto.email):
                 raise UserExistsException
 
-            token = hashlib.sha256().hexdigest()
+            # Token生成
+            current_time = str(datetime.now())
+            token = hashlib.sha256(
+                hashlib.sha256(
+                    current_time.encode()
+                ).digest()
+            ).hexdigest()
             url = self.gateway.password_reset_url(token)
 
             # Send Mail

@@ -12,6 +12,7 @@ from channel.adapter.controller.record.record_list_controller import RecordListC
 from channel.adapter.controller.user.user_authenticate_controller import (
     UserAuthenticateController,
 )
+from channel.adapter.controller.user.user_reset_password_controller import UserResetPasswordController
 from channel.adapter.controller.user.user_signup_controller import UserSignupController
 from channel.adapter.controller.user.user_update_controller import UserUpdateController
 from channel.adapter.controller.user_token.user_token_refresh_controller import UserTokenRefreshController
@@ -48,6 +49,7 @@ from channel.driver.handler.flask.record.flask_record_list_input_parser import F
 from channel.driver.handler.flask.user.flask_user_authenticate_input_parser import (
     FlaskUserAuthenticateInputParser,
 )
+from channel.driver.handler.flask.user.flask_user_reset_password_input_parser import FlaskUserResetPasswordInputParser
 from channel.driver.handler.flask.user.flask_user_signup_input_parser import FlaskUserSignupInputParser
 from channel.driver.handler.flask.user.flask_user_update_input_parser import FlaskUserUpdateInputParser
 from channel.driver.handler.flask.user_token.flask_user_token_refresh_input_parser import (
@@ -65,6 +67,7 @@ from channel.driver.view.flask.record.flask_record_list_view import FlaskRecordL
 from channel.driver.view.flask.user.flask_user_authenticate_view import (
     FlaskUserAuthenticateView,
 )
+from channel.driver.view.flask.user.flask_user_reset_password_view import FlaskUserResetPasswordView
 from channel.driver.view.flask.user.flask_user_signup_view import FlaskUserSignupView
 from channel.driver.view.flask.user.flask_user_update_view import FlaskUserUpdateView
 from flask_cors import CORS
@@ -124,6 +127,25 @@ def user_update():
     controller = UserUpdateController(
         user_update_input_parser=FlaskUserUpdateInputParser(memory),
         user_session=MemoryUserRepository(memory),
+        user_repository=SqlalchemyUserRepository(session),
+        user_update_view=view,
+    )
+    buss.add(controller)
+    buss.handle(request)
+    return view.render()
+
+
+@app.route('/user/reset/password', methods=["POST"])
+def user_reset_password():
+    memory = {}
+    session = Session()
+
+    buss = HandlerBuss(memory, session)
+
+    view = FlaskUserResetPasswordView()
+    controller = UserResetPasswordController(
+        user_update_input_parser=FlaskUserResetPasswordInputParser(memory),
+        signup_repository=SqlalchemySignupRepository(session),
         user_repository=SqlalchemyUserRepository(session),
         user_update_view=view,
     )
