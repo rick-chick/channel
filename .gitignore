@@ -19,3 +19,4 @@ tags
 .tags
 channel.egg-info/
 output_script.sh
+env_local.py
