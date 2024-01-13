@@ -115,6 +115,22 @@ class UserAuthenticateOutDsDto(BaseModel):
     password_hash: str
 
 
+class UserSignupInDto(BaseModel):
+    email: str
+
+
+class UserSignupOutDto(BaseModel):
+    email: str
+
+
+class UserSignupInDsDto(BaseModel):
+    email: str
+
+
+class UserSignupOutDsDto(BaseModel):
+    email: str
+
+
 ###################################################
 # UserToken
 ###################################################
@@ -502,4 +518,41 @@ class RecordDeleteInDsDto(BaseModel):
 
 class RecordDeleteOutDsDto(BaseModel):
     channel_id: int
+    model_config = out_ds_config
+
+
+###################################################
+# Mail
+###################################################
+
+class MailSendInDsDto(BaseModel):
+    title: str
+    body: str
+    user_to: str
+
+
+class MailSendOutDsDto(BaseModel):
+    success: bool
+
+
+###################################################
+# Signup
+###################################################
+class SignupCreateInDsDto(BaseModel):
+    email: str
+    token: str
+
+
+class SignupCreateOutDsDto(BaseModel):
+    email: str
+    token: str
+    model_config = out_ds_config
+
+
+class SignupDeleteInDsDto(BaseModel):
+    email: Optional[str]
+
+
+class SignupDeleteOutDsDto(BaseModel):
+    emails: List[str] = []
     model_config = out_ds_config

@@ -86,3 +86,12 @@ class UserTokenDataSource(Base, TimestampMixin):
 
     user_id: Mapped[str] = mapped_column(String, primary_key=True)
     token: Mapped[str] = mapped_column(String, primary_key=True)
+
+
+class SignupDataSource(Base):
+    __tablename__ = 'signups'
+
+    email: Mapped[str] = mapped_column(String, primary_key=True)
+    token: Mapped[str] = mapped_column(String)
+    created_at: Mapped[DateTime] = mapped_column(
+        DateTime, default=datetime.now(), nullable=False)

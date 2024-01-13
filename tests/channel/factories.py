@@ -34,6 +34,8 @@ from channel.usecase.models import (
     DeviceListOutDto,
     DeviceOutDsDto,
     DeviceSessionDsDto,
+    MailSendInDsDto,
+    MailSendOutDsDto,
     RecordCreateInDsDto,
     RecordCreateInDto,
     RecordCreateOutDsDto,
@@ -46,6 +48,9 @@ from channel.usecase.models import (
     RecordListOutDsDto,
     RecordListOutDto,
     RecordOutDsDto,
+    SignupCreateInDsDto,
+    SignupCreateOutDsDto,
+    SignupDeleteOutDsDto,
     UserAuthenticateInDto,
     UserAuthenticateOutDsDto,
     UserAuthenticateOutDto,
@@ -55,6 +60,9 @@ from channel.usecase.models import (
     UserCreateOutDto,
     UserOutDsDto,
     UserSessionDsDto,
+    UserSignupInDto,
+    UserSignupOutDsDto,
+    UserSignupOutDto,
     UserTokenAuthenticateInDto,
     UserTokenAuthenticateOutDto,
     UserTokenCreateInDsDto,
@@ -174,6 +182,19 @@ class UserAuthenticateOutDsDtoFactory(ModelFactory[UserAuthenticateOutDsDto]):
 
 class UserOutDsDtoFactory(ModelFactory[UserOutDsDto]):
     __model__ = UserOutDsDto
+
+
+class UserSignupInDtoFactory(ModelFactory[UserSignupInDto]):
+    __model__ = UserSignupInDto
+
+    @classmethod
+    def email(cls) -> str:
+        return cls.__faker__.email()
+
+
+class UserSignupOutDtoFactory(ModelFactory[UserSignupOutDto]):
+    __model__ = UserSignupOutDto
+
 
 ################################################
 # UserToken
@@ -399,3 +420,36 @@ class RecordDeleteInDsDtoFactory(ModelFactory[RecordDeleteInDsDto]):
 
 class RecordOutDsDtoFactory(ModelFactory[RecordOutDsDto]):
     __model__ = RecordOutDsDto
+
+
+#################################################
+# Signup
+#################################################
+class SignupCreateInDsDtoFactory(ModelFactory[SignupCreateInDsDto]):
+    __model__ = SignupCreateInDsDto
+    __faker__ = faker
+
+    @classmethod
+    def email(cls) -> str:
+        return cls.__faker__.email()
+
+
+class SignupCreateOutDsDtoFactory(ModelFactory[SignupCreateOutDsDto]):
+    __model__ = SignupCreateOutDsDto
+
+
+class SignupDeleteOutDsDtoFactory(ModelFactory[SignupDeleteOutDsDto]):
+    __model__ = SignupDeleteOutDsDto
+
+#################################################
+# Mail
+#################################################
+
+
+class MailSendInDsDtoFactory(ModelFactory[MailSendInDsDto]):
+    __model__ = MailSendInDsDto
+    __faker__ = faker
+
+
+class MailSendOutDsDtoFactory(ModelFactory[MailSendOutDsDto]):
+    __model__ = MailSendOutDsDto

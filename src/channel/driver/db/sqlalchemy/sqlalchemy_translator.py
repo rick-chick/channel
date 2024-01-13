@@ -1,5 +1,6 @@
 from channel.usecase.models import (
     ChannelUpdateInDsDto,
+    SignupCreateInDsDto,
     UserTokenCreateInDsDto,
     UserCreateInDsDto,
     DeviceCreateInDsDto,
@@ -9,6 +10,7 @@ from channel.usecase.models import (
 )
 
 from channel.driver.db.sqlalchemy.models import (
+    SignupDataSource,
     UserTokenDataSource,
     UserDataSource,
     DeviceDataSource,
@@ -76,5 +78,13 @@ class SqlalchemyUserTokenTranslator():
     @classmethod
     def create(cls, record_ds_dto: UserTokenCreateInDsDto) -> UserTokenDataSource:
         return UserTokenDataSource(
+            ** record_ds_dto.model_dump()
+        )
+
+
+class SqlalchemySignupTranslator():
+    @classmethod
+    def create(cls, record_ds_dto: SignupCreateInDsDto) -> SignupDataSource:
+        return SignupDataSource(
             ** record_ds_dto.model_dump()
         )

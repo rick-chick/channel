@@ -12,19 +12,25 @@ from channel.adapter.controller.record.record_list_controller import RecordListC
 from channel.adapter.controller.user.user_authenticate_controller import (
     UserAuthenticateController,
 )
+from channel.adapter.controller.user.user_signup_controller import UserSignupController
 from channel.adapter.controller.user.user_update_controller import UserUpdateController
 from channel.adapter.controller.user_token.user_token_refresh_controller import UserTokenRefreshController
+from channel.driver.client.gmail.gmail_mail_client import GmailMailClient
 from channel.driver.db.memory.memory_device_repository import MemoryDeviceRepository
 from channel.driver.db.memory.memory_user_repository import MemoryUserRepository
 from channel.driver.db.sqlalchemy.conf import Session
 from channel.driver.db.sqlalchemy.sqlalchemy_channel_repository import SqlalchemyChannelRepository
 from channel.driver.db.sqlalchemy.sqlalchemy_device_repository import SqlalchemyDeviceRepository
 from channel.driver.db.sqlalchemy.sqlalchemy_record_repository import SqlalchemyRecordRepository
+from channel.driver.db.sqlalchemy.sqlalchemy_signup_repository import SqlalchemySignupRepository
 from channel.driver.db.sqlalchemy.sqlalchemy_user_token_repository import SqlalchemyUserTokenRepository
 from channel.driver.db.sqlalchemy.sqlalchemy_user_repository import (
     SqlalchemyUserRepository,
 )
-from channel.driver.env import ALLOWD_ORIGINS
+from channel.driver.env import (
+    ALLOWD_ORIGINS,
+    PASSWORD_RESET_URL
+)
 from channel.driver.handler.cli.handler_buss import HandlerBuss, UserTokenAuthenticateHandlerBuss
 from channel.driver.handler.flask.channel.flask_channel_create_input_parser import FlaskChannelCreateInputParser
 from channel.driver.handler.flask.channel.flask_channel_delete_input_parser import FlaskChannelDeleteInputParser
@@ -33,14 +39,20 @@ from channel.driver.handler.flask.channel.flask_channel_update_input_parser impo
 from channel.driver.handler.flask.device.flask_device_create_input_parser import FlaskDeviceCreateInputParser
 from channel.driver.handler.flask.device.flask_device_delete_input_parser import FlaskDeviceDeleteInputParser
 from channel.driver.handler.flask.device.flask_device_list_input_parser import FlaskDeviceListInputParser
-from channel.driver.handler.flask.handler_buss import FlaskDeviceKeyAuthenticateHandlerBuss, FlaskUserTokenAuthenticateHandlerBuss
+from channel.driver.handler.flask.handler_buss import (
+    FlaskDeviceKeyAuthenticateHandlerBuss,
+    FlaskUserTokenAuthenticateHandlerBuss
+)
 from channel.driver.handler.flask.record.flask_record_create_input_parser import FlaskRecordCreateInputParser
 from channel.driver.handler.flask.record.flask_record_list_input_parser import FlaskRecordListInputParser
 from channel.driver.handler.flask.user.flask_user_authenticate_input_parser import (
     FlaskUserAuthenticateInputParser,
 )
+from channel.driver.handler.flask.user.flask_user_signup_input_parser import FlaskUserSignupInputParser
 from channel.driver.handler.flask.user.flask_user_update_input_parser import FlaskUserUpdateInputParser
-from channel.driver.handler.flask.user_token.flask_user_token_refresh_input_parser import FlaskUserTokenRefreshInputParser
+from channel.driver.handler.flask.user_token.flask_user_token_refresh_input_parser import (
+    FlaskUserTokenRefreshInputParser
+)
 from channel.driver.view.flask.channel.flask_channel_create_view import FlaskChannelCreateView
 from channel.driver.view.flask.channel.flask_channel_delete_view import FlaskChannelDeleteView
 from channel.driver.view.flask.channel.flask_channel_list_view import FlaskChannelListView
@@ -53,6 +65,7 @@ from channel.driver.view.flask.record.flask_record_list_view import FlaskRecordL
 from channel.driver.view.flask.user.flask_user_authenticate_view import (
     FlaskUserAuthenticateView,
 )
+from channel.driver.view.flask.user.flask_user_signup_view import FlaskUserSignupView
 from channel.driver.view.flask.user.flask_user_update_view import FlaskUserUpdateView
 from flask_cors import CORS
 from channel.driver.view.flask.user_token.flask_user_token_refresh_view import FlaskUserTokenRefreshView
@@ -113,6 +126,27 @@ def user_update():
         user_session=MemoryUserRepository(memory),
         user_repository=SqlalchemyUserRepository(session),
         user_update_view=view,
+    )
+    buss.add(controller)
+    buss.handle(request)
+    return view.render()
+
+
+@app.route('/user/signup', methods=["POST"])
+def user_signup():
+    memory = {}
+    session = Session()
+
+    buss = HandlerBuss(memory, session)
+
+    view = FlaskUserSignupView()
+    controller = UserSignupController(
+        signup_repository=SqlalchemySignupRepository(session),
+        user_repository=SqlalchemyUserRepository(session),
+        mail_service=GmailMailClient(),
+        user_signup_view=view,
+        user_signup_input_parser=FlaskUserSignupInputParser(),
+        password_reset_url=PASSWORD_RESET_URL,
     )
     buss.add(controller)
     buss.handle(request)
