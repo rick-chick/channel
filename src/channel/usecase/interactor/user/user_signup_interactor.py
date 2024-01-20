@@ -81,7 +81,8 @@ class UserSignupInteractor(UserSignupInputPort):
                 )
 
             user_out_dto = UserSignupOutDto(
-                **user_dto.model_dump()
+                **user_dto.model_dump(),
+                success=True
             )
 
             self.presenter.prepare_success_view(

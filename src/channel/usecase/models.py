@@ -121,6 +121,7 @@ class UserSignupInDto(BaseModel):
 
 class UserSignupOutDto(BaseModel):
     email: str
+    success: bool
 
 
 class UserResetPasswordInDto(BaseModel):
@@ -130,6 +131,7 @@ class UserResetPasswordInDto(BaseModel):
 
 class UserResetPasswordOutDto(BaseModel):
     success: bool
+    email: str
 
 
 class UserResetPasswordInDsDto(BaseModel):

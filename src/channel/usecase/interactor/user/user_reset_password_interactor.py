@@ -57,11 +57,7 @@ class UserResetPasswordInteractor(UserResetPasswordInputPort):
                 signup.email
             )
 
-            # 戻り値
-            user_out_dto = UserResetPasswordOutDto(
-                success=False
-            )
-
+            ret = False
             # ユーザ存在しない場合登録
             if not user_ds_dto:
 
@@ -80,7 +76,7 @@ class UserResetPasswordInteractor(UserResetPasswordInputPort):
                         updated_by='system',
                     )
                 )
-                user_out_dto.success = True
+                ret = True
 
             # ユーザ存在する場合パスワード更新
             else:
@@ -99,7 +95,13 @@ class UserResetPasswordInteractor(UserResetPasswordInputPort):
                         updated_by='system',
                     )
                 )
-                user_out_dto.success = True
+                ret = True
+
+            # 戻り値
+            user_out_dto = UserResetPasswordOutDto(
+                success=ret,
+                email=signup.email,
+            )
 
             # 成功処理
             self.presenter.prepare_success_view(

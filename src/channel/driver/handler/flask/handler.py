@@ -135,7 +135,7 @@ def user_update():
     return view.render()
 
 
-@app.route('/user/reset/password', methods=["POST"])
+@app.route('/user/reset_password', methods=["POST"])
 def user_reset_password():
     memory = {}
     session = Session()
@@ -144,10 +144,11 @@ def user_reset_password():
 
     view = FlaskUserResetPasswordView()
     controller = UserResetPasswordController(
-        user_update_input_parser=FlaskUserResetPasswordInputParser(memory),
+        user_reset_password_input_parser=FlaskUserResetPasswordInputParser(
+            memory),
         signup_repository=SqlalchemySignupRepository(session),
         user_repository=SqlalchemyUserRepository(session),
-        user_update_view=view,
+        user_reset_password_view=view,
     )
     buss.add(controller)
     buss.handle(request)
